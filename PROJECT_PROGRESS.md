@@ -14,7 +14,7 @@
 | **Overall completion percentage** | **~51.4%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 18 / 35 |
 | **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006) all complete; into Phase 2/3/6 (Backend/DB, Frontend Dev, RAG) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | FRONTEND-002 (prompt/clarify chat UI — highest demo value now that Phase 5 HIGH is done) or RAG-002 (curate cinematography corpus, unblocks RAG-003 → AI-007) — both unblocked, no fixed order. NOTE: per ADR-015 (no local heavy compute) RAG-003's embeddings should move to a hosted API rather than RAG-001's local torch. |
+| **Current objective** | FRONTEND-002 (prompt/clarify chat UI — highest demo value now that Phase 5 HIGH is done) or RAG-002 (curate cinematography corpus, unblocks RAG-003 → AI-007) — both unblocked, no fixed order. NOTE: ADR-015 (no local heavy compute) is firm for LLMs; RAG-003's local-torch embeddings migration is DEFERRED (user, 2026-08-10) — keep local for now, move to a hosted embeddings API only if it slows the machine. |
 | **Overall status** | 🟢 **The first real slice of the pipeline is now reachable end-to-end through the actual Node backend, not just the ai-service port directly.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) storyboard, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-10 |
 | **Last updated by** | Claude (Opus 4.8) — completed AI-006 (Groq + hosted fallback LLM integration; see ADR-015/ADR-016) |
@@ -1268,16 +1268,17 @@ RAG-003 (embed + populate) then AI-007 (Cinematographer) need. Open
 film-technique references only (FR-4 security note).
 Dependencies:
 none (content curation); RAG-003 additionally needs RAG-001 (done)
-NOTE (ADR-015): RAG-003's embedding step must use a HOSTED embeddings
-API, not RAG-001's local sentence-transformers+torch — reconcile before
-RAG-003 starts. See open follow-up below.
+NOTE (ADR-015): RAG-003 may embed locally (RAG-001's sentence-transformers
++torch) for now — the user deferred the hosted-embeddings migration
+(2026-08-10), to be done only if local embedding slows the machine.
+See deferred follow-up below.
 Acceptance criteria:
 A curated, license-clean corpus file set ready to embed.
 ```
 
 BACKEND-003/004 and now AI-006 are VERIFIED — see Section 2. With AI-006 done, all Phase 5 HIGH tasks are complete.
 
-**Open follow-up (ADR-015 consistency):** RAG-001's embedder runs local `sentence-transformers`+`torch`, which contradicts the no-local-heavy-compute policy the user set (ADR-015 — all inference via hosted APIs, we use Groq's API). Migrate corpus/query embedding to a hosted embeddings API as part of RAG-003 (Groq does not currently expose an embeddings endpoint, so this needs a hosted embeddings provider decision). Same applies to AI-008's similarity check.
+**Deferred follow-up (ADR-015, performance-contingent):** RAG-001's embedder runs local `sentence-transformers`+`torch`. ADR-015 (all inference via hosted APIs) is firm for the LLM path, but the user **deferred** the embeddings migration (2026-08-10): keep local embeddings for now and shift to a hosted embeddings API only *if it measurably slows the machine*. So RAG-003 may embed locally for now — revisit only if performance degrades. (Groq has no embeddings endpoint, so a hosted move would need a separate embeddings provider.) Same applies to AI-008's similarity check.
 
 ---
 

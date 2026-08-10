@@ -1484,7 +1484,7 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Date:** 2026-08-10
 - **Context:** The user directed that no LLM or heavy work run locally: it consumes dev-machine resources and yields slow responses, hurting UX.
 - **Selected:** All LLM inference goes through hosted APIs. AI-006's fallback is a hosted OpenAI-compatible endpoint; an initial local Ollama/llama3 draft was implemented and **removed** the same session after a cold-start warm-up exceeded 120s (and, running native on Windows, it was unreachable from the WSL2 ai-service anyway).
-- **Consequences:** Forward implication — RAG-001's local `sentence-transformers`+`torch` embedder and AI-008's similarity check conflict with this policy and should migrate to a **hosted embeddings API** (logged as an open follow-up on RAG-003).
+- **Consequences:** Firm for the LLM path. RAG-001's local `sentence-transformers`+`torch` embedder and AI-008's similarity check are the one exception — the user **deferred** migrating them (2026-08-10): keep local embeddings for now, shift to a **hosted embeddings API** only if it measurably slows the dev machine. So this is a performance-contingent follow-up on RAG-003, not a hard requirement (note: Groq has no embeddings endpoint, so it would need a separate hosted embeddings provider).
 
 ### ADR-016: Fallback LLM default — a second Groq model via the OpenAI-compatible endpoint
 - **Date:** 2026-08-10
