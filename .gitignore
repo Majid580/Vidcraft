@@ -23,6 +23,10 @@ out/
 remotion/out/
 .remotion/
 
+# RAG generated vector index (RAG-001) — rebuilt from the corpus, not committed
+ai-service/rag/data/
+*.faiss
+
 # Logs
 *.log
 npm-debug.log*

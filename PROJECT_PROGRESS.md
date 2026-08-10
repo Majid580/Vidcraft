@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~45.7%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 16 / 35 |
-| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3/5 (Backend/DB, Frontend Dev, AI Core) |
+| **Overall completion percentage** | **~48.6%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 17 / 35 |
+| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3/5/6 (Backend/DB, Frontend Dev, AI Core, RAG) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | AI-006 (Groq + fallback LLM integration, needs a fallback-provider decision first) or RAG-001 (FAISS scaffold) — both unblocked, no fixed order |
+| **Current objective** | RAG-002 (curate cinematography corpus, unblocks RAG-003 → AI-007), AI-006 (Groq + fallback LLM, needs a fallback-provider decision first — Ollama local is a candidate), or FRONTEND-002 (prompt/clarify chat UI) — all unblocked, no fixed order |
 | **Overall status** | 🟢 **The first real slice of the pipeline is now reachable end-to-end through the actual Node backend, not just the ai-service port directly.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) storyboard, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed BACKEND-003 (Redis + Bull.js queue scaffold) |
+| **Last updated by** | Claude (Opus 4.8) — completed RAG-001 (FAISS vector-index scaffold) |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,7 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| RAG-001 | FAISS vector-index scaffold (FR-4 infra) | VERIFIED | `ai-service/rag/index.py` (`VectorIndex`: FAISS `IndexFlatIP` over L2-normalized vectors = cosine per FR-4, parallel JSON metadata sidecar `{path}.faiss`+`{path}.meta.json`, graceful empty-index queries, `save`/`load`, injectable `embed_fn`), `ai-service/rag/embedder.py` (lazy cached `all-MiniLM-L6-v2`, imported only on first real embed so empty paths/tests need no model), `ai-service/rag/__init__.py`; `config.py` adds `EMBEDDING_MODEL`/`EMBEDDING_DIM`/`VECTOR_INDEX_PATH`/`RAG_TOP_K`; `requirements.txt` += faiss-cpu 1.15.0, sentence-transformers 5.7.0, torch 2.13.0+cpu (into `.venv-wsl`) | 9/9 new pytest pass (35/35 total) with a deterministic injected embedder (offline). Live end-to-end with the REAL `all-MiniLM-L6-v2`: empty 384-dim index → `[]` on query; 4-item cinematography corpus embedded; semantic query "dark shadowy scene that feels tense" ranked the low-key/deep-shadows lighting passage first (0.383 cosine); save+reload round-trip preserved all 4 vectors. Temp verification script cleaned up, not committed. | 2026-08-10 |
 | BACKEND-003 | Redis + Bull.js queue scaffold | VERIFIED | `backend/src/queues/generationQueue.js` (Bull queue named `generation`, connects to `REDIS_URL`, placeholder processor that echoes `job.data`); Redis installed inside WSL2 (`sudo apt install redis-server`, same WSL2 pattern as ADR-008) rather than retrying Docker (still broken per BLOCK-002) | Confirmed Redis reachable from Windows on `redis://localhost:6379` (`Test-NetConnection`, `TcpTestSucceeded: True`). Ran a temporary script: enqueued a trivial job, awaited `job.finished()`, got back the exact echoed payload, closed the queue connection. Script deleted after verification, nothing left running that isn't source-controlled. | 2026-08-10 |
 | BACKEND-004 | REST routes, middleware, error handler | VERIFIED | `backend/src/routes/prompts.js` (`POST /api/prompts`, `POST /api/prompts/:id/clarify`), `backend/src/routes/storyboards.js` (`POST /api/storyboards`, `GET /api/storyboards/:id`), `backend/src/services/aiServiceClient.js` (fetch-based HTTP client to ai-service, maps ai-service 422→400 and network/5xx failures→502), `backend/src/middleware/validation.js` (`requireFields`), `backend/src/middleware/errorHandler.js` (`ApiError`, `notFoundHandler`, centralized handler incl. Mongoose `CastError`/`ValidationError`→400 mapping), wired into `backend/src/app.js` (`connectDB()` now called on startup) | Live end-to-end via curl against a running backend (port 5000) + ai-service (WSL2, port 8000) + real local MongoDB: `POST /api/prompts` with a vague prompt returned real spaCy analysis (35/100, 3 flags) and 2 real Groq clarification questions, persisted; `POST /api/prompts/:id/clarify` merged real answers into a clarified prompt via Groq, persisted; `POST /api/storyboards` ran the real LangGraph orchestrator and persisted a 4-shot storyboard; `GET /api/storyboards/:id` fetched it back correctly. Error paths verified: 400 (missing field), 404 (valid-but-unknown id, unknown route), 400 (malformed ObjectId via CastError mapping). Test documents deleted after verification. Deviates from the Section 9.2 PROPOSED async shape for `POST /api/storyboards` — see ADR-014. | 2026-08-10 |
 | AI-005 | LangGraph orchestrator: Producer/Router agent (FR-3, partial) | VERIFIED | `ai-service/orchestrator/agents/producer.py` (`assign_pathways`: per-shot LLM routing decision, `ProducerOutputError` on malformed output), `ai-service/orchestrator/graph.py` (added `producer` node: `screenwriter` → `producer` → END) | 26/26 pytest pass (4 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: a prompt mixing an explicit photorealistic shot with two stylized/animated shots correctly routed 1 shot to `external_api` and 2 to `remotion`, per the ADR-013 heuristic — replacing AI-004's hardcoded `"remotion"` default with a real per-shot decision. | 2026-08-10 |
@@ -78,7 +79,6 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 
 | Task ID | Name | Depends on |
 |---|---|---|
-| RAG-001 | FAISS index scaffold | BACKEND-002 (done) |
 | AI-006 | Groq + fallback LLM integration | AI-004 (done) |
 | INTEG-001 | Full end-to-end wiring | all of the above |
 | INTEG-002 | FFmpeg post-processing pipeline | REMOTION-002, BACKEND-005 |
@@ -489,6 +489,56 @@ Verified on: 2026-08-10
 Verified by (agent/person): Claude (Sonnet 5)
 ```
 
+```text
+[VERIFIED]
+RAG Style Knowledge Base — FAISS index scaffold (RAG-001)
+Files:
+- ai-service/rag/__init__.py (exports VectorIndex, embed, get_model)
+- ai-service/rag/embedder.py (lazy functools.lru_cache load of the real
+  all-MiniLM-L6-v2 sentence-transformer; sentence_transformers imported
+  inside the function so importing the rag package needs no heavy deps and
+  the empty-index path loads no model; embed() returns L2-normalized
+  float32 vectors so inner-product == cosine per FR-4)
+- ai-service/rag/index.py (VectorIndex: FAISS IndexFlatIP + parallel JSON
+  metadata sidecar; add()/search()/save()/load()/__len__; graceful empty
+  and k>corpus handling; embed_fn injectable for tests; ADR-004 metadata-
+  sync-to-MongoDB deferral documented in the module docstring)
+- ai-service/config.py (EMBEDDING_MODEL, EMBEDDING_DIM, VECTOR_INDEX_PATH,
+  RAG_TOP_K)
+- ai-service/tests/test_rag.py (9 tests, deterministic injected 3-dim
+  fake embedder — offline, no model download: empty-index graceful query,
+  add count + empty-add no-op, cosine ranking, k-clamp, metadata/text
+  carry-through, k=0, save/load round-trip, load-missing-returns-empty,
+  dim-mismatch ValueError)
+- ai-service/requirements.txt (regenerated via pip freeze in .venv-wsl:
+  faiss-cpu 1.15.0, sentence-transformers 5.7.0, torch 2.13.0+cpu,
+  transformers 5.15.0)
+- .env.example / .gitignore (RAG vars added; ai-service/rag/data/ + *.faiss
+  ignored as generated)
+Verified by:
+- test execution (pytest, WSL2 .venv-wsl, injected embedder — no network)
+- live end-to-end run (temporary script, cleaned up) with the REAL
+  all-MiniLM-L6-v2 model
+Result:
+PASS — 9/9 new tests pass, 35/35 total. Live run: empty index (dim 384)
+-> search returns []; a 4-item cinematography corpus embedded; semantic
+query "dark shadowy scene that feels tense and threatening" -> top hit was
+the "Low-key lighting uses deep shadows and high contrast to create
+tension" passage (0.383 cosine), Dutch-angle/unease second (0.341) — a
+sensible semantic ranking, not a keyword match. save() then load() from a
+temp path preserved all 4 vectors; "warm sunset lighting for a tender
+moment" retrieved a lighting passage (0.571). Temp script + temp index
+files removed after verification, not committed.
+Scaffold only (acceptance criterion was exactly "empty index can be
+created, queried, returns no results gracefully"): no curated corpus yet
+(RAG-002), no populated persisted production index (RAG-003), no
+Cinematographer consumer (AI-007). Per ADR-004 the MongoDB embeddings
+collection (Section 10) is the eventual canonical metadata store; for the
+scaffold the JSON sidecar is the interim store, deferral documented.
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Opus 4.8)
+```
+
 No other component in this project has been inspected, run, or tested,
 because no other component has been written yet. This section exists to
 prevent exactly the failure mode it is named after: a future agent
@@ -576,7 +626,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [x] Prompt analyzer (FR-1) returns a structured score for a real prompt — 2026-08-10 (AI-002, ai-service only — not yet reachable via the Node backend)
 - [x] Clarification agent (FR-2) generates and processes at least one Q&A round — 2026-08-10 (AI-003, real Groq API, ai-service only — not yet reachable via the Node backend or a frontend chat UI)
 - [~] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt — 2026-08-10: Screenwriter + Producer/Router nodes (AI-004/AI-005) do this against a real prompt, including real per-shot pathway routing (ADR-013); partial only because Cinematographer (AI-007, RAG-grounded camera/style) doesn't exist yet — camera is still a Screenwriter placeholder per ADR-012, and external_api-routed shots can't be rendered yet (BACKEND-005/PROVIDER-001 missing)
-- [ ] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query
+- [~] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query — 2026-08-10 (RAG-001): the retrieval mechanism is verified — a semantic query returned relevant, sensibly-ranked results from a small ad-hoc cinematography corpus using the real all-MiniLM-L6-v2 encoder. Partial only because the *curated* reference corpus isn't ingested yet (RAG-002/RAG-003) and no agent consumes it (AI-007); the empty index also correctly returns [] gracefully
 - [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: fully wired end-to-end (REMOTION-001..003) including automatic composition selection + fallback; still partial only because the `shot`/`worldState` data used is hand-written sample data, not real output from an orchestrator (AI-004/005 don't exist yet) or a real REST request (not wired into a route — that's INTEG-001/BACKEND-004).
 - [ ] External API pathway (FR-6) successfully generates at least one real video via a connected provider
 - [ ] Critic loop (FR-8) triggers at least one real retry
@@ -619,13 +669,14 @@ fyp/
 │       └── models/Prompt.js, models/Storyboard.js
 ├── ai-service/
 │   ├── main.py
-│   ├── config.py                 (env loading — GROQ_API_KEY, GROQ_MODEL, ANALYSIS_SCORE_THRESHOLD)
+│   ├── config.py                 (env loading — GROQ_API_KEY, GROQ_MODEL, ANALYSIS_SCORE_THRESHOLD, EMBEDDING_MODEL/DIM, VECTOR_INDEX_PATH, RAG_TOP_K)
 │   ├── requirements.txt
 │   ├── analyzer/                 (AI-002 — pipeline.py, scoring.py, antonyms.json)
 │   ├── clarification/            (AI-003 — agent.py)
 │   ├── llm/                      (groq_client.py — shared Groq JSON-mode wrapper)
 │   ├── orchestrator/              (AI-004/005 — state.py, graph.py, agents/{screenwriter,producer}.py)
-│   ├── tests/                     (test_analyzer.py, test_clarification.py, test_orchestrator.py)
+│   ├── rag/                       (RAG-001 — index.py VectorIndex (FAISS + JSON sidecar), embedder.py all-MiniLM-L6-v2; data/ generated index, gitignored)
+│   ├── tests/                     (test_analyzer.py, test_clarification.py, test_orchestrator.py, test_rag.py)
 │   ├── .venv/                   (untracked — native-Windows venv from SETUP-001, superseded by .venv-wsl)
 │   └── .venv-wsl/                (untracked — the venv actually used to run the service, per ADR-008)
 ├── frontend/
@@ -683,7 +734,7 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 
 ### Actual dependencies (package.json / requirements.txt contents)
 - `backend/package.json`: express, helmet, morgan, cors, dotenv, mongoose (+ nodemon, dev)
-- `ai-service/requirements.txt`: fastapi, uvicorn[standard], spacy (+ en_core_web_sm model), pytest, groq, python-dotenv, langgraph (+ langchain-core/langsmith transitive deps, added for AI-004), and their transitive deps — generated via `pip freeze` in the WSL2 venv
+- `ai-service/requirements.txt`: fastapi, uvicorn[standard], spacy (+ en_core_web_sm model), pytest, groq, python-dotenv, langgraph (+ langchain-core/langsmith transitive deps, added for AI-004), faiss-cpu + sentence-transformers + torch (CPU) + transformers (added for RAG-001), and their transitive deps — generated via `pip freeze` in the WSL2 venv
 - `frontend/package.json`: react, react-dom, tailwindcss v4, @tailwindcss/vite, shadcn/ui deps (radix-ui, class-variance-authority, clsx, tailwind-merge, lucide-react)
 - `remotion/package.json`: remotion, react, react-dom, @remotion/cli, @remotion/bundler, @remotion/renderer, typescript (pinned `^5` — see ADR-009's TS 7.x gotcha note)
 

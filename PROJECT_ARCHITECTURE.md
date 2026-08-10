@@ -635,7 +635,8 @@ Each component below currently has **zero implementation**. "Current implementat
 - **Technologies:** Python, FAISS, `all-MiniLM-L6-v2`.
 - **Failure modes:** Sparse/no corpus coverage for unusual style requests.
 - **Testing requirements:** Precision-at-k check on a labelled sample of style queries (proposal §6.11).
-- **Current implementation status:** `NOT_IMPLEMENTED`. Corpus content: `NOT_IMPLEMENTED` / not yet curated at all.
+- **Current implementation status:** `IN_PROGRESS`. The index scaffold is done + verified (RAG-001): `ai-service/rag/index.py` (`VectorIndex` — FAISS `IndexFlatIP` over L2-normalized vectors = cosine per FR-4, JSON metadata sidecar, graceful empty queries, `save`/`load`) and `ai-service/rag/embedder.py` (lazy-cached real `all-MiniLM-L6-v2`). Corpus content: `NOT_IMPLEMENTED` / not yet curated at all (RAG-002); no populated production index (RAG-003); no Cinematographer consumer (AI-007). See PROJECT_PROGRESS.md Section 5 for the verification record.
+- **Metadata sync (ADR-004):** vectors live in the FAISS index; per-vector metadata (source text + dict) is the paired store. Section 10's `embeddings` collection is the eventual canonical MongoDB metadata store, synced with the FAISS index — but that sync is deferred to RAG-003 (corpus ingestion). For the RAG-001 scaffold the JSON sidecar written beside the index (`{VECTOR_INDEX_PATH}.meta.json`) is the interim canonical metadata store, keeping the index self-contained and unit-testable without a live MongoDB.
 - **Future work:** Decide corpus size/sourcing in more detail than "assembled from open film-technique references" (proposal's own level of specificity).
 
 ### 6.5 Remotion Rendering Engine
@@ -1070,7 +1071,9 @@ NODE_ENV=                      # development | production
 AI_SERVICE_URL=                # internal URL for backend -> AI microservice calls
 
 # --- AI microservice config ---
-VECTOR_INDEX_PATH=             # local FAISS index file location
+VECTOR_INDEX_PATH=rag/data/style_index   # RAG-001: base path; store writes {path}.faiss + {path}.meta.json
+EMBEDDING_MODEL=all-MiniLM-L6-v2   # RAG-001/FR-4: corpus + query encoder (384-dim)
+RAG_TOP_K=3                    # RAG-001/FR-4: default k for style retrieval
 CRITIC_MAX_RETRIES=2           # confirmed default per proposal §6.7
 STORYBOARD_SIMILARITY_THRESHOLD=  # TBD numeric value, not specified in proposal
 ANALYSIS_SCORE_THRESHOLD=60    # confirmed default per proposal §6.1 ("default: 60/100")
