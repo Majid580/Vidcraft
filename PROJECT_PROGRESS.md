@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~40.0%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 14 / 35 |
+| **Overall completion percentage** | **~45.7%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 16 / 35 |
 | **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3/5 (Backend/DB, Frontend Dev, AI Core) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | AI-006 (Groq + fallback LLM integration) is the last remaining Phase 5 HIGH task — or BACKEND-003/004/RAG-001 in parallel (all unblocked backend infra) |
-| **Overall status** | 🟢 **First three real FRs are live and chained together, including a real two-node LangGraph orchestrator.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end: a vague prompt (33/100, 3 flags) → 2 real Groq-generated clarifying questions → clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) decomposes it into a storyboard and routes each shot's pathway. Live-verified with a prompt mixing an explicit photorealistic shot and two stylized/animated shots — correctly split 1 `external_api` / 2 `remotion` (ADR-013). The remotion-routed output was further confirmed to chain directly into the existing REMOTION-003 pathway (`remotionService.renderShot()`), which correctly selected `MediumShot` and rendered a valid MP4. The MongoDB layer and the full Remotion pathway (REMOTION-001..003) are also done. Four app scaffolds all confirmed working. Still not wired together: no AI-service output is persisted to Mongo or reachable through the Node backend (that's BACKEND-004/INTEG-001); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
+| **Current objective** | AI-006 (Groq + fallback LLM integration, needs a fallback-provider decision first) or RAG-001 (FAISS scaffold) — both unblocked, no fixed order |
+| **Overall status** | 🟢 **The first real slice of the pipeline is now reachable end-to-end through the actual Node backend, not just the ai-service port directly.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) storyboard, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed AI-005 (LangGraph orchestrator: Producer/Router agent) |
+| **Last updated by** | Claude (Sonnet 5) — completed BACKEND-003 (Redis + Bull.js queue scaffold) |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,8 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| BACKEND-003 | Redis + Bull.js queue scaffold | VERIFIED | `backend/src/queues/generationQueue.js` (Bull queue named `generation`, connects to `REDIS_URL`, placeholder processor that echoes `job.data`); Redis installed inside WSL2 (`sudo apt install redis-server`, same WSL2 pattern as ADR-008) rather than retrying Docker (still broken per BLOCK-002) | Confirmed Redis reachable from Windows on `redis://localhost:6379` (`Test-NetConnection`, `TcpTestSucceeded: True`). Ran a temporary script: enqueued a trivial job, awaited `job.finished()`, got back the exact echoed payload, closed the queue connection. Script deleted after verification, nothing left running that isn't source-controlled. | 2026-08-10 |
+| BACKEND-004 | REST routes, middleware, error handler | VERIFIED | `backend/src/routes/prompts.js` (`POST /api/prompts`, `POST /api/prompts/:id/clarify`), `backend/src/routes/storyboards.js` (`POST /api/storyboards`, `GET /api/storyboards/:id`), `backend/src/services/aiServiceClient.js` (fetch-based HTTP client to ai-service, maps ai-service 422→400 and network/5xx failures→502), `backend/src/middleware/validation.js` (`requireFields`), `backend/src/middleware/errorHandler.js` (`ApiError`, `notFoundHandler`, centralized handler incl. Mongoose `CastError`/`ValidationError`→400 mapping), wired into `backend/src/app.js` (`connectDB()` now called on startup) | Live end-to-end via curl against a running backend (port 5000) + ai-service (WSL2, port 8000) + real local MongoDB: `POST /api/prompts` with a vague prompt returned real spaCy analysis (35/100, 3 flags) and 2 real Groq clarification questions, persisted; `POST /api/prompts/:id/clarify` merged real answers into a clarified prompt via Groq, persisted; `POST /api/storyboards` ran the real LangGraph orchestrator and persisted a 4-shot storyboard; `GET /api/storyboards/:id` fetched it back correctly. Error paths verified: 400 (missing field), 404 (valid-but-unknown id, unknown route), 400 (malformed ObjectId via CastError mapping). Test documents deleted after verification. Deviates from the Section 9.2 PROPOSED async shape for `POST /api/storyboards` — see ADR-014. | 2026-08-10 |
 | AI-005 | LangGraph orchestrator: Producer/Router agent (FR-3, partial) | VERIFIED | `ai-service/orchestrator/agents/producer.py` (`assign_pathways`: per-shot LLM routing decision, `ProducerOutputError` on malformed output), `ai-service/orchestrator/graph.py` (added `producer` node: `screenwriter` → `producer` → END) | 26/26 pytest pass (4 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: a prompt mixing an explicit photorealistic shot with two stylized/animated shots correctly routed 1 shot to `external_api` and 2 to `remotion`, per the ADR-013 heuristic — replacing AI-004's hardcoded `"remotion"` default with a real per-shot decision. | 2026-08-10 |
 | AI-004 | LangGraph orchestrator: Screenwriter agent (FR-3, partial) | VERIFIED | `ai-service/orchestrator/state.py` (`OrchestratorState` TypedDict), `ai-service/orchestrator/agents/screenwriter.py` (`run_screenwriter`, output-shape validation via `ScreenwriterOutputError`), `ai-service/orchestrator/graph.py` (real LangGraph `StateGraph`, single `screenwriter` node, per ADR-001), `POST /storyboard/generate` in `ai-service/main.py` | 22/22 pytest pass (5 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: clarified prompt → valid 3-shot storyboard (`storyboard_id`, `world_state`, `shots[]` matching the FR-3 JSON shape exactly). Further verified that storyboard's shot 1 chains directly into `backend/src/services/remotionService.js`'s `renderShot()` (REMOTION-003) — correctly selected `MediumShot` from the LLM-drafted `camera` value, rendered a valid MP4 (confirmed via ISO Media container magic bytes; `ffprobe` not on this shell's PATH, a known pre-existing quirk). Also verified 422 on empty `clarified_prompt`. | 2026-08-10 |
 | AI-003 | Conversational clarification agent (FR-2) | VERIFIED | `ai-service/llm/groq_client.py` (Groq SDK wrapper, JSON-mode structured completions), `ai-service/clarification/agent.py` (`generate_questions` <=2 questions, `build_brief` merges answers), `ai-service/config.py` (env loading), `POST /clarify/questions` + `POST /clarify/resolve` in `ai-service/main.py` | 17/17 pytest tests pass (7 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: vague prompt (33/100, 3 flags) → 2 real generated questions → resolved into brief + clarified prompt → re-analyzed at 72/100 with 0 flags. No-flags no-op path and mismatched-length 400 error path also verified. | 2026-08-10 |
@@ -76,13 +78,11 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 
 | Task ID | Name | Depends on |
 |---|---|---|
-| BACKEND-003 | Redis + Bull.js queue scaffold | BACKEND-001 (done) |
-| BACKEND-004 | REST routes, middleware, error handler | BACKEND-002 (done) |
 | RAG-001 | FAISS index scaffold | BACKEND-002 (done) |
 | AI-006 | Groq + fallback LLM integration | AI-004 (done) |
 | INTEG-001 | Full end-to-end wiring | all of the above |
 | INTEG-002 | FFmpeg post-processing pipeline | REMOTION-002, BACKEND-005 |
-| FRONTEND-002 | Prompt input + clarification chat UI | FRONTEND-001 (done), BACKEND-004 |
+| FRONTEND-002 | Prompt input + clarification chat UI | FRONTEND-001 (done), BACKEND-004 (done) |
 | FRONTEND-003 | Style configurator UI | FRONTEND-001 (done) |
 
 ### MEDIUM (Target-tier outcomes)
@@ -1062,6 +1062,108 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
     the Phase 5 roadmap table row for AI-005.
   - Updated this file and PROJECT_STATE.yaml (14/35 tasks complete,
     ~40.0%).
+
+2026-08-10 (session 14)
+- Completed BACKEND-004: REST routes, middleware, error handler — the
+  first task to actually expose AI-002/003/004/005 through the Node
+  backend instead of hitting ai-service directly on its own port.
+  - backend/src/middleware/errorHandler.js: ApiError class (statusCode
+    + message), notFoundHandler (404 for unmatched routes), and a
+    centralized errorHandler that also maps Mongoose CastError (bad
+    ObjectId) and ValidationError to 400 rather than leaking a raw 500.
+  - backend/src/middleware/validation.js: requireFields() — a small
+    hand-rolled required-field checker (no validation library added,
+    consistent with the project's not-adding-deps-it-doesn't-need
+    posture).
+  - backend/src/services/aiServiceClient.js: HTTP client to ai-service
+    using Node's built-in fetch (Node 25 on this machine, well past the
+    Node 18 fetch baseline) rather than adding axios/node-fetch as a
+    dependency. Maps ai-service's 422 (its own input validation) to
+    400, everything else non-OK or unreachable to 502.
+  - backend/src/routes/prompts.js: POST /api/prompts (real spaCy
+    analysis via ai-service, persists a Prompt, returns clarification
+    questions only when analysis.flags is non-empty) and POST
+    /api/prompts/:id/clarify (merges answers into a clarified_text via
+    ai-service's real Groq call, persists it).
+  - backend/src/routes/storyboards.js: POST /api/storyboards (runs the
+    real LangGraph orchestrator against a prompt's clarified_text,
+    falling back to raw_text if never clarified; persists a Storyboard)
+    and GET /api/storyboards/:id.
+  - backend/src/app.js: now calls connectDB() before app.listen() (it
+    previously never connected to Mongo at startup at all, despite
+    BACKEND-002 existing); mounts the new routers under /api; adds
+    notFoundHandler + errorHandler as the final middleware in the
+    chain, per the standard Express ordering.
+  - Adopted ADR-014: POST /api/storyboards is synchronous (201 with the
+    completed storyboard), not the Section 9.2 PROPOSED async shape
+    (202/"processing") — because BACKEND-003's queue doesn't exist yet,
+    and faking a "processing" status for a call that already finished
+    would be dishonest scaffolding rather than an honest gap. Revisit
+    once BACKEND-003 lands.
+  - Live-verified end-to-end with curl against a running backend (port
+    5000, connected to a real local MongoDB) and a running ai-service
+    (WSL2, port 8000): the full chain (analyze -> clarify -> generate
+    storyboard -> fetch it back) round-tripped with real Groq/spaCy
+    output at every step, not mocked data. Also verified 400 (missing
+    required field), 404 (valid-but-unknown id, and an unmatched
+    route), and 400 (malformed ObjectId via the CastError mapping).
+    Test documents deleted from MongoDB after verification.
+  - No automated test suite added for the backend (package.json's
+    "test" script is still the default stub) — verification here was
+    live HTTP calls only, not unit/integration tests. Worth flagging as
+    a gap if a future session has time, though it wasn't a stated
+    acceptance criterion for this task.
+  - Mid-session note: a pre-existing ai-service process (already
+    running before this session started, not started by this session)
+    stopped responding after a /clarify/resolve call; restarting it
+    fresh in WSL2 immediately handled the same request with no changes
+    needed to the code. See Section 9 below — not treated as a new
+    Blockers-table entry since it wasn't reproduced or diagnosed, just
+    noted in case it recurs.
+  - Updated this file and PROJECT_STATE.yaml (15/35 tasks complete,
+    ~42.9%). Updated PROJECT_ARCHITECTURE.md Section 8 (file tree +
+    responsibilities table) and Section 9 (Prompts/Storyboards
+    endpoints PROPOSED -> IMPLEMENTED, with the ADR-014 deviation noted
+    inline for POST /api/storyboards).
+
+2026-08-10 (session 15)
+- Completed BACKEND-003: Redis + Bull.js queue scaffold.
+  - Installed `bull` (backend/package.json). Its dependency tree pulls
+    in `uuid` <11.1.1, which has a moderate-severity advisory
+    (GHSA-w5hq-g745-h8pq, a buffer-bounds-check edge case). The only
+    fix path `npm audit` offers is a breaking downgrade to bull@1.1.3
+    (a years-old major version) — not worth taking for a scaffold with
+    no real job payloads yet; accepted as-is, noted in
+    PROJECT_STATE.yaml.
+  - backend/src/queues/generationQueue.js: a Bull queue named
+    "generation" connected to REDIS_URL, with a placeholder processor
+    that just echoes job.data back. Deliberately minimal — a real
+    per-shot generation job (Remotion vs external API dispatch) isn't
+    wired in here; that's INTEG-001's job once BACKEND-005 exists too.
+  - Redis itself: Docker is still broken on this machine (BLOCK-002,
+    unresolved at the OS level), so rather than re-attempting that,
+    Redis was installed the same way ai-service already runs — inside
+    WSL2 (`sudo apt install redis-server`). Sudo needs an interactive
+    password this session can't supply, so the user ran the install
+    command directly (identical pattern to ADR-008's spaCy/WSL2
+    resolution in an earlier session). Confirmed Redis responds to
+    PING inside WSL2 and that Windows can reach it at
+    redis://localhost:6379 via WSL2's port forwarding
+    (`Test-NetConnection`, `TcpTestSucceeded: True`) — no extra
+    Windows-side configuration needed.
+  - Updated .env.example and backend/.env: REDIS_URL is now a real,
+    documented default (redis://localhost:6379) instead of the empty
+    placeholder BACKEND-002 had left for BACKEND-003 to fill in.
+  - Verified with a temporary script (backend/verify-queue-tmp.js, not
+    committed): enqueued one job, awaited job.finished(), confirmed the
+    processor's echoed payload matched exactly, closed the queue
+    connection cleanly, deleted the script. Matches this task's
+    acceptance criterion verbatim ("a trivial job can be enqueued and
+    processed").
+  - Updated this file, PROJECT_STATE.yaml (16/35 tasks complete,
+    ~45.7%), and PROJECT_ARCHITECTURE.md Section 8 (queues row: Bull.js
+    scaffold IN_PROGRESS — the file tree entry note explains the gap is
+    the missing real job type, not the queue mechanism itself).
 ```
 
 ---
@@ -1078,6 +1180,8 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 - The authentication/authorization question (R-9) should be resolved before FRONTEND work that depends on user-specific history/state, to avoid rework.
 
 **Not a blocker, but a real constraint to plan around:** the project's Groq API key is free-tier — 30 requests/min, 1,000 requests/day, 12,000 tokens/min, 1,000,000 tokens/day. Fine for scaffold-stage testing (AI-003 used well under a dozen calls total), but AI-004/005/006 development and especially the EVAL-002/003 evaluation runs (50 prompts × 2 conditions, with the multi-agent condition issuing 1 + 2×N-shot calls per generation) should be paced/budgeted against this, not assumed unlimited.
+
+**Observed flakiness, not reproduced/diagnosed (BACKEND-004 verification session):** a long-running ai-service uvicorn process (already up before this session started) stopped responding right after a `/clarify/resolve` call and its port listener disappeared — no traceback was captured since it wasn't this session's process. A fresh `uvicorn main:app --port 8000` restart in WSL2 immediately handled the identical request successfully, and the rest of the BACKEND-004 verification passed cleanly. If this recurs, capture the uvicorn stdout/stderr at the moment of the crash — that's the missing piece to actually diagnose it.
 
 ---
 
@@ -1106,39 +1210,21 @@ concrete fallback provider chosen and documented as an ADR (still TBD
 per PROVIDER-001/R-8 territory for the fallback LLM specifically, not
 just the video-generation API tiers).
 
-NEXT 2 (parallel-safe, rounds out the backend infra):
-Task ID: BACKEND-003
-Redis + Bull.js queue scaffold
+NEXT 2 (parallel-safe, ahead of RAG-002/003 and AI-007):
+Task ID: RAG-001
+FAISS index scaffold + MongoDB metadata sync design
 Why:
-Needed before BACKEND-004 (real REST routes) and the external-API
-pathway (BACKEND-005) can do anything async. Same "which local infra"
-question BACKEND-002 just answered (Docker was broken on this
-machine) will likely resurface — check for a native Redis-for-Windows
-option or reuse whatever pattern unblocks it fastest.
-Dependencies:
-BACKEND-001 (done)
-Expected files:
-backend/src/queues/
-Acceptance criteria:
-A trivial job can be enqueued and processed.
-
-NEXT 3 (parallel-safe, exposes AI-002/AI-003/AI-004/AI-005 to the rest of the app):
-Task ID: BACKEND-004
-REST routes, middleware, error handler
-Why:
-AI-002's /analyze, AI-003's /clarify/*, and AI-004+AI-005's
-/storyboard/generate endpoints are currently only reachable directly on
-the ai-service port — nothing on the frontend/backend side can call
-them yet. This is also required before FRONTEND-002 (prompt input +
-clarification chat UI) has anything real to submit to.
+Needed before RAG-002 (curate corpus) and RAG-003 (embed + populate)
+can do anything, and those in turn block AI-007 (Cinematographer).
 Dependencies:
 BACKEND-002 (done)
 Expected files:
-backend/src/routes/, backend/src/middleware/
+ai-service/rag/
 Acceptance criteria:
-At least one real REST endpoint (e.g. POST /api/prompts) round-trips
-through the backend to ai-service's /analyze and /clarify/* and back.
+Empty index can be created, queried, returns no results gracefully.
 ```
+
+BACKEND-004 (REST routes, middleware, error handler) and BACKEND-003 (Redis + Bull.js queue scaffold) are now both VERIFIED — see Section 2. FRONTEND-002 is unblocked as a result of BACKEND-004.
 
 ---
 

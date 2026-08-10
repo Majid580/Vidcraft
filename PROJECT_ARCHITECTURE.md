@@ -738,23 +738,23 @@ Data flow, error handling, loading states, and validation for these components a
 backend/                           [PROPOSED — does not exist yet]
 ├── src/
 │   ├── routes/
-│   │   ├── prompts.routes.js
-│   │   ├── storyboards.routes.js
+│   │   ├── prompts.js              [IMPLEMENTED — BACKEND-004, no controllers/ split yet]
+│   │   ├── storyboards.js          [IMPLEMENTED — BACKEND-004, no controllers/ split yet]
 │   │   └── jobs.routes.js
 │   ├── controllers/
 │   ├── services/
-│   │   ├── aiServiceClient.js      # calls the Python FastAPI microservice
+│   │   ├── aiServiceClient.js      [IMPLEMENTED — BACKEND-004, calls the Python FastAPI microservice]
 │   │   ├── remotionService.js
 │   │   ├── externalApiService.js   # tiered provider abstraction (Section 6.6)
 │   │   └── ffmpegService.js
 │   ├── models/                     # Mongoose schemas (Section 10)
 │   ├── queues/
-│   │   └── generationQueue.js      # Bull.js
+│   │   └── generationQueue.js      [IMPLEMENTED — BACKEND-003, scaffold + placeholder processor only]
 │   ├── sockets/
 │   │   └── progressEmitter.js      # Socket.IO
 │   ├── middleware/
-│   │   ├── validation.js
-│   │   └── errorHandler.js
+│   │   ├── validation.js           [IMPLEMENTED — BACKEND-004, requireFields() only so far]
+│   │   └── errorHandler.js         [IMPLEMENTED — BACKEND-004, ApiError + notFoundHandler + centralized handler]
 │   └── app.js
 ├── package.json                    [NOT_IMPLEMENTED]
 └── .env.example                    [NOT_IMPLEMENTED — see Section 13]
@@ -764,13 +764,13 @@ backend/                           [PROPOSED — does not exist yet]
 
 | Layer | Responsibility | Status |
 |---|---|---|
-| Routes | Define REST endpoints, delegate to controllers | `NOT_IMPLEMENTED` |
-| Controllers | Request/response handling, input validation | `NOT_IMPLEMENTED` |
-| Services | Business logic — AI microservice calls, Remotion invocation, external API calls, FFmpeg invocation | `NOT_IMPLEMENTED` |
-| Models | Mongoose schemas for prompts, storyboards, embeddings, jobs | `NOT_IMPLEMENTED` |
-| Queues | Bull.js async job management for generation | `NOT_IMPLEMENTED` |
+| Routes | Define REST endpoints, delegate to controllers | `IN_PROGRESS` — prompts.js/storyboards.js handle request/response directly (no separate controllers/ layer yet); jobs.routes.js not started |
+| Controllers | Request/response handling, input validation | `NOT_IMPLEMENTED` — folded into routes/ for now |
+| Services | Business logic — AI microservice calls, Remotion invocation, external API calls, FFmpeg invocation | `IN_PROGRESS` — aiServiceClient.js and remotionService.js implemented; externalApiService.js/ffmpegService.js not started |
+| Models | Mongoose schemas for prompts, storyboards, embeddings, jobs | `IN_PROGRESS` — prompts/storyboards done (BACKEND-002); embeddings/jobs not started |
+| Queues | Bull.js async job management for generation | `IN_PROGRESS` — generationQueue.js scaffolded and verified (job enqueues, processes) against a real Redis instance (WSL2); no real generation job type wired in yet (INTEG-001/BACKEND-005) |
 | Sockets | Socket.IO progress push | `NOT_IMPLEMENTED` |
-| Middleware | Helmet (security headers), Morgan (logging), validation, centralized error handling | `NOT_IMPLEMENTED` |
+| Middleware | Helmet (security headers), Morgan (logging), validation, centralized error handling | `IMPLEMENTED` — Helmet/Morgan since BACKEND-001; validation.js/errorHandler.js since BACKEND-004 |
 
 No authentication/authorization middleware is listed because **no auth system is specified anywhere in the proposal.** This is a genuine gap — see Section 17 and Section 24.
 
@@ -778,45 +778,48 @@ No authentication/authorization middleware is listed because **no auth system is
 
 ## 9. API Documentation
 
-**No API currently exists.** Every endpoint below is `PLANNED` in the sense that the *capability* is committed to by the proposal, but the exact REST shape is `PROPOSED` (derived from the architecture to give implementation a consistent starting point) since the proposal itself never enumerates endpoint paths. **Do not treat these paths as final** — confirm during Phase 2 (Core Backend) and update this section once implemented.
+**Prompts and Storyboards endpoints below are now implemented (BACKEND-004)** — real routes in `backend/src/routes/`, live-verified end-to-end against MongoDB and the real ai-service (see PROJECT_PROGRESS.md session log). Generation/Jobs endpoints (Section 9.3) remain `PROPOSED` — they depend on BACKEND-003/BACKEND-005, not yet built. **Do not treat unimplemented paths as final** — confirm when their turn comes and update this section then.
 
 ### 9.1 Prompts
 
 | | |
 |---|---|
 | **Method / URL** | `POST /api/prompts` |
-| **Status** | `PROPOSED` |
+| **Status** | `IMPLEMENTED` (BACKEND-004) |
 | **Purpose** | Submit a raw prompt; triggers analysis (FR-1) and, if needed, returns clarification questions (FR-2) |
 | **Auth** | None specified — `TBD` |
-| **Request body** | `{ "prompt": string, "styleTokens"?: string[] }` |
-| **Response (200)** | `{ "promptId": string, "analysis": {...FR-1 schema...}, "clarificationQuestions"?: string[] }` |
-| **Error responses** | `400` empty/invalid prompt |
+| **Request body** | `{ "prompt": string }` — `styleTokens` from the original PROPOSED shape is not accepted yet (no Style Configurator wiring, FRONTEND-003) |
+| **Response (201)** | `{ "promptId": string, "analysis": {...FR-1 schema...}, "clarificationQuestions"?: string[] }` |
+| **Error responses** | `400` missing `prompt`; `502` ai-service unreachable/error |
 | **Dependencies** | FR-1, FR-2 |
 
 | | |
 |---|---|
 | **Method / URL** | `POST /api/prompts/:id/clarify` |
-| **Status** | `PROPOSED` |
+| **Status** | `IMPLEMENTED` (BACKEND-004) |
 | **Purpose** | Submit answers to clarification questions |
-| **Request body** | `{ "answers": string[] }` |
-| **Response (200)** | `{ "clarifiedPrompt": string }` |
+| **Request body** | `{ "questions"?: string[], "answers": string[] }` — `questions` echoes back what `/api/prompts` returned, needed because nothing persists them server-side yet |
+| **Response (200)** | `{ "clarifiedPrompt": string, "brief": object }` |
+| **Error responses** | `400` missing `answers`; `404` unknown/malformed `:id`; `502` ai-service unreachable/error |
 
 ### 9.2 Storyboards
 
 | | |
 |---|---|
 | **Method / URL** | `POST /api/storyboards` |
-| **Status** | `PROPOSED` |
+| **Status** | `IMPLEMENTED` (BACKEND-004), shape deviates from the original PROPOSED spec |
 | **Purpose** | Trigger multi-agent decomposition (FR-3) for a (clarified) prompt |
 | **Request body** | `{ "promptId": string }` |
-| **Response (202)** | `{ "storyboardId": string, "status": "processing" }` |
+| **Response (201)** | `{ "storyboardId": string, "status": "completed", "worldState": object, "shots": object[] }` — **not** the originally PROPOSED `202 {storyboardId, status: "processing"}`; see ADR-014. The call is synchronous today because BACKEND-003's queue doesn't exist yet — revisit once it does. |
+| **Error responses** | `400` missing `promptId`; `404` unknown/malformed `promptId`; `502` ai-service unreachable/error |
 
 | | |
 |---|---|
 | **Method / URL** | `GET /api/storyboards/:id` |
-| **Status** | `PROPOSED` |
+| **Status** | `IMPLEMENTED` (BACKEND-004) |
 | **Purpose** | Fetch a storyboard's current state (shots, world_state, per-shot generation status) |
 | **Response (200)** | Storyboard JSON per proposal §6.3 schema |
+| **Error responses** | `404` unknown `:id`; `400` malformed `:id` |
 
 ### 9.3 Generation
 

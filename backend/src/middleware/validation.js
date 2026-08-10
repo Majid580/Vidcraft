@@ -1,0 +1,17 @@
+const { ApiError } = require('./errorHandler');
+
+function isBlank(value) {
+  return value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
+}
+
+function requireFields(fields) {
+  return (req, res, next) => {
+    const missing = fields.filter((field) => isBlank(req.body[field]));
+    if (missing.length > 0) {
+      return next(new ApiError(400, `Missing required field(s): ${missing.join(', ')}`));
+    }
+    next();
+  };
+}
+
+module.exports = { requireFields };

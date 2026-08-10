@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 40.0
-  completion_basis: "verified_tasks / total_tasks (14 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 45.7
+  completion_basis: "verified_tasks / total_tasks (16 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — AI-005 (LangGraph orchestrator: Producer/Router agent)"
-  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified) that can invoke real Remotion renders (remotionService.js) and now has a working MongoDB connection with Prompt/Storyboard Mongoose schemas, verified against a real local MongoDB instance (native Windows service, not Docker — see resolved_blockers). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008) and now also exposes: (1) POST /analyze (AI-002, FR-1 five-dimension prompt scorer), (2) POST /clarify/questions + POST /clarify/resolve (AI-003, FR-2 clarification agent, real Groq API calls, unit-tested with a mocked LLM and live-verified end-to-end including a re-analysis showing score improve from 33 to 72), and (3) POST /storyboard/generate (AI-004+AI-005, a real LangGraph StateGraph — Screenwriter node decomposes a clarified prompt into a 3-5 shot storyboard, Producer/Router node then assigns each shot's pathway per the ADR-013 photorealism heuristic; live-verified end-to-end including a mixed prompt that correctly split 1 external_api / 2 remotion shots, and confirmed the remotion-routed output chains directly into REMOTION-003's renderShot()). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 compositions plus a programmatic render-shot.mjs entry point with shot->composition selection + documented fallback, verified end-to-end from the backend. The orchestrator's Cinematographer node doesn't exist yet (AI-007) — camera framing is still a Screenwriter best-effort draft, not RAG-grounded. Shots routed to external_api cannot currently be rendered (BACKEND-005/PROVIDER-001 not implemented). Nothing is wired into a REST endpoint on the backend side yet (BACKEND-004/INTEG-001) — the AI-002/003/004/005 endpoints are only reachable directly on the ai-service port for now."
+  last_updated_by: "Claude (Sonnet 5) — BACKEND-003 (Redis + Bull.js queue scaffold)"
+  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified) with real REST routes (BACKEND-004: POST /api/prompts, POST /api/prompts/:id/clarify, POST /api/storyboards, GET /api/storyboards/:id) that round-trip through a real MongoDB connection (Prompt/Storyboard Mongoose schemas, native Windows service, not Docker — see resolved_blockers) AND a real HTTP call to ai-service (aiServiceClient.js) — AI-002/003/004/005 are no longer only reachable directly on the ai-service port. Centralized error handling (middleware/errorHandler.js) and request validation (middleware/validation.js) are wired in app.js. backend/ can also invoke real Remotion renders (remotionService.js), not yet wired into the storyboard routes (that's INTEG-001). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008) and exposes: (1) POST /analyze (AI-002, FR-1 five-dimension prompt scorer), (2) POST /clarify/questions + POST /clarify/resolve (AI-003, FR-2 clarification agent, real Groq API calls, unit-tested with a mocked LLM and live-verified end-to-end including a re-analysis showing score improve from 33 to 72), and (3) POST /storyboard/generate (AI-004+AI-005, a real LangGraph StateGraph — Screenwriter node decomposes a clarified prompt into a 3-5 shot storyboard, Producer/Router node then assigns each shot's pathway per the ADR-013 photorealism heuristic; live-verified end-to-end including a mixed prompt that correctly split 1 external_api / 2 remotion shots, and confirmed the remotion-routed output chains directly into REMOTION-003's renderShot()). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 compositions plus a programmatic render-shot.mjs entry point with shot->composition selection + documented fallback, verified end-to-end from the backend. The orchestrator's Cinematographer node doesn't exist yet (AI-007) — camera framing is still a Screenwriter best-effort draft, not RAG-grounded. Shots routed to external_api cannot currently be rendered (BACKEND-005/PROVIDER-001 not implemented). A Bull.js/Redis queue now exists (BACKEND-003, backend/src/queues/generationQueue.js, Redis running inside WSL2) but nothing enqueues real jobs onto it yet — POST /api/storyboards is still synchronous, deviating from the PROPOSED async 202 shape — see ADR-014. Wiring the queue into that route (or a generation route) is INTEG-001/BACKEND-005 territory, not done here."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -92,14 +92,20 @@ phases:
         verified_by: "Claude (Sonnet 5) — connected to a real local MongoDB instance, created+read back a Prompt and a Storyboard (with embedded world_state/shots), deleted the test docs, closed the connection cleanly"
       - id: "BACKEND-003"
         name: "Redis + Bull.js queue scaffold"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["BACKEND-001"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — ran a temporary script that enqueued a trivial job on generationQueue and awaited job.finished(), confirmed the processor's return value round-tripped correctly, then closed the queue connection; script deleted after verification"
+        note: "Redis runs inside WSL2 (`sudo apt install redis-server`, user ran the sudo step directly since it needs an interactive password — same pattern as ADR-008's spaCy/WSL2 resolution), reachable from Windows via WSL2 port forwarding at redis://localhost:6379 (confirmed with Test-NetConnection). Avoids BLOCK-002 (Docker Desktop broken on this machine) entirely rather than retrying it. backend/src/queues/generationQueue.js defines the queue + a placeholder processor only — no real per-shot generation job (Remotion vs external API) is wired in yet; that's INTEG-001, once BACKEND-005 also exists. bull@4.16.5 has a moderate-severity transitive uuid advisory (GHSA-w5hq-g745-h8pq, buffer-bounds-check edge case); the only fix path is a breaking downgrade to bull@1.x, not worth taking for a scaffold — accepted as-is."
       - id: "BACKEND-004"
         name: "REST routes, middleware, error handler"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["BACKEND-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — live end-to-end via curl against a running backend + ai-service: POST /api/prompts (real spaCy analysis + real Groq clarification questions, persisted), POST /api/prompts/:id/clarify (real Groq brief merge), POST /api/storyboards (real LangGraph Screenwriter+Producer storyboard, persisted), GET /api/storyboards/:id; also verified error paths (400 missing field, 404 unknown/nonexistent id, 400 malformed ObjectId via CastError mapping, 404 unknown route). Test documents deleted after verification."
+        note: "Scope: prompts + storyboards creation/fetch only, wired for real to ai-service (not mock stubs) since AI-002/003/004/005 already exist. POST /api/storyboards deviates from the Section 9.2 PROPOSED shape (202/'processing') — returns 201 with the completed storyboard instead, since BACKEND-003's queue doesn't exist yet to make this genuinely async; see ADR-014. POST /api/storyboards/:id/generate and GET /api/jobs/:id (Section 9.3) are explicitly out of scope here — they depend on BACKEND-003/BACKEND-005, not BACKEND-002. No auth middleware, matching the documented gap (R-9)."
       - id: "RAG-001"
         name: "FAISS index scaffold"
         status: "NOT_STARTED"
@@ -347,9 +353,9 @@ components:
     verified: true
     note: "Vite/React/Tailwind/shadcn-ui project setup only (FRONTEND-001). No real pages/features (FRONTEND-002/003) yet."
   - name: "Backend API Gateway"
-    status: "SCAFFOLDED"
+    status: "IN_PROGRESS"
     verified: true
-    note: "Express app with health-check only (BACKEND-001). No routes, DB, or queue yet."
+    note: "Express app (BACKEND-001) with real prompts/storyboards REST routes wired to MongoDB and ai-service (BACKEND-004), plus centralized error handling and validation middleware. A Bull.js/Redis queue scaffold exists (BACKEND-003) but nothing enqueues onto it yet, so storyboard creation is still synchronous. No generation/jobs routes yet (INTEG-001/BACKEND-005 territory). No auth (R-9, undecided)."
   - name: "Database Layer (MongoDB)"
     status: "IN_PROGRESS"
     verified: true
@@ -373,11 +379,7 @@ resolved_blockers:
 
 next_tasks:
   - id: "AI-006"
-    reason: "Groq + fallback LLM integration — the only remaining Phase 5 HIGH task not yet done; adds fallback-provider handling to the orchestrator's LLM calls (all of AI-003/004/005 are currently primary-provider-only, per ADR-002/scope notes)"
-  - id: "BACKEND-003"
-    reason: "Redis + Bull.js queue scaffold — unblocked since BACKEND-001; needed before job-based generation work"
-  - id: "BACKEND-004"
-    reason: "REST routes/middleware/error handler — unblocked since BACKEND-002; needed to expose AI-002/AI-003/AI-004/AI-005 through the Node backend instead of hitting ai-service directly"
+    reason: "Groq + fallback LLM integration — the only remaining Phase 5 HIGH task not yet done; adds fallback-provider handling to the orchestrator's LLM calls (all of AI-003/004/005 are currently primary-provider-only, per ADR-002/scope notes). Needs a concrete fallback provider decision first (open question, PROVIDER-001/R-8 territory for the fallback LLM specifically)."
   - id: "RAG-001"
     reason: "FAISS index scaffold — unblocked since BACKEND-002; needed ahead of RAG-002/003, and ahead of AI-007 (Cinematographer)"
 
@@ -435,7 +437,10 @@ decisions:
     date: "2026-08-10"
     summary: "AI-005's Producer/Router agent sends each shot + world_state to Groq and asks whether the shot's description/style_tokens explicitly call for photorealistic/live-action output; if so, pathway=external_api, else remotion. Live-verified: a mixed prompt correctly split 1 external_api / 2 remotion. external_api-routed shots can't actually be rendered yet — BACKEND-005 (adapter layer) and PROVIDER-001 (concrete providers) don't exist yet; this is forward-looking routing only."
 
-open_questions:
+  - id: "ADR-014"
+    title: "POST /api/storyboards is synchronous (201/completed), not the PROPOSED async 202/processing shape"
+    date: "2026-08-10"
+    summary: "PROJECT_ARCHITECTURE.md Section 9.2 proposed POST /api/storyboards return 202 {storyboardId, status: 'processing'} for an async job. BACKEND-004 implements it as a synchronous call instead — it awaits ai-service's /storyboard/generate directly and returns 201 with the completed storyboard — because BACKEND-003 (the Bull.js queue) doesn't exist yet, and faking a 'processing' status for a call that's actually already finished would be misleading rather than honest scaffolding. Revisit once BACKEND-003 lands: the route should move the ai-service call into a queued job and genuinely return 202/processing, with GET /api/storyboards/:id reporting real progress."
   - id: "R-8"
     question: "Which concrete providers within Tier 1/2/3 external APIs?"
     blocks: ["PROVIDER-001", "BACKEND-005", "FR-6"]
