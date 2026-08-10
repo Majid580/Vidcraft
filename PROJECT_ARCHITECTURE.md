@@ -1498,6 +1498,14 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Why:** Proposal §5.2 explicitly states these exclusions "to keep this scope achievable."
 - **Consequences:** Any future request to "add more providers/models" should be weighed against this explicit scope-discipline decision, not treated as an obviously good idea by default.
 
+### ADR-008: `ai-service` runs inside WSL2 (Ubuntu), not native Windows Python
+- **Date:** 2026-08-10
+- **Context:** During SETUP-001 feasibility testing on the primary dev machine (Windows 11), spaCy installed via pip but failed at `import` time. Root cause confirmed via the Windows Code Integrity event log: **Smart App Control** (a Windows 11 security feature) was blocking spaCy's unsigned compiled Cython `.pyd` extension files one at a time. All other AI-microservice dependencies tested (torch, numpy, opencv-python, faiss-cpu, sentence-transformers, fastapi, uvicorn) imported cleanly natively — the issue was scoped specifically to spaCy.
+- **Options considered:** (1) User disables Smart App Control in Windows Security to allow the native install — rejected: it's irreversible without a full Windows reinstall, and it's a security-relevant system setting change that shouldn't be made just to unblock one dependency. (2) Run `ai-service` inside WSL2 (Windows Subsystem for Linux) — Smart App Control's Code Integrity policy does not intercept binaries running inside the WSL2 Linux VM.
+- **Selected:** WSL2 (Ubuntu, already installed on the dev machine as the default distro).
+- **Why:** Sidesteps the OS-level security policy entirely with no security tradeoff, and is the standard approach for Python native-extension-heavy workloads on Windows. Confirmed working: a venv at `ai-service/.venv-wsl` (created via the `/mnt/c/...` path into this same repo) has spaCy 3.8.15 + `en_core_web_sm` installed and verified with a real-sentence smoke test (correct tokenization, POS tags, and one named entity extracted).
+- **Consequences:** Future sessions building AI-001 (FastAPI microservice scaffold) onward should develop and run `ai-service` from within WSL2, not native Windows Python. The backend (Node/Express) and frontend (React/Vite) are unaffected — no native compiled-extension dependencies were found to trigger this issue for either stack, so they can stay on native Windows unless a similar block surfaces. The native-Windows `ai-service/.venv` created earlier in SETUP-001 (which worked for everything except spaCy) is superseded by `.venv-wsl` and should be removed once AI-001 is actually scaffolded inside WSL2.
+
 ---
 
 ## 23. Constraints and Rules — PROJECT RULES

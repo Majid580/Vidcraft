@@ -3,7 +3,11 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+.venv-wsl/
 venv/
+
+# Claude Code local session state
+.claude/
 
 # Environment
 .env

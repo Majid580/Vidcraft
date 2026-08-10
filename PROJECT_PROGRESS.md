@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~2.9%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 1 / 35 |
+| **Overall completion percentage** | **~5.7%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 2 / 35 |
 | **Current phase** | Phase 0/1 — Research & Environment Setup (in progress) |
 | **Current milestone** | None reached yet. Target: M1 "Development environment and technology feasibility confirmed" (proposal §8) |
-| **Current objective** | Confirm the technology stack is runnable locally (SETUP-001), then scaffold the three main applications |
-| **Overall status** | 🟡 **Repository initialized, no application code yet.** Git repo exists with base `frontend/`, `backend/`, `ai-service/` folders (placeholders only). |
+| **Current objective** | Scaffold the three main applications (BACKEND-001, AI-001, FRONTEND-001) — AI-001/ai-service should be scaffolded inside WSL2 per the resolved BLOCK-001 decision |
+| **Overall status** | 🟡 **Repository initialized and pushed to GitHub, no application code yet.** Feasibility testing complete; the one blocker found (spaCy) is resolved via WSL2. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed SETUP-002 |
+| **Last updated by** | Claude (Sonnet 5) — completed SETUP-001 (including BLOCK-001 resolution) and SETUP-002 |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,7 +27,8 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
-| SETUP-002 | Git repo + base folder structure | VERIFIED | `.git/`, `.gitignore`, `frontend/`, `backend/`, `ai-service/` (placeholder READMEs only) | `git status` succeeds; three top-level dirs confirmed present via file listing | 2026-08-10 |
+| SETUP-002 | Git repo + base folder structure | VERIFIED | `.git/`, `.gitignore`, `frontend/`, `backend/`, `ai-service/` (placeholder READMEs only); pushed to `origin/main` at https://github.com/Majid580/Vidcraft | `git status` succeeds; three top-level dirs confirmed present via file listing; `git push` succeeded | 2026-08-10 |
+| SETUP-001 | Technology feasibility testing | VERIFIED (with one open blocker) | See Section 5 below for the full per-tool results | Version checks + `import` smoke tests run directly on the dev machine, see Section 5 | 2026-08-10 |
 
 This is not an application feature — it's repository scaffolding. The table stays otherwise empty until real functionality lands; do not pre-fill it with "expected" features.
 
@@ -59,7 +60,6 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 
 | Task ID | Name | Depends on |
 |---|---|---|
-| SETUP-001 | Technology feasibility testing | — |
 | SETUP-003 | `.env.example` created | SETUP-002 |
 | BACKEND-001 | Node.js/Express project setup | SETUP-002 |
 | AI-001 | FastAPI microservice scaffold | SETUP-002 |
@@ -140,6 +140,46 @@ No other component in this project has been inspected, run, or tested,
 because no other component has been written yet. This section exists to
 prevent exactly the failure mode it is named after: a future agent
 assuming something works because a document says it should.
+
+### SETUP-001 feasibility testing results (2026-08-10)
+
+Machine: Windows 11 Pro Education (this dev machine). Method: version checks
+(`--version`) and, for Python packages, an actual `import` in a fresh venv
+at `ai-service/.venv` — not just "pip install succeeded."
+
+| Tool | Result | Notes |
+|---|---|---|
+| Node.js | ✅ PASS — v25.6.1 | |
+| npm | ✅ PASS — v11.9.0 | |
+| Python | ✅ PASS — 3.11.9 | Invoke as `python`, not `python3`, on this machine |
+| pip | ✅ PASS — 24.0 | |
+| Git | ✅ PASS — 2.53.0 | |
+| FFmpeg | ✅ PASS — 9.0 (full build) | Was not installed; installed via `winget install Gyan.FFmpeg` this session. Added to PATH by the installer (new shells only — the shell that ran the install needs a restart to see it). |
+| Ollama | ✅ PASS — 0.32.6, running, `llama3:latest` (4.7GB) already pulled | Viable as a free local fallback/dev LLM alongside Groq |
+| Groq API | ✅ PASS (reachability only) | `https://api.groq.com/openai/v1/models` returns HTTP 401 (reachable, auth required) — no API key configured/tested yet, that's a separate step under PROVIDER-001/SETUP-003 |
+| numpy | ✅ PASS — imports cleanly in venv | |
+| torch | ✅ PASS — 2.13.0+cpu, imports cleanly | CPU build; no GPU acceleration on this machine |
+| opencv-python | ✅ PASS — 5.0.0, imports cleanly | |
+| faiss-cpu | ✅ PASS — 1.15.0, imports cleanly | |
+| sentence-transformers | ✅ PASS — 5.7.0, imports cleanly | Model download (`all-MiniLM-L6-v2`) not yet tested |
+| fastapi / uvicorn | ✅ PASS — import cleanly | |
+| spaCy | ✅ PASS (in WSL2 only) | Fails under native Windows Python (see resolved BLOCK-001 in Section 9); works cleanly in WSL2 Ubuntu — `en_core_web_sm` loads and correctly tokenizes/tags/extracts entities on a real prompt |
+
+**BLOCK-001 detail:** Windows **Smart App Control** (a Code Integrity policy,
+confirmed enabled: `VerifiedAndReputablePolicyState = 1` in the registry) is
+blocking spaCy's compiled Cython extension files (`.pyd`) one at a time as
+unsigned/unrecognized binaries. Confirmed via
+`Get-WinEvent -LogName Microsoft-Windows-CodeIntegrity/Operational`:
+`spacy/symbols.cp311-win_amd64.pyd` and `spacy/matcher/levenshtein...pyd`
+were both blocked on successive import attempts; more of spaCy's ~dozen
+compiled files likely remain unevaluated. This is scoped specifically to
+spaCy — torch, numpy, opencv, faiss, and sentence-transformers (which
+bundles compiled bits too) all import cleanly in the same venv, so it is
+not a general "no native extensions allowed" problem.
+
+**Resolved 2026-08-10**: user chose to run `ai-service` inside WSL2
+(Ubuntu) rather than disable Smart App Control. Confirmed working end
+to end — see Section 9 for the full resolution record.
 
 When the first component is verified, use this format:
 ```text
@@ -266,6 +306,21 @@ fyp/
   further.
 - Updated this file and PROJECT_STATE.yaml to reflect SETUP-002 as
   VERIFIED (1/35 tasks complete).
+
+2026-08-10 (session 3)
+- Linked local repo to remote https://github.com/Majid580/Vidcraft,
+  made the initial commit, pushed to `main`.
+- Completed SETUP-001: ran version checks and Python import smoke tests
+  for the full Section 5 tech stack. Installed FFmpeg (was missing) via
+  `winget install Gyan.FFmpeg`. Set up `ai-service/.venv` and installed
+  spacy, sentence-transformers, faiss-cpu, opencv-python, fastapi,
+  uvicorn, torch (all via pip).
+- Found BLOCK-001: Windows Smart App Control blocks spaCy's compiled
+  .pyd files at import time. All other Python packages tested import
+  cleanly. Recorded as an open blocker (Section 9) pending a user
+  decision — not resolved in this session.
+- Updated this file and PROJECT_STATE.yaml to reflect SETUP-001 as
+  VERIFIED-with-blocker (2/35 tasks complete).
 ```
 
 ---
@@ -274,7 +329,7 @@ fyp/
 
 | Problem | Cause | Impact | Attempted solutions | Next action |
 |---|---|---|---|---|
-| No blockers to *starting* development | N/A | N/A | N/A | Begin Phase 0/1 (SETUP-001..003) whenever development starts |
+| ~~BLOCK-001: spaCy fails to import on this dev machine~~ **RESOLVED 2026-08-10** | Windows Smart App Control blocks spaCy's unsigned compiled `.pyd` files (confirmed via Code Integrity event log) | Was blocking AI-002 (spaCy prompt analyzer) on Windows specifically | User chose to run ai-service inside WSL2 (Ubuntu, already installed). User ran `sudo apt install python3-venv python3-pip` in WSL. A `.venv-wsl` venv was created at `ai-service/.venv-wsl` (via `/mnt/c/...`), spaCy 3.8.15 + `en_core_web_sm` installed and verified: `nlp('A lone astronaut walks slowly across a dusty red Martian landscape at sunset.')` correctly tokenized, POS-tagged, and extracted one entity | **Decision: the `ai-service` component runs inside WSL2 Ubuntu going forward, not native Windows Python.** The Windows-native `ai-service/.venv` (torch/numpy/opencv/faiss/sentence-transformers — all of which worked natively) is superseded by `.venv-wsl` for consistency; a future session should scaffold AI-001 inside WSL2 and can remove the native `.venv` at that point. |
 
 **Open decisions that will block specific later tasks if not resolved in time** (not blockers *today*, but flagged so they don't become surprise blockers later — see `PROJECT_ARCHITECTURE.md` Section 24 for full detail):
 - PROVIDER-001 (which concrete API providers to use per tier) must be resolved before BACKEND-005 can start — target: during Phase 7, but researching options earlier reduces risk.
@@ -288,27 +343,14 @@ fyp/
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
-NEXT 1:
-Task ID: SETUP-001
-Technology feasibility testing (Groq/Ollama access, spaCy install +
-en_core_web_sm download, sentence-transformers, OpenCV, FFmpeg all
-runnable locally)
-Why:
-Confirms the technology choices in PROJECT_ARCHITECTURE.md Section 5
-are actually viable on the team's development machines before any
-real code is written against them.
-Dependencies:
-None — SETUP-002 is already done, this can start immediately.
-Expected output:
-A short smoke-test log/notes (not necessarily a permanent file) confirming
-each tool installs and runs a trivial operation.
-Acceptance criteria:
-Every named tool in Section 5 of PROJECT_ARCHITECTURE.md is confirmed
-runnable, or a specific TBD/blocker is recorded here in its place.
+NEXT 1 (blocking decision):
+Resolve BLOCK-001 (spaCy / Smart App Control) — see Section 9. This
+gates AI-002 specifically; it does not block BACKEND-001, FRONTEND-001,
+or REMOTION-001..003.
 
 NEXT 2:
-Task ID: BACKEND-001, AI-001, FRONTEND-001 (can proceed in parallel — not
-blocked by SETUP-001)
+Task ID: BACKEND-001, AI-001, FRONTEND-001 (can proceed in parallel —
+AI-001, the FastAPI scaffold itself, does not need spaCy; only AI-002 does)
 Scaffold the three main applications (Express backend, FastAPI AI
 microservice, React frontend)
 Why:
@@ -325,7 +367,7 @@ Each of the three servers starts locally without error; a trivial
 health-check route/response works for backend and AI microservice.
 ```
 
-After NEXT 1–2, the recommended path is **REMOTION-001..003 before PROVIDER-001/BACKEND-005** — the Remotion pathway has no dependency on an undecided external provider and is the fastest route to a genuinely working, demoable end-to-end slice (per the critical-path note in `PROJECT_ARCHITECTURE.md` Section 21).
+After NEXT 2, the recommended path is **REMOTION-001..003 before PROVIDER-001/BACKEND-005** — the Remotion pathway has no dependency on an undecided external provider and is the fastest route to a genuinely working, demoable end-to-end slice (per the critical-path note in `PROJECT_ARCHITECTURE.md` Section 21).
 
 ---
 

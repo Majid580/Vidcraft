@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 2.9
-  completion_basis: "verified_tasks / total_tasks (1 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 5.7
+  completion_basis: "verified_tasks / total_tasks (2 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — SETUP-002 (git init + base folder structure)"
-  repository_reality: "Git repo initialized (no commits yet). frontend/, backend/, ai-service/ exist with placeholder READMEs. .gitignore added. No application code exists."
+  last_updated_by: "Claude (Sonnet 5) — SETUP-001 (tech feasibility testing) and SETUP-002 (git init + base folder structure)"
+  repository_reality: "Git repo initialized and pushed to https://github.com/Majid580/Vidcraft (main branch). frontend/, backend/, ai-service/ exist with placeholder READMEs and ai-service/.venv (untracked). .gitignore added. No application code exists."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -50,9 +50,12 @@ phases:
     tasks:
       - id: "SETUP-001"
         name: "Technology feasibility testing"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "CRITICAL"
         dependencies: []
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — ran version checks and import smoke tests on the dev machine"
+        note: "One blocker found (spaCy blocked by Windows Smart App Control) and resolved same-day via WSL2. See resolved_blockers below."
       - id: "SETUP-002"
         name: "Initialize git repo, .gitignore, base folder structure"
         status: "VERIFIED"
@@ -321,13 +324,19 @@ components:
     verified: false
 
 blockers: []
-# No blockers to *starting* development. See PROJECT_PROGRESS.md Section 9
-# for time-sensitive open decisions that will become blockers later if not
-# resolved (provider selection, auth model, composition-mapping strategy).
+# BLOCK-001 (spaCy blocked by Windows Smart App Control) was found and
+# resolved on 2026-08-10 — see resolved_blockers below and
+# PROJECT_PROGRESS.md Section 9 for the full record.
+
+resolved_blockers:
+  - id: "BLOCK-001"
+    problem: "spaCy could not be imported in a native-Windows Python venv"
+    cause: "Windows Smart App Control (Code Integrity policy) blocked spaCy's unsigned compiled Cython .pyd files one at a time"
+    resolution: "ai-service now runs inside WSL2 (Ubuntu). Set up ai-service/.venv-wsl, installed spacy 3.8.15 + en_core_web_sm, verified with a real-sentence smoke test (tokenize/POS/NER all correct)."
+    resolved_on: "2026-08-10"
+    resolved_by: "Claude (Sonnet 5), with user running `sudo apt install python3-venv python3-pip` in WSL"
 
 next_tasks:
-  - id: "SETUP-001"
-    reason: "Confirms the tech stack is actually runnable before code is written against it"
   - id: "BACKEND-001"
     reason: "Backend scaffold — parallel with AI-001 and FRONTEND-001 once SETUP-002 is done"
   - id: "AI-001"
