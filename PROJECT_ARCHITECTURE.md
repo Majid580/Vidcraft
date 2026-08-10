@@ -616,14 +616,14 @@ Each component below currently has **zero implementation**. "Current implementat
 - **Inputs:** Clarified prompt.
 - **Outputs:** Storyboard JSON (see FR-3).
 - **Dependencies:** LangGraph, Groq API, fallback LLM API, sentence-transformers.
-- **Internal structure:** `ai-service/orchestrator/graph.py` (LangGraph `StateGraph` definition — a single `screenwriter` node today, per ADR-001), `ai-service/orchestrator/agents/screenwriter.py` (IMPLEMENTED — AI-004), `ai-service/orchestrator/agents/cinematographer.py` (`NOT_IMPLEMENTED` — AI-007), `ai-service/orchestrator/agents/producer.py` (`NOT_IMPLEMENTED` — AI-005), `ai-service/orchestrator/state.py` (shared `OrchestratorState` TypedDict).
+- **Internal structure:** `ai-service/orchestrator/graph.py` (LangGraph `StateGraph` definition — `screenwriter` → `producer` → END today, per ADR-001), `ai-service/orchestrator/agents/screenwriter.py` (IMPLEMENTED — AI-004), `ai-service/orchestrator/agents/producer.py` (IMPLEMENTED — AI-005), `ai-service/orchestrator/agents/cinematographer.py` (`NOT_IMPLEMENTED` — AI-007), `ai-service/orchestrator/state.py` (shared `OrchestratorState` TypedDict).
 - **Communication:** Cinematographer agent communicates with the RAG module (Section 6.4); Producer agent communicates with the tiered-routing logic (Section 6.5/6.6).
 - **Failure modes:** Incoherent storyboard output (Risk table: Medium likelihood, Medium impact — mitigated by bounded retry + similarity check); LLM API failure requiring fallback.
 - **Security considerations:** Same prompt-injection surface as 6.2, compounded across 3 agent roles.
 - **Performance considerations:** Multiple sequential LLM calls per generation (1 + N shots × 2) — latency compounds, which is *why* Groq was selected as primary (Section 5).
 - **Testing requirements:** Unit tests with mocked LLM responses; integration test on real storyboard generation (proposal §6.11).
-- **Current implementation status:** `IN_PROGRESS`. Screenwriter agent (AI-004) is implemented and verified: `POST /storyboard/generate` (ai-service) decomposes a clarified prompt into a 3-5 shot storyboard (`storyboard_id`, `world_state{characters, setting, style_tokens}`, `shots[]{shot_id, description, camera, duration_s, pathway}`), matching the FR-3 JSON shape exactly. Per ADR-012, `camera` is a Screenwriter best-effort draft and `pathway` is hardcoded to `"remotion"` — both are placeholders for Cinematographer (AI-007) and Producer/Router (AI-005) to overwrite, not final decisions. Cinematographer and Producer/Router nodes do not exist yet; the similarity-check retry loop (AI-008) does not exist yet.
-- **Future work:** Define the exact similarity threshold (numeric value TBD); implement Producer/Router (AI-005) and Cinematographer (AI-007) as additional graph nodes.
+- **Current implementation status:** `IN_PROGRESS`. Screenwriter (AI-004) and Producer/Router (AI-005) are both implemented and verified: `POST /storyboard/generate` (ai-service) decomposes a clarified prompt into a 3-5 shot storyboard (`storyboard_id`, `world_state{characters, setting, style_tokens}`, `shots[]{shot_id, description, camera, duration_s, pathway}`), then routes each shot's `pathway` per the ADR-013 photorealism heuristic — no longer the AI-004 hardcoded `"remotion"` default. Per ADR-012, `camera` is still a Screenwriter best-effort draft (Cinematographer, AI-007, is expected to refine it, RAG-grounded). Cinematographer node does not exist yet; the similarity-check retry loop (AI-008) does not exist yet; shots routed to `"external_api"` cannot currently be rendered (BACKEND-005/PROVIDER-001 not implemented — see ADR-013 consequences).
+- **Future work:** Define the exact similarity threshold (numeric value TBD); implement Cinematographer (AI-007) as a further graph node.
 
 ### 6.4 RAG Style Knowledge Base
 
@@ -1368,7 +1368,7 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 | AI-002 | spaCy prompt analyzer (FR-1) | AI-001 | `ai-service/analyzer/` | Returns structured score per proposal §6.1 schema, unit-tested | Medium |
 | AI-003 | Conversational clarification agent (FR-2) | AI-002 | `ai-service/clarification/` | ≤2 questions generated, brief object produced, capped correctly | Medium |
 | AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 | `ai-service/orchestrator/agents/screenwriter.py` | Decomposes a prompt into 3–5 shots | Done — see PROJECT_PROGRESS.md verification log |
-| AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 | `ai-service/orchestrator/agents/producer.py` | Assigns pathway per shot per tiering policy | Medium |
+| AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 | `ai-service/orchestrator/agents/producer.py` | Assigns pathway per shot per tiering policy | Done — see PROJECT_PROGRESS.md verification log |
 | AI-006 | Groq + fallback LLM integration | AI-004 | `ai-service/orchestrator/` | Fallback triggers correctly on primary failure | Medium |
 
 ### Phase 6 — RAG Knowledge Base & Style Grounding (September–November 2026)
@@ -1549,6 +1549,14 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Selected:** (b). `ai-service/orchestrator/agents/screenwriter.py` asks the LLM for a `camera` framing per shot and hardcodes every shot's `pathway` to `"remotion"` (`DEFAULT_PATHWAY`).
 - **Why:** Matches the same "reasonable, documented default" precedent as ADR-010/REMOTION-003's fallback default — it lets AI-004's output already conform to the full FR-3 storyboard JSON shape and flow directly into the existing Remotion pathway (REMOTION-003) today, rather than sitting unusable until AI-005/AI-007 are built. AI-005 (Producer/Router) is expected to overwrite `pathway` per its tiering policy; AI-007 (Cinematographer) is expected to overwrite/refine `camera` and populate `style_tokens` (left as `[]` by the Screenwriter) using RAG-grounded retrieval — neither treats the Screenwriter's draft as final.
 - **Consequences:** Until AI-005/AI-007 exist, every generated storyboard routes 100% of shots through Remotion with camera framings that are a first-draft LLM guess, not retrieval-grounded. This is acceptable for the Minimum Viable criterion (Remotion-only end-to-end demo) but must not be read as Cinematographer/Producer logic already existing.
+
+### ADR-013: Producer/Router pathway heuristic — photorealism signal maps to external_api, else remotion
+- **Date:** 2026-08-10
+- **Context:** The proposal (§6.6, "API-based generation") states external-API generation is for "photorealistic output," while Remotion is the stylized/animated pathway — but doesn't give the Producer/Router agent (AI-005) a precise, implementable decision rule, and concrete Tier 1/2/3 providers are still `TBD` (PROVIDER-001, open question R-8). AI-005 needed a real, testable routing decision now, not a decision deferred until providers are chosen.
+- **Options considered:** (a) Route every shot to `remotion` unconditionally until PROVIDER-001 resolves (defers the decision entirely); (b) An LLM classification per shot: does its description or the storyboard's `world_state.style_tokens` explicitly call for photorealistic/live-action output? If yes → `external_api`, else → `remotion`.
+- **Selected:** (b). `ai-service/orchestrator/agents/producer.py`'s `assign_pathways()` sends the full shot list + `world_state` to Groq in one call and gets back a per-shot `pathway` decision using exactly this photorealism heuristic.
+- **Why:** Gives AI-005 a real, LLM-reasoned decision (not a hardcoded stub) that's directly traceable to the proposal's own stated pathway distinction, and is verifiably testable today even though nothing downstream can execute an `external_api` shot yet.
+- **Consequences:** A shot routed to `"external_api"` by this agent **cannot currently be rendered** — the external API adapter layer (BACKEND-005) and concrete provider selection (PROVIDER-001) don't exist yet. This is a forward-looking routing decision only; INTEG-001 (full end-to-end wiring) is where an `external_api` shot will eventually need a real generation backend, or a documented interim fallback to Remotion. Live-verified 2026-08-10: a prompt mixing an explicit "photorealistic" shot with two "stylized animated" shots correctly split 1 `external_api` / 2 `remotion`.
 
 ---
 

@@ -1,7 +1,8 @@
 import pytest
 
 from orchestrator import generate_storyboard
-from orchestrator.agents import screenwriter
+from orchestrator.agents import producer, screenwriter
+from orchestrator.agents.producer import ProducerOutputError, assign_pathways
 from orchestrator.agents.screenwriter import ScreenwriterOutputError, run_screenwriter
 
 VALID_LLM_RESPONSE = {
@@ -76,13 +77,70 @@ def test_run_screenwriter_rejects_shot_missing_camera(monkeypatch):
         run_screenwriter("a prompt")
 
 
+SAMPLE_SHOTS = [
+    {"shot_id": 1, "description": "a", "camera": "wide, static", "duration_s": 3, "pathway": "remotion"},
+    {"shot_id": 2, "description": "b", "camera": "close-up, static", "duration_s": 3, "pathway": "remotion"},
+]
+SAMPLE_WORLD_STATE = {"characters": ["a chef"], "setting": "a kitchen", "style_tokens": []}
+
+
+def test_assign_pathways_empty_shots_is_noop(monkeypatch):
+    called = False
+
+    def fake_complete_json(system, user, temperature=0.3):
+        nonlocal called
+        called = True
+        return {"pathways": {}}
+
+    monkeypatch.setattr(producer, "complete_json", fake_complete_json)
+    assert assign_pathways([], SAMPLE_WORLD_STATE) == []
+    assert called is False
+
+
+def test_assign_pathways_overwrites_pathway(monkeypatch):
+    monkeypatch.setattr(
+        producer, "complete_json",
+        lambda system, user, temperature=0.3: {"pathways": {"1": "external_api", "2": "remotion"}},
+    )
+    result = assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
+    assert result[0]["pathway"] == "external_api"
+    assert result[1]["pathway"] == "remotion"
+    assert result[0]["description"] == "a"
+
+
+def test_assign_pathways_rejects_invalid_pathway(monkeypatch):
+    monkeypatch.setattr(
+        producer, "complete_json",
+        lambda system, user, temperature=0.3: {"pathways": {"1": "nonexistent", "2": "remotion"}},
+    )
+    with pytest.raises(ProducerOutputError):
+        assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
+
+
+def test_assign_pathways_rejects_malformed_response(monkeypatch):
+    monkeypatch.setattr(
+        producer, "complete_json",
+        lambda system, user, temperature=0.3: {"pathways": "not a dict"},
+    )
+    with pytest.raises(ProducerOutputError):
+        assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
+
+
 def test_generate_storyboard_runs_the_graph_end_to_end(monkeypatch):
     monkeypatch.setattr(
         screenwriter, "complete_json",
         lambda system, user, temperature=0.3: VALID_LLM_RESPONSE,
+    )
+    monkeypatch.setattr(
+        producer, "complete_json",
+        lambda system, user, temperature=0.3: {
+            "pathways": {"1": "remotion", "2": "external_api", "3": "remotion"}
+        },
     )
     result = generate_storyboard("An astronaut repairs a broken antenna on Mars before nightfall.")
 
     assert result["storyboard_id"].startswith("sb_")
     assert len(result["shots"]) == 3
     assert result["world_state"]["characters"] == ["astronaut in a worn white EVA suit"]
+    assert result["shots"][0]["pathway"] == "remotion"
+    assert result["shots"][1]["pathway"] == "external_api"

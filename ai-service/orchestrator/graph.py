@@ -3,13 +3,14 @@
 Per ADR-001, orchestration uses an explicit LangGraph state graph rather
 than a hand-rolled if/else pipeline, so the retry/branching logic planned
 for later (the storyboard similarity-check retry loop, AI-008) has
-somewhere principled to attach. Currently a single node (Screenwriter,
-AI-004); Cinematographer (AI-007) and Producer/Router (AI-005) are added
-as additional nodes in this same graph, not as separate pipelines.
+somewhere principled to attach. Two nodes so far: Screenwriter (AI-004)
+then Producer/Router (AI-005). Cinematographer (AI-007) is added as a
+further node in this same graph, not as a separate pipeline.
 """
 
 from langgraph.graph import END, StateGraph
 
+from .agents.producer import assign_pathways
 from .agents.screenwriter import run_screenwriter
 from .state import OrchestratorState
 
@@ -23,11 +24,18 @@ def _screenwriter_node(state: OrchestratorState) -> dict:
     }
 
 
+def _producer_node(state: OrchestratorState) -> dict:
+    routed_shots = assign_pathways(state["shots"], state["world_state"])
+    return {"shots": routed_shots}
+
+
 def build_graph():
     graph = StateGraph(OrchestratorState)
     graph.add_node("screenwriter", _screenwriter_node)
+    graph.add_node("producer", _producer_node)
     graph.set_entry_point("screenwriter")
-    graph.add_edge("screenwriter", END)
+    graph.add_edge("screenwriter", "producer")
+    graph.add_edge("producer", END)
     return graph.compile()
 
 

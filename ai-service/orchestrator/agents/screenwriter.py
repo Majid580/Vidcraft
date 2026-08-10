@@ -4,11 +4,13 @@
 Per proposal Section 6.3, the Screenwriter's role is narrative
 decomposition + world_state (characters/setting) -- not per-shot
 cinematography (Cinematographer, AI-007, RAG-grounded) or pathway
-routing (Producer/Router, AI-005). Until those agents exist, this agent
-fills each shot's "camera" with its own best-effort draft and "pathway"
-with DEFAULT_PATHWAY (see ADR-012) so the output already matches the
-FR-3 storyboard shape end-to-end; AI-005/AI-007 are expected to refine
-those fields, not add them from scratch.
+routing (Producer/Router, AI-005). This agent fills each shot's "camera"
+with its own best-effort draft and "pathway" with DEFAULT_PATHWAY (see
+ADR-012) so the output already matches the FR-3 storyboard shape on its
+own; in the full graph (orchestrator/graph.py) the Producer/Router node
+runs next and overwrites "pathway" per its own routing decision (see
+ADR-013). Cinematographer (AI-007) is expected to similarly refine
+"camera" and populate "style_tokens" once it exists.
 """
 
 import uuid

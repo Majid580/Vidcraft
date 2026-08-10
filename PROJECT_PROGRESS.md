@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~37.1%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 13 / 35 |
+| **Overall completion percentage** | **~40.0%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 14 / 35 |
 | **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3/5 (Backend/DB, Frontend Dev, AI Core) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | LangGraph orchestrator: Producer/Router agent (AI-005), continuing the AI critical path — or BACKEND-003/004/RAG-001 in parallel (all unblocked backend infra) |
-| **Overall status** | 🟢 **First three real FRs are live and chained together, including the LangGraph orchestrator.** FR-1 (AI-002), FR-2 (AI-003), and the first slice of FR-3 (AI-004, Screenwriter agent) are implemented and verified end-to-end: a vague prompt (33/100, 3 flags) → 2 real Groq-generated clarifying questions → clarified prompt → a real LangGraph `StateGraph` run against Groq decomposes it into a 3-shot storyboard JSON → that storyboard's shot 1 was fed directly into the existing REMOTION-003 pathway (`remotionService.renderShot()`), which correctly selected `MediumShot` and rendered a valid MP4. The MongoDB layer and the full Remotion pathway (REMOTION-001..003) are also done. Four app scaffolds all confirmed working. Still not wired together: no AI-service output is persisted to Mongo or reachable through the Node backend (that's BACKEND-004/INTEG-001); the orchestrator has only one node (Screenwriter) — Cinematographer (AI-007) and Producer/Router (AI-005) don't exist yet, so every storyboard currently hardcodes `pathway: "remotion"` and a Screenwriter-drafted (not RAG-grounded) `camera` value per ADR-012. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
+| **Current objective** | AI-006 (Groq + fallback LLM integration) is the last remaining Phase 5 HIGH task — or BACKEND-003/004/RAG-001 in parallel (all unblocked backend infra) |
+| **Overall status** | 🟢 **First three real FRs are live and chained together, including a real two-node LangGraph orchestrator.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end: a vague prompt (33/100, 3 flags) → 2 real Groq-generated clarifying questions → clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) decomposes it into a storyboard and routes each shot's pathway. Live-verified with a prompt mixing an explicit photorealistic shot and two stylized/animated shots — correctly split 1 `external_api` / 2 `remotion` (ADR-013). The remotion-routed output was further confirmed to chain directly into the existing REMOTION-003 pathway (`remotionService.renderShot()`), which correctly selected `MediumShot` and rendered a valid MP4. The MongoDB layer and the full Remotion pathway (REMOTION-001..003) are also done. Four app scaffolds all confirmed working. Still not wired together: no AI-service output is persisted to Mongo or reachable through the Node backend (that's BACKEND-004/INTEG-001); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed AI-004 (LangGraph orchestrator: Screenwriter agent) |
+| **Last updated by** | Claude (Sonnet 5) — completed AI-005 (LangGraph orchestrator: Producer/Router agent) |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,7 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| AI-005 | LangGraph orchestrator: Producer/Router agent (FR-3, partial) | VERIFIED | `ai-service/orchestrator/agents/producer.py` (`assign_pathways`: per-shot LLM routing decision, `ProducerOutputError` on malformed output), `ai-service/orchestrator/graph.py` (added `producer` node: `screenwriter` → `producer` → END) | 26/26 pytest pass (4 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: a prompt mixing an explicit photorealistic shot with two stylized/animated shots correctly routed 1 shot to `external_api` and 2 to `remotion`, per the ADR-013 heuristic — replacing AI-004's hardcoded `"remotion"` default with a real per-shot decision. | 2026-08-10 |
 | AI-004 | LangGraph orchestrator: Screenwriter agent (FR-3, partial) | VERIFIED | `ai-service/orchestrator/state.py` (`OrchestratorState` TypedDict), `ai-service/orchestrator/agents/screenwriter.py` (`run_screenwriter`, output-shape validation via `ScreenwriterOutputError`), `ai-service/orchestrator/graph.py` (real LangGraph `StateGraph`, single `screenwriter` node, per ADR-001), `POST /storyboard/generate` in `ai-service/main.py` | 22/22 pytest pass (5 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: clarified prompt → valid 3-shot storyboard (`storyboard_id`, `world_state`, `shots[]` matching the FR-3 JSON shape exactly). Further verified that storyboard's shot 1 chains directly into `backend/src/services/remotionService.js`'s `renderShot()` (REMOTION-003) — correctly selected `MediumShot` from the LLM-drafted `camera` value, rendered a valid MP4 (confirmed via ISO Media container magic bytes; `ffprobe` not on this shell's PATH, a known pre-existing quirk). Also verified 422 on empty `clarified_prompt`. | 2026-08-10 |
 | AI-003 | Conversational clarification agent (FR-2) | VERIFIED | `ai-service/llm/groq_client.py` (Groq SDK wrapper, JSON-mode structured completions), `ai-service/clarification/agent.py` (`generate_questions` <=2 questions, `build_brief` merges answers), `ai-service/config.py` (env loading), `POST /clarify/questions` + `POST /clarify/resolve` in `ai-service/main.py` | 17/17 pytest tests pass (7 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: vague prompt (33/100, 3 flags) → 2 real generated questions → resolved into brief + clarified prompt → re-analyzed at 72/100 with 0 flags. No-flags no-op path and mismatched-length 400 error path also verified. | 2026-08-10 |
 | AI-002 | spaCy prompt analyzer (FR-1) | VERIFIED | `ai-service/analyzer/pipeline.py` (cached spaCy load), `ai-service/analyzer/scoring.py` (5-dimension heuristic scorer, flags/suggestions), `ai-service/analyzer/antonyms.json` (36-pair domain antonym dictionary), `POST /analyze` in `ai-service/main.py` | 9/9 pytest unit tests pass (`ai-service/tests/test_analyzer.py`) in `.venv-wsl`; started uvicorn and curled `/analyze` for a vague prompt (`vague_action`/`missing_setting`/`low_visual_detail` flagged, 35/100), a rich prompt (86/100, no flags), and a whitespace-only prompt (422 rejected) | 2026-08-10 |
@@ -78,7 +79,6 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 | BACKEND-003 | Redis + Bull.js queue scaffold | BACKEND-001 (done) |
 | BACKEND-004 | REST routes, middleware, error handler | BACKEND-002 (done) |
 | RAG-001 | FAISS index scaffold | BACKEND-002 (done) |
-| AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 (done) |
 | AI-006 | Groq + fallback LLM integration | AI-004 (done) |
 | INTEG-001 | Full end-to-end wiring | all of the above |
 | INTEG-002 | FFmpeg post-processing pipeline | REMOTION-002, BACKEND-005 |
@@ -312,6 +312,50 @@ Verified by (agent/person): Claude (Sonnet 5)
 
 ```text
 [VERIFIED]
+LangGraph Orchestrator: Producer/Router agent / FR-3 partial (AI-005)
+Files:
+- ai-service/orchestrator/agents/producer.py (assign_pathways(): sends
+  shots + world_state to Groq in one call, gets back a per-shot pathway
+  decision; ProducerOutputError on a malformed/invalid response)
+- ai-service/orchestrator/graph.py: added a "producer" node
+  (screenwriter -> producer -> END), overwriting the AI-004 hardcoded
+  "remotion" default (ADR-012) with a real routing decision
+- ai-service/orchestrator/__init__.py: exports ProducerOutputError
+- ai-service/main.py: POST /storyboard/generate now also catches
+  ProducerOutputError (502)
+- ai-service/tests/test_orchestrator.py: 4 new tests (empty-shots
+  no-op, pathway overwrite, invalid-pathway rejection, malformed-
+  response rejection), plus the existing end-to-end graph test updated
+  to mock both agents and assert the final shots carry
+  producer-assigned pathways
+Verified by:
+- test execution (pytest, WSL2 .venv-wsl, LLM mocked — no network calls
+  in the test suite itself)
+- manual run (uvicorn main:app) + external validation (curl) against
+  the REAL Groq API (llama-3.3-70b-versatile, per ADR-011)
+Result:
+PASS — 26/26 pytest tests pass (22 prior + 4 new). Live end-to-end: POST
+/storyboard/generate with a prompt mixing an explicit photorealistic
+shot ("A photorealistic shot of a chef chopping vegetables...") and two
+stylized/animated shots ("a stylized animated title card...") -> real
+Groq call -> shot 1 routed to "external_api", shots 2-3 routed to
+"remotion" — the routing decision tracked the prompt's actual content,
+not a static rule. Per ADR-013, this is the intended heuristic
+(photorealism signal -> external_api, else remotion).
+Not yet done / known limitation (documented in ADR-013, not silently
+glossed over): a shot routed to "external_api" cannot currently be
+rendered — the external API adapter layer (BACKEND-005) and concrete
+Tier 1/2/3 providers (PROVIDER-001) don't exist yet. This is
+forward-looking routing logic, verified as a decision, not as an actual
+render. Also not yet done: persisting the storyboard to Mongo, exposing
+through the Node backend (BACKEND-004/INTEG-001), and the
+similarity-check retry loop (AI-008).
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Sonnet 5)
+```
+
+```text
+[VERIFIED]
 Vite/React/Tailwind/shadcn-ui frontend scaffold (FRONTEND-001)
 Files:
 - frontend/ (Vite React-TS template)
@@ -531,7 +575,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] WebSocket connection between frontend and backend established
 - [x] Prompt analyzer (FR-1) returns a structured score for a real prompt — 2026-08-10 (AI-002, ai-service only — not yet reachable via the Node backend)
 - [x] Clarification agent (FR-2) generates and processes at least one Q&A round — 2026-08-10 (AI-003, real Groq API, ai-service only — not yet reachable via the Node backend or a frontend chat UI)
-- [~] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt — 2026-08-10: Screenwriter node (AI-004) does this against a real prompt; partial only because Cinematographer (AI-007, RAG-grounded camera/style) and Producer/Router (AI-005, real pathway routing) don't exist yet — camera/pathway are Screenwriter placeholders per ADR-012
+- [~] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt — 2026-08-10: Screenwriter + Producer/Router nodes (AI-004/AI-005) do this against a real prompt, including real per-shot pathway routing (ADR-013); partial only because Cinematographer (AI-007, RAG-grounded camera/style) doesn't exist yet — camera is still a Screenwriter placeholder per ADR-012, and external_api-routed shots can't be rendered yet (BACKEND-005/PROVIDER-001 missing)
 - [ ] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query
 - [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: fully wired end-to-end (REMOTION-001..003) including automatic composition selection + fallback; still partial only because the `shot`/`worldState` data used is hand-written sample data, not real output from an orchestrator (AI-004/005 don't exist yet) or a real REST request (not wired into a route — that's INTEG-001/BACKEND-004).
 - [ ] External API pathway (FR-6) successfully generates at least one real video via a connected provider
@@ -539,7 +583,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] FFmpeg post-processing (FR-9) produces one concatenated, playable final MP4
 - [ ] Frontend displays a delivered video end-to-end from a real prompt submission
 - [x] Unit tests exist and pass for the prompt analyzer — 2026-08-10 (9/9, `ai-service/tests/test_analyzer.py`)
-- [~] Unit/integration tests exist and pass for the orchestrator — 2026-08-10: 5/5 pass for the Screenwriter node (`ai-service/tests/test_orchestrator.py`); no tests yet for Cinematographer/Producer since they don't exist
+- [~] Unit/integration tests exist and pass for the orchestrator — 2026-08-10: 9/9 pass for the Screenwriter + Producer/Router nodes (`ai-service/tests/test_orchestrator.py`); no tests yet for Cinematographer since it doesn't exist
 - [ ] Production/demo build succeeds (frontend build, backend start in production mode)
 - [ ] Evaluation study (FR-12) has been run and produced a comparison table
 
@@ -580,7 +624,7 @@ fyp/
 │   ├── analyzer/                 (AI-002 — pipeline.py, scoring.py, antonyms.json)
 │   ├── clarification/            (AI-003 — agent.py)
 │   ├── llm/                      (groq_client.py — shared Groq JSON-mode wrapper)
-│   ├── orchestrator/              (AI-004 — state.py, graph.py, agents/screenwriter.py)
+│   ├── orchestrator/              (AI-004/005 — state.py, graph.py, agents/{screenwriter,producer}.py)
 │   ├── tests/                     (test_analyzer.py, test_clarification.py, test_orchestrator.py)
 │   ├── .venv/                   (untracked — native-Windows venv from SETUP-001, superseded by .venv-wsl)
 │   └── .venv-wsl/                (untracked — the venv actually used to run the service, per ADR-008)
@@ -627,7 +671,7 @@ this section are gone — deleted 2026-08-10 before the first commit.
 - `POST /analyze` (ai-service, FastAPI) — takes `{"prompt": string}`, returns FR-1 schema (`overall_score`, `dimensions`, `flags`, `suggestions`); 422 on empty/whitespace/<3-char input
 - `POST /clarify/questions` (ai-service, FastAPI) — takes `{"prompt": string, "flags": string[], "suggestions": string[]}`, returns `{"questions": string[]}` (0-2 items, real Groq call, empty flags -> empty list with no LLM call)
 - `POST /clarify/resolve` (ai-service, FastAPI) — takes `{"prompt": string, "questions": string[], "answers": string[]}`, returns `{"brief": object, "clarified_prompt": string}`; 400 on mismatched lengths or malformed LLM output, 500 if `GROQ_API_KEY` unset
-- `POST /storyboard/generate` (ai-service, FastAPI) — takes `{"clarified_prompt": string}`, returns `{"storyboard_id": string, "world_state": object, "shots": object[]}` matching the FR-3 JSON shape (AI-004, real Groq call via a LangGraph StateGraph); 500 if `GROQ_API_KEY` unset, 502 on malformed LLM output, 422 on empty `clarified_prompt`
+- `POST /storyboard/generate` (ai-service, FastAPI) — takes `{"clarified_prompt": string}`, returns `{"storyboard_id": string, "world_state": object, "shots": object[]}` matching the FR-3 JSON shape (AI-004 Screenwriter + AI-005 Producer/Router, a real two-node LangGraph StateGraph); 500 if `GROQ_API_KEY` unset, 502 on malformed LLM output (either node), 422 on empty `clarified_prompt`
 
 None of these are part of the Section 9 API surface (`/api/prompts`, `/api/storyboards`, etc.) — those are still `PLANNED`/`PROPOSED`, not implemented. All three are only reachable directly on the ai-service port; the Node backend doesn't proxy them yet (BACKEND-004).
 
@@ -976,6 +1020,48 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
     updated the Phase 5 roadmap table row for AI-004.
   - Updated this file and PROJECT_STATE.yaml (13/35 tasks complete,
     ~37.1%).
+  - Pushed both this session's commit and the prior session's (AI-002/
+    AI-003) commit to origin/main, with explicit user confirmation
+    first (58ee43e..850b74a).
+
+2026-08-10 (session 13)
+- Completed AI-005: LangGraph orchestrator, Producer/Router agent
+  (extends FR-3 further; the graph now has two real nodes instead of
+  one).
+  - ai-service/orchestrator/agents/producer.py: assign_pathways() sends
+    the Screenwriter's shots + world_state to Groq in a single call and
+    gets back a per-shot pathway decision; ProducerOutputError on a
+    malformed or invalid (not "remotion"/"external_api") response.
+  - ai-service/orchestrator/graph.py: added a "producer" node
+    (screenwriter -> producer -> END) to the existing StateGraph, per
+    ADR-001 — not a second pipeline.
+  - Adopted ADR-013: the routing heuristic is an LLM classification —
+    does the shot's description or the storyboard's style_tokens
+    explicitly call for photorealistic/live-action output? If yes,
+    external_api; otherwise remotion. This directly implements the
+    proposal's own §6.6 pathway distinction ("For photorealistic
+    output... external API"), rather than inventing an unrelated rule.
+    Explicitly documented consequence: shots routed to external_api
+    can't actually be rendered yet, since the adapter layer
+    (BACKEND-005) and concrete providers (PROVIDER-001) don't exist —
+    this is forward-looking routing logic only, not a working
+    generation path.
+  - ai-service/tests/test_orchestrator.py: 4 new tests (empty-shots
+    no-op with zero LLM calls, pathway overwrite preserves other shot
+    fields, invalid-pathway-string rejection, malformed-response
+    rejection), plus updated the existing graph end-to-end test to mock
+    both agents. Full suite: 26/26 pass in .venv-wsl.
+  - Live-verified against the REAL Groq API with a prompt deliberately
+    mixing signals — one explicitly "photorealistic" shot and two
+    explicitly "stylized animated" shots — and confirmed the real LLM
+    call split them 1 external_api / 2 remotion, tracking actual prompt
+    content rather than following a static per-position rule. This is a
+    stronger check than merely "the endpoint returns 200."
+  - Updated PROJECT_ARCHITECTURE.md Section 6.3 status/Internal
+    structure (Producer/Router now IMPLEMENTED); added ADR-013; updated
+    the Phase 5 roadmap table row for AI-005.
+  - Updated this file and PROJECT_STATE.yaml (14/35 tasks complete,
+    ~40.0%).
 ```
 
 ---
@@ -1001,22 +1087,24 @@ Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependen
 
 ```text
 NEXT 1 (continues the AI critical path):
-Task ID: AI-005
-LangGraph orchestrator: Producer/Router agent
+Task ID: AI-006
+Groq + fallback LLM integration
 Why:
-AI-004's Screenwriter node now produces a real storyboard, but every
-shot's "pathway" is hardcoded to "remotion" (ADR-012 placeholder) —
-Producer/Router is the agent responsible for real per-shot pathway
-assignment per the tiered cost strategy. Add it as a second node in
-the existing ai-service/orchestrator graph (ADR-001), not a new
-pipeline.
+AI-003/AI-004/AI-005 all call Groq as the sole provider today (per
+ADR-002) with no fallback on failure — the proposal calls for a
+fallback provider "where a step requires stronger reasoning than the
+primary model reliably provides" or on outright failure. This is the
+last remaining Phase 5 HIGH task; after it, INTEG-001 is unblocked by
+AI-006/AI-008/REMOTION-003/BACKEND-005/FRONTEND-002 only.
 Dependencies:
 AI-004 (done)
 Expected files:
-ai-service/orchestrator/agents/producer.py
+ai-service/llm/ (extend groq_client.py or add a fallback module)
 Acceptance criteria:
-Assigns pathway per shot per the tiering policy (proposal Section 9),
-replacing the AI-004 hardcoded default; unit-tested with a mocked LLM.
+Fallback triggers correctly on primary (Groq) failure — needs a
+concrete fallback provider chosen and documented as an ADR (still TBD
+per PROVIDER-001/R-8 territory for the fallback LLM specifically, not
+just the video-generation API tiers).
 
 NEXT 2 (parallel-safe, rounds out the backend infra):
 Task ID: BACKEND-003
@@ -1034,15 +1122,15 @@ backend/src/queues/
 Acceptance criteria:
 A trivial job can be enqueued and processed.
 
-NEXT 3 (parallel-safe, exposes AI-002/AI-003/AI-004 to the rest of the app):
+NEXT 3 (parallel-safe, exposes AI-002/AI-003/AI-004/AI-005 to the rest of the app):
 Task ID: BACKEND-004
 REST routes, middleware, error handler
 Why:
-AI-002's /analyze, AI-003's /clarify/*, and AI-004's /storyboard/generate
-endpoints are currently only reachable directly on the ai-service port
-— nothing on the frontend/backend side can call them yet. This is also
-required before FRONTEND-002 (prompt input + clarification chat UI) has
-anything real to submit to.
+AI-002's /analyze, AI-003's /clarify/*, and AI-004+AI-005's
+/storyboard/generate endpoints are currently only reachable directly on
+the ai-service port — nothing on the frontend/backend side can call
+them yet. This is also required before FRONTEND-002 (prompt input +
+clarification chat UI) has anything real to submit to.
 Dependencies:
 BACKEND-002 (done)
 Expected files:
