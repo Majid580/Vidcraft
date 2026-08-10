@@ -82,8 +82,16 @@ export function clarifyPrompt(
       })
 }
 
-export function generateStoryboard(promptId: string, demo = false) {
+export function generateStoryboard(
+  promptId: string,
+  styleTokens: string[] = [],
+  demo = false,
+) {
+  // styleTokens (FRONTEND-003) are sent in the payload so the ai-service can
+  // seed world_state.style_tokens. The backend currently ignores the extra
+  // field (see PROJECT_ARCHITECTURE.md §9 — full wiring is INTEG-001); demo
+  // mode reflects them locally.
   return demo
-    ? demoStoryboard()
-    : request<StoryboardResponse>('/storyboards', { promptId })
+    ? demoStoryboard(styleTokens)
+    : request<StoryboardResponse>('/storyboards', { promptId, styleTokens })
 }

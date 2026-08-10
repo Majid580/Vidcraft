@@ -85,15 +85,23 @@ export async function demoClarify(answers: string[]): Promise<ClarifyResponse> {
   }
 }
 
-export async function demoStoryboard(): Promise<StoryboardResponse> {
+export async function demoStoryboard(
+  styleTokens: string[] = [],
+): Promise<StoryboardResponse> {
   await delay(900)
+  // Reflect the configurator's picks (FRONTEND-003) in world_state; fall back
+  // to the canonical sample tokens when nothing was chosen.
+  const chosen = styleTokens.filter((t) => !t.startsWith('aspect:'))
+  const style_tokens = chosen.length
+    ? chosen
+    : ['cinematic', 'volumetric light', 'violet & cyan', 'photorealistic']
   return {
     storyboardId: `demo-sb-${Date.now()}`,
     status: 'completed',
     worldState: {
       characters: ['Astronaut'],
       setting: 'Deep space near a luminous nebula, dusk light',
-      style_tokens: ['cinematic', 'volumetric light', 'violet & cyan', 'photorealistic'],
+      style_tokens,
     },
     shots: [
       {

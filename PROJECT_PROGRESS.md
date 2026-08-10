@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~54.3%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 19 / 35 |
+| **Overall completion percentage** | **~57.1%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 20 / 35 |
 | **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006) all complete; into Phase 2/3/6 (Backend/DB, Frontend Dev, RAG) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | FRONTEND-003 (style configurator UI — now unblocked, natural follow-on to FRONTEND-002) or RAG-002 (curate cinematography corpus, unblocks RAG-003 → AI-007) — both unblocked, no fixed order. NOTE: ADR-015 (no local heavy compute) is firm for LLMs; RAG-003's local-torch embeddings migration is DEFERRED (user, 2026-08-10) — keep local for now, move to a hosted embeddings API only if it slows the machine. |
+| **Current objective** | RAG-002 (curate cinematography corpus, unblocks RAG-003 → AI-007) — the highest-value unblocked task now that all three Phase 3 frontend tasks (FRONTEND-001/002/003) are VERIFIED. NOTE: ADR-015 (no local heavy compute) is firm for LLMs; RAG-003's local-torch embeddings migration is DEFERRED (user, 2026-08-10) — keep local for now, move to a hosted embeddings API only if it slows the machine. |
 | **Overall status** | 🟢 **The first real slice of the pipeline is now reachable end-to-end through the actual Node backend, not just the ai-service port directly.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) storyboard, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Opus 4.8) — completed FRONTEND-002 (prompt input + clarification chat UI; light/dark theme, animations, demo-mode fallback; verified end-to-end against the live stack). Branch `frontend-002-ui` (0d5429f), pushed to origin. |
+| **Last updated by** | Claude (Opus 4.8) — completed FRONTEND-003 (style configurator UI; 3D-styled selectable style tokens across visual style / mood / lighting / palette / aspect ratio / custom, flattened into a `style_tokens[]` payload on `POST /api/storyboards`; verified in-browser via demo mode + clean production build). Also fixed a pre-existing `npm run build` blocker (tsconfig `baseUrl` TS5101 → `ignoreDeprecations: "6.0"`). Branch `frontend-002-ui`; not yet committed. |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,7 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| FRONTEND-003 | Style configurator UI | VERIFIED | `frontend/src/components/StyleConfigurator/` — `styleOptions.ts` (declarative catalog: 8 visual styles, 6 moods, 6 lighting, 6 palettes, 4 aspect ratios; `StyleConfig` type + `DEFAULT_STYLE_CONFIG` + `toStyleTokens()` which flattens to a flat `style_tokens[]`, emitting aspect ratio as an `aspect:<r>` token) and `index.tsx` (the configurator: 3D-styled selectable tiles, conic-gradient palette **orbs** with a glossy highlight, mini aspect-ratio **frames**, a free-form custom-token input capped at 6, and a live summary showing the flattened tokens + Generate CTA). New 4th flow stage **Style** (`FlowSteps.tsx`: Compose → Refine → Style → Storyboard) replaces FRONTEND-002's plain "Ready to storyboard" block; `App.tsx` holds `styleConfig` state and passes `toStyleTokens(styleConfig)` to `api.generateStoryboard(promptId, styleTokens, demo)` (`lib/api.ts` now sends `styleTokens` in the `POST /api/storyboards` body; `lib/demo.ts` reflects them into `world_state.style_tokens`). New CSS utilities in `index.css` (`.card-3d-pop` spring hover-lift, `.tile-in` staggered entrance with `back.out` overshoot, `.animate-pop`) reusing the existing glass/tilt-3d/Reveal/violet→cyan system. Aligns with the ui-ux-pro-max Aurora-UI + Glassmorphism + 3D-depth direction and the motion DB's stagger/hover presets. **Scope:** the backend does not yet *read* `styleTokens` (full wiring into ai-service `world_state.style_tokens` is INTEG-001) — "included in submission payload" criterion is met; demo mode reflects them locally. | Clean production build (`npm run build`: full `tsc -b` type-check with `noUnusedLocals`/`noUnusedParameters` + `vite build`, 1919 modules, 0 errors). Driven end-to-end in the live browser preview via demo mode: reached the new **Style** stage, selected visual style + mood + 2 lighting + Warm Sunset palette + Cinemascope aspect + a custom token → live summary flattened to **"7 style tokens"** → generated → the storyboard's `world_state.style_tokens` reflected exactly those picks (with `aspect:2.39:1` correctly excluded from the descriptive style list). 0 React/console errors (only the expected 502 from the offline backend that triggers demo mode); no horizontal overflow at 375px. Also fixed a **pre-existing** `npm run build` blocker: `tsconfig.app.json`'s `baseUrl` tripped TS5101 under the repo's `typescript ~6.0.2`, failing `tsc -b` before `vite build` ran — added the TS-recommended `ignoreDeprecations: "6.0"` (baseUrl still needed for the `@/*` paths mapping). Added `autoPort:true` (`.claude/launch.json`) + a `PORT`-env read (`vite.config.ts`) so a preview can run beside another session's :5173 server. Not yet committed. | 2026-08-10 |
 | FRONTEND-002 | Prompt input + clarification chat UI | VERIFIED | `frontend/src/` — a guided **Compose → Refine → Storyboard** SPA. Components: `App.tsx` (flow state machine), `components/{PromptComposer,AnalysisPanel,ClarificationChat,StoryboardView,FlowSteps,AppHeader,ThemeToggle,AuroraBackground,Reveal}.tsx`, `components/ui/{card,badge,textarea}.tsx`. Data: `lib/api.ts` (typed client over the Vite `/api → :5000` proxy in `vite.config.ts`), `lib/types.ts`, `lib/demo.ts`. Theming: `hooks/useTheme.ts` + anti-FOUC script in `index.html` (light/dark, localStorage + system-pref). Visual system: violet→indigo→cyan gradient, aurora orbs, 3D scroll reveal, hover-lift/glow + pointer 3D tilt (`hooks/useTilt.ts`). Offline: a connection/502 shows a friendly message + "Explore in demo mode" (sample data via `lib/demo.ts`). Fix: clarify `brief` is a structured object from ai-service, not a string — renders either shape. | Ran the full flow through the live browser UI against the running stack (backend :5000 + ai-service :8000 + MongoDB + Redis): vague prompt → real spaCy analysis (51/100) + real Groq questions → answers → real Groq clarified prompt + structured brief → real LangGraph storyboard with pathway badges. **0 console/React errors** (verified via installed `console.error` hook), TypeScript clean, light/dark token flip confirmed, no horizontal overflow at 375px. Committed `frontend-002-ui` (0d5429f), pushed. | 2026-08-10 |
 | AI-006 | Groq + hosted fallback LLM integration | VERIFIED | `ai-service/llm/completion.py` (`complete_json` — the unchanged single entrypoint; tries Groq primary, on a `_FALLBACKABLE` failure [`GroqConfigError` \| `groq.APIError` \| `json.JSONDecodeError`] falls back, else re-raises; `LLMError` when fallback disabled/both fail), `ai-service/llm/groq_client.py` (primary renamed to `groq_complete_json`), `ai-service/llm/http_llm_client.py` (`fallback_complete_json` — httpx POST to any OpenAI-compatible `/chat/completions`, JSON mode, `FallbackLLMError`), `ai-service/config.py` (+`LLM_FALLBACK_ENABLED`/`FALLBACK_LLM_BASE_URL`/`FALLBACK_LLM_API_KEY`/`FALLBACK_LLM_MODEL`/`LLM_TIMEOUT_SECONDS`), `.env.example` updated. Per ADR-015 the fallback is HOSTED, never a local model (an Ollama draft was written and removed after a >120s local warm-up); default is a second Groq model `llama-3.1-8b-instant` on the same free key (ADR-016). | 46/46 pytest pass (11 new in `tests/test_llm.py`, providers mocked — no network). Live end-to-end from `.venv-wsl`: real Groq primary via `llm.complete_json` → `{'city':'Tokyo'}`; then with the primary forced to raise `APIConnectionError`, `llm.complete_json` transparently used the REAL hosted fallback (`llama-3.1-8b-instant`) → `{'city':'Rome'}`, logging the documented fallback warning. Existing callers (AI-003/004/005) and their tests untouched. | 2026-08-10 |
 | RAG-001 | FAISS vector-index scaffold (FR-4 infra) | VERIFIED | `ai-service/rag/index.py` (`VectorIndex`: FAISS `IndexFlatIP` over L2-normalized vectors = cosine per FR-4, parallel JSON metadata sidecar `{path}.faiss`+`{path}.meta.json`, graceful empty-index queries, `save`/`load`, injectable `embed_fn`), `ai-service/rag/embedder.py` (lazy cached `all-MiniLM-L6-v2`, imported only on first real embed so empty paths/tests need no model), `ai-service/rag/__init__.py`; `config.py` adds `EMBEDDING_MODEL`/`EMBEDDING_DIM`/`VECTOR_INDEX_PATH`/`RAG_TOP_K`; `requirements.txt` += faiss-cpu 1.15.0, sentence-transformers 5.7.0, torch 2.13.0+cpu (into `.venv-wsl`) | 9/9 new pytest pass (35/35 total) with a deterministic injected embedder (offline). Live end-to-end with the REAL `all-MiniLM-L6-v2`: empty 384-dim index → `[]` on query; 4-item cinematography corpus embedded; semantic query "dark shadowy scene that feels tense" ranked the low-key/deep-shadows lighting passage first (0.383 cosine); save+reload round-trip preserved all 4 vectors. Temp verification script cleaned up, not committed. | 2026-08-10 |
@@ -83,8 +84,8 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 |---|---|---|
 | INTEG-001 | Full end-to-end wiring | all of the above |
 | INTEG-002 | FFmpeg post-processing pipeline | REMOTION-002, BACKEND-005 |
-| FRONTEND-002 | Prompt input + clarification chat UI | FRONTEND-001 (done), BACKEND-004 (done) |
-| FRONTEND-003 | Style configurator UI | FRONTEND-001 (done) |
+
+*(FRONTEND-002 and FRONTEND-003 moved to Section 2 — Verified.)*
 
 ### MEDIUM (Target-tier outcomes)
 
@@ -372,8 +373,8 @@ PASS — dev server starts on :5173; get_page_text/read_page confirmed
 zero console errors; network tab confirmed 200s for index.css,
 button.tsx, radix-ui, class-variance-authority, tailwind-merge. (At the
 time of this FRONTEND-001 check there were no real pages yet; FRONTEND-002
-has since added the prompt/clarify/storyboard UI — see Section 2. FRONTEND-003
-still pending.)
+has since added the prompt/clarify/storyboard UI and FRONTEND-003 the style
+configurator stage — both VERIFIED, see Section 2.)
 Verified on: 2026-08-10
 Verified by (agent/person): Claude (Sonnet 5)
 ```
@@ -1248,24 +1249,17 @@ DONE (was NEXT 1): FRONTEND-002 — prompt input + clarification chat UI.
 VERIFIED 2026-08-10 end-to-end against the live stack; see Section 2.
 The prompt -> clarify -> storyboard pipeline is now clickable in-browser.
 
-NEXT 1 (frontend continuity; pure frontend, no open decisions):
-Task ID: FRONTEND-003
-Style configurator UI
-Why:
-Now unblocked (only depended on FRONTEND-001) and the natural follow-on
-to FRONTEND-002: lets the user pick visual style/tone before generation,
-feeding world_state.style_tokens. Keeps building the demo-facing surface
-on top of the working prompt->storyboard UI.
-Dependencies:
-FRONTEND-001 (done); pairs naturally with FRONTEND-002 (done)
-Expected files:
-frontend/src/ (style configurator components; extend lib/api.ts /
-world_state handling as needed)
-Acceptance criteria:
-A user can choose style options that flow into the generation request,
-verified in-browser against the running backend.
+DONE (was NEXT 1 continuity): FRONTEND-003 — style configurator UI.
+VERIFIED 2026-08-10 in-browser (demo mode) + clean production build; see
+Section 2. A new 'Style' flow stage (Compose -> Refine -> Style ->
+Storyboard) lets the user pick 3D-styled style tokens (visual style /
+mood / lighting / palette / aspect ratio / custom) that flatten into a
+style_tokens[] sent on POST /api/storyboards. NOTE: the backend does not
+yet READ styleTokens (full wiring into world_state.style_tokens is
+INTEG-001) — 'included in submission payload' criterion is met; demo mode
+reflects them locally. All three Phase 3 frontend tasks now VERIFIED.
 
-NEXT 2 (content-heavy; unblocks the RAG pathway):
+NEXT 1 (content-heavy; unblocks the RAG pathway):
 Task ID: RAG-002
 Curate cinematography reference corpus
 Why:

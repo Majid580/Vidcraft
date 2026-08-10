@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // baseUrl is deprecated in TS 6 but still needed for the "@/*" paths
+    // mapping below; silence the (pre-existing) deprecation error so the build
+    // passes. Remove when paths are migrated off baseUrl.
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

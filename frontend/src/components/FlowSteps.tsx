@@ -2,15 +2,16 @@ import { Check } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-export type Stage = 'compose' | 'refine' | 'storyboard'
+export type Stage = 'compose' | 'refine' | 'style' | 'storyboard'
 
 const STEPS: { id: Stage; label: string }[] = [
   { id: 'compose', label: 'Compose' },
   { id: 'refine', label: 'Refine' },
+  { id: 'style', label: 'Style' },
   { id: 'storyboard', label: 'Storyboard' },
 ]
 
-const ORDER: Stage[] = ['compose', 'refine', 'storyboard']
+const ORDER: Stage[] = ['compose', 'refine', 'style', 'storyboard']
 
 export function FlowSteps({ current }: { current: Stage }) {
   const currentIdx = ORDER.indexOf(current)

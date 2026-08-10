@@ -1,11 +1,8 @@
 import { useState } from 'react'
 import {
   AlertCircle,
-  ArrowRight,
-  Clapperboard,
   FileText,
   FlaskConical,
-  Loader2,
   Pencil,
   RotateCcw,
   Sparkles,
@@ -19,6 +16,12 @@ import { PromptComposer } from '@/components/PromptComposer'
 import { AnalysisPanel } from '@/components/AnalysisPanel'
 import { ClarificationChat } from '@/components/ClarificationChat'
 import { StoryboardView } from '@/components/StoryboardView'
+import { StyleConfigurator } from '@/components/StyleConfigurator'
+import {
+  DEFAULT_STYLE_CONFIG,
+  toStyleTokens,
+  type StyleConfig,
+} from '@/components/StyleConfigurator/styleOptions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -42,19 +45,24 @@ function App() {
   const [questions, setQuestions] = useState<string[] | null>(null)
   const [refined, setRefined] = useState<ClarifyResponse | null>(null)
   const [storyboard, setStoryboard] = useState<StoryboardResponse | null>(null)
+  const [styleConfig, setStyleConfig] = useState<StyleConfig>(
+    DEFAULT_STYLE_CONFIG,
+  )
   const [busy, setBusy] = useState<Busy>(null)
   const [error, setError] = useState<string | null>(null)
   const [offline, setOffline] = useState(false)
   const [demoMode, setDemoMode] = useState(false)
 
-  const stage: Stage = storyboard
-    ? 'storyboard'
-    : analysis
-      ? 'refine'
-      : 'compose'
-
   const readyToGenerate =
     !!analysis && !storyboard && (questions == null || refined != null)
+
+  const stage: Stage = storyboard
+    ? 'storyboard'
+    : readyToGenerate
+      ? 'style'
+      : analysis
+        ? 'refine'
+        : 'compose'
 
   function reset() {
     setPrompt('')
@@ -63,6 +71,7 @@ function App() {
     setQuestions(null)
     setRefined(null)
     setStoryboard(null)
+    setStyleConfig(DEFAULT_STYLE_CONFIG)
     setBusy(null)
     setError(null)
     setOffline(false)
@@ -117,7 +126,11 @@ function App() {
     setBusy('generate')
     setError(null)
     try {
-      const res = await api.generateStoryboard(promptId, demoMode)
+      const res = await api.generateStoryboard(
+        promptId,
+        toStyleTokens(styleConfig),
+        demoMode,
+      )
       setStoryboard(res)
     } catch (e) {
       handleError(e)
@@ -274,40 +287,15 @@ function App() {
             </Reveal>
           )}
 
-          {/* Generate storyboard CTA */}
+          {/* Style configurator + generate CTA (FRONTEND-003) */}
           {readyToGenerate && (
             <Reveal delay={80}>
-              <div className="glow-border brand-shadow hover-glow flex flex-col items-center gap-4 rounded-2xl p-8 text-center">
-                <div className="brand-gradient animate-float grid size-12 place-items-center rounded-2xl">
-                  <Clapperboard className="size-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold">Ready to storyboard</h3>
-                  <p className="text-muted-foreground mt-1 text-sm">
-                    The Screenwriter and Producer agents will decompose your
-                    scene into shots and route each one.
-                  </p>
-                </div>
-                <Button
-                  size="lg"
-                  disabled={busy === 'generate'}
-                  onClick={handleGenerate}
-                  className="brand-gradient h-11 gap-2 px-6 font-semibold text-white hover:opacity-90 disabled:opacity-50"
-                >
-                  {busy === 'generate' ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      Generating storyboard…
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="size-4" />
-                      Generate storyboard
-                      <ArrowRight className="size-4" />
-                    </>
-                  )}
-                </Button>
-              </div>
+              <StyleConfigurator
+                config={styleConfig}
+                onChange={setStyleConfig}
+                onGenerate={handleGenerate}
+                loading={busy === 'generate'}
+              />
             </Reveal>
           )}
 
@@ -331,7 +319,7 @@ function App() {
       <footer className="border-t border-border/60 py-6">
         <p className="text-muted-foreground text-center text-xs">
           VidCraft · Multi-agent, retrieval-augmented video generation ·
-          FRONTEND-002
+          FRONTEND-003
         </p>
       </footer>
     </div>

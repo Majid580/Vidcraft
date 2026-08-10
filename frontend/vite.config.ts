@@ -12,6 +12,9 @@ export default defineConfig({
     },
   },
   server: {
+    // Honor a PORT assigned by the harness/preview runner; fall back to Vite's
+    // default (5173) for a normal local `npm run dev`.
+    port: process.env.PORT ? Number(process.env.PORT) : undefined,
     proxy: {
       // Forward API calls to the Express backend (backend/src/app.js, :5000)
       '/api': {
