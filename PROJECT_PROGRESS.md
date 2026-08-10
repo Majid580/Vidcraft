@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~22.9%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 8 / 35 |
-| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) essentially done; into Phase 2/3 (Backend/DB, Frontend Dev) |
+| **Overall completion percentage** | **~28.6%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 10 / 35 |
+| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3 (Backend/DB, Frontend Dev) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | MongoDB/schema (BACKEND-002) or spaCy prompt analyzer (AI-002) — the Remotion pathway (REMOTION-001..003) is now functionally complete for a single hand-provided shot |
-| **Overall status** | 🟢 **The entire Remotion pathway (REMOTION-001..003) is done and verified end-to-end**, including a real backend→Remotion invocation with a working fallback for unrecognized shot types. Four app scaffolds (backend, ai-service, frontend, remotion) all confirmed working. Zero *storyboard-generation* functionality (FR-1..FR-4, FR-6..FR-12) implemented yet — no real prompt ever produces a real shot, only hand-written sample data does. |
+| **Current objective** | spaCy prompt analyzer (AI-002) — the other core FR alongside the now-complete Remotion pathway and MongoDB layer |
+| **Overall status** | 🟢 **Database layer now real.** `prompts`/`storyboards` Mongoose schemas exist and are verified against a real local MongoDB instance (write, read-back, clean disconnect). The Remotion pathway (REMOTION-001..003) is done end-to-end. Four app scaffolds all confirmed working. Zero *storyboard-generation* functionality (FR-1..FR-4, FR-6..FR-12) implemented yet — no real prompt ever produces a real shot, only hand-written sample data does. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed REMOTION-003 |
+| **Last updated by** | Claude (Sonnet 5) — completed SETUP-003 and BACKEND-002 |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -31,6 +31,8 @@
 | SETUP-001 | Technology feasibility testing | VERIFIED (blocker found and resolved) | See Section 5 below for the full per-tool results | Version checks + `import` smoke tests run directly on the dev machine, see Section 5 | 2026-08-10 |
 | BACKEND-001 | Express app scaffold | VERIFIED | `backend/src/app.js`, `backend/src/routes/health.js` (Helmet, CORS, Morgan, dotenv wired in) | Ran `node src/app.js`, `curl localhost:5000/api/health` → 200 `{"status":"ok","service":"backend"}` | 2026-08-10 |
 | AI-001 | FastAPI microservice scaffold | VERIFIED | `ai-service/main.py`, `ai-service/requirements.txt`, run via `ai-service/.venv-wsl` in WSL2 (ADR-008) | Ran `uvicorn main:app` in WSL2, `curl localhost:8000/health` → 200 `{"status":"ok","service":"ai-service"}` | 2026-08-10 |
+| SETUP-003 | `.env.example` | VERIFIED | `.env.example` (repo root, mirrors PROJECT_ARCHITECTURE.md Section 13); `backend/.env` created locally from it | `git check-ignore -v backend/.env` confirmed it's excluded from version control | 2026-08-10 |
+| BACKEND-002 | MongoDB connection + Mongoose schemas | VERIFIED | `backend/src/config/db.js` (connectDB), `backend/src/models/Prompt.js`, `backend/src/models/Storyboard.js` (embedded `world_state`/`shots` subdocuments) | Connected to a real local MongoDB instance; created + read back a Prompt and a Storyboard with nested world_state/shots; deleted test docs; closed connection cleanly. Field names use snake_case to match the proposal's wire format (see naming note added to Section 10) | 2026-08-10 |
 | REMOTION-003 | Shot → composition mapping logic | VERIFIED | `remotion/render-shot.mjs` (`selectCompositionId`, `@remotion/bundler`+`@remotion/renderer` programmatic render), `backend/src/services/remotionService.js` (safe `execFile` wrapper, no shell interpolation) | Ran `remotionService.renderShot()` for a matching shot (`camera: "close-up, static"` → `CloseUpShot`) and a deliberately unrecognized one (`camera: "aerial drone, 360 orbit"` → falls back to `MediumShot`, no throw); both output MP4s `ffprobe`-verified valid. Resolves R-11. | 2026-08-10 |
 | REMOTION-002 | Composition library (WideShot/MediumShot/CloseUpShot) | VERIFIED | `remotion/src/types.ts` (Shot/WorldState types), `remotion/src/theme.ts` (deterministic style_tokens→palette), `remotion/src/compositions/{Wide,Medium,CloseUp}Shot.tsx`, updated `remotion/src/Root.tsx` (dynamic duration via `calculateMetadata`) | `npm run render:all` → 4/4 MP4s rendered; `ffprobe` confirmed each has correct duration matching its sample `shot.duration_s` (wide=4.05s, medium/closeup/title=3.05s); confirmed visually distinct content per composition via Remotion Studio (get_page_text on each route) | 2026-08-10 |
 | REMOTION-001 | Remotion project scaffold + first composition | VERIFIED | `remotion/` (top-level dir per ADR-009) — `src/index.ts`, `src/Root.tsx`, `src/TitleCard.tsx` (uses `useCurrentFrame`, `spring`, `interpolate` per FR-5) | Ran `npx remotion render TitleCard out/test.mp4` → 90/90 frames encoded, 226 kB. `ffprobe` confirms valid h264, 1920x1080, 30fps, 3.05s. Also loaded Remotion Studio in-browser: composition renders correctly, zero console errors | 2026-08-10 |
@@ -64,18 +66,15 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 
 ### CRITICAL (blocks everything else)
 
-| Task ID | Name | Depends on |
-|---|---|---|
-| SETUP-003 | `.env.example` created | SETUP-002 |
+**None remaining.** All CRITICAL tasks (SETUP-001/002/003, BACKEND-001, AI-001, FRONTEND-001) are complete.
 
 ### HIGH (core pipeline, needed for Minimum Viable success criterion)
 
 | Task ID | Name | Depends on |
 |---|---|---|
-| BACKEND-002 | MongoDB connection + schema draft | BACKEND-001 (done) |
 | BACKEND-003 | Redis + Bull.js queue scaffold | BACKEND-001 (done) |
-| BACKEND-004 | REST routes, middleware, error handler | BACKEND-002 |
-| RAG-001 | FAISS index scaffold | BACKEND-002 |
+| BACKEND-004 | REST routes, middleware, error handler | BACKEND-002 (done) |
+| RAG-001 | FAISS index scaffold | BACKEND-002 (done) |
 | AI-002 | spaCy prompt analyzer (FR-1) | AI-001 (done) |
 | AI-003 | Conversational clarification agent (FR-2) | AI-002 |
 | AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 |
@@ -282,6 +281,31 @@ Verified on: 2026-08-10
 Verified by (agent/person): Claude (Sonnet 5)
 ```
 
+```text
+[VERIFIED]
+MongoDB connection + Mongoose schemas (BACKEND-002)
+Files:
+- backend/src/config/db.js (connectDB)
+- backend/src/models/Prompt.js
+- backend/src/models/Storyboard.js (embeds world_state, shots[])
+Verified by:
+- test execution: connected to a real local MongoDB instance, created
+  a Prompt and a Storyboard (with nested world_state/shots
+  subdocuments), read both back, deleted them, closed the connection
+Result:
+PASS — mongoose.connect() succeeded (readyState=1); Prompt.create()
+and Storyboard.create() both validated and persisted correctly
+(including the embedded shot subdocument's enum fields); findById()
+read back matched what was written exactly; connection.close()
+completed cleanly with no dangling handles. Field names are
+snake_case (raw_text, world_state, duration_s, ...) to match the
+proposal's actual JSON examples and remotion/src/types.ts, not the
+ER diagram's camelCase — see the naming note added to
+PROJECT_ARCHITECTURE.md Section 10.
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Sonnet 5)
+```
+
 No other component in this project has been inspected, run, or tested,
 because no other component has been written yet. This section exists to
 prevent exactly the failure mode it is named after: a future agent
@@ -362,7 +386,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [x] Backend server starts without error — 2026-08-10
 - [x] AI microservice (FastAPI/Uvicorn) starts without error — 2026-08-10, in WSL2
 - [x] Frontend dev server starts without error — 2026-08-10
-- [ ] MongoDB connects successfully
+- [x] MongoDB connects successfully — 2026-08-10 (native local Windows service, not Docker — see Section 9)
 - [ ] Redis connects successfully
 - [ ] At least one REST endpoint (Section 9) responds correctly
 - [ ] WebSocket connection between frontend and backend established
@@ -393,6 +417,8 @@ fyp/
 │                                https://github.com/Majid580/Vidcraft, main branch)
 ├── .gitignore
 ├── .claude/launch.json         (Browser-preview config, untracked — local tool config)
+├── .env.example                 (SETUP-003, mirrors PROJECT_ARCHITECTURE.md Section 13)
+├── docker-compose.yml           (local MongoDB — not the active setup on this machine, see Section 9)
 ├── VidCraft_Proposal.tex
 ├── PROJECT_ARCHITECTURE.md
 ├── PROJECT_PROGRESS.md
@@ -400,11 +426,14 @@ fyp/
 ├── README.md
 ├── backend/
 │   ├── package.json, package-lock.json
+│   ├── .env                     (untracked — MONGODB_URI, PORT, etc., gitignored)
 │   ├── node_modules/            (untracked)
 │   └── src/
 │       ├── app.js
 │       ├── routes/health.js
-│       └── services/remotionService.js  (invokes remotion/render-shot.mjs)
+│       ├── services/remotionService.js  (invokes remotion/render-shot.mjs)
+│       ├── config/db.js          (connectDB — BACKEND-002)
+│       └── models/Prompt.js, models/Storyboard.js
 ├── ai-service/
 │   ├── main.py
 │   ├── requirements.txt
@@ -442,9 +471,10 @@ this section are gone — deleted 2026-08-10 before the first commit.
 ### Actual major files
 - `VidCraft_Proposal.tex` — the FYP proposal, LaTeX source. Not compiled in this environment (no LaTeX toolchain here; use Overleaf or a local TeX distribution).
 - `backend/src/app.js` — Express app: Helmet, CORS, Morgan, dotenv, one route file. Starts via `npm run dev` (nodemon) or `npm start`.
+- `backend/src/config/db.js` + `backend/src/models/{Prompt,Storyboard}.js` — MongoDB connection + schemas (BACKEND-002).
 - `ai-service/main.py` — FastAPI app, one health-check route. Must be run from WSL2 (`./.venv-wsl/bin/uvicorn main:app`), not native Windows Python — see ADR-008.
 - `frontend/src/App.tsx` — Vite/React entry rendering a real shadcn/ui `Button`, styled with Tailwind v4.
-- `remotion/src/TitleCard.tsx` — the project's only Remotion composition. Renders via `npm run render` (from `remotion/`), previews via `npm start` (Remotion Studio on :3000).
+- `remotion/src/` — four compositions (`TitleCard`, `WideShot`, `MediumShot`, `CloseUpShot`) plus `render-shot.mjs`, the programmatic render + shot→composition selection entry point (REMOTION-003).
 
 ### Actual implemented endpoints
 - `GET /api/health` (backend, Express) — returns `{"status":"ok","service":"backend"}`
@@ -453,23 +483,24 @@ this section are gone — deleted 2026-08-10 before the first commit.
 Neither is part of the Section 9 API surface (`/api/prompts`, `/api/storyboards`, etc.) — those are still `PLANNED`/`PROPOSED`, not implemented.
 
 ### Actual models (database schemas)
-**None.** No MongoDB connection or Mongoose schemas exist yet (BACKEND-002).
+`Prompt` and `Storyboard` Mongoose schemas exist (`backend/src/models/`), verified against a real local MongoDB instance (BACKEND-002). `embeddings`, `jobs`, `evaluation_runs` (Section 10.1) do not exist yet.
 
 ### Actual components (frontend/backend/AI)
-Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFIED]` blocks above for exactly what was checked. No feature components (prompt analyzer, orchestrator, RAG, Remotion, critic loop) exist yet.
+Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5 `[VERIFIED]` blocks above for exactly what was checked. The Remotion pathway (FR-5) and the MongoDB layer are functionally real; no other feature component (prompt analyzer, orchestrator, RAG, critic loop) exists yet.
 
 ### Actual dependencies (package.json / requirements.txt contents)
-- `backend/package.json`: express, helmet, morgan, cors, dotenv (+ nodemon, dev)
+- `backend/package.json`: express, helmet, morgan, cors, dotenv, mongoose (+ nodemon, dev)
 - `ai-service/requirements.txt`: fastapi, uvicorn[standard], spacy (+ en_core_web_sm model), and their transitive deps — generated via `pip freeze` in the WSL2 venv
 - `frontend/package.json`: react, react-dom, tailwindcss v4, @tailwindcss/vite, shadcn/ui deps (radix-ui, class-variance-authority, clsx, tailwind-merge, lucide-react)
+- `remotion/package.json`: remotion, react, react-dom, @remotion/cli, @remotion/bundler, @remotion/renderer, typescript (pinned `^5` — see ADR-009's TS 7.x gotcha note)
 
 ### Actual configuration
-**None.** No `.env` or `.env.example` exists yet (SETUP-003 not started) — the backend's `PORT` falls back to a hardcoded default (5000) when unset.
+`.env.example` exists at repo root (SETUP-003), mirrors `PROJECT_ARCHITECTURE.md` Section 13. `backend/.env` exists locally (untracked, gitignored — confirmed via `git check-ignore`) with `MONGODB_URI`, `PORT`, `NODE_ENV`, `AI_SERVICE_URL` set. `ai-service/` and `remotion/` don't need `.env` yet — nothing in either reads an env var so far.
 
 ### Actual scripts
 - Backend: `npm start` (`node src/app.js`), `npm run dev` (`nodemon src/app.js`)
 - Frontend: standard Vite scripts (`npm run dev`, `build`, etc.)
-- Remotion: `npm start` (Remotion Studio), `npm run render` (renders TitleCard → `out/test.mp4`)
+- Remotion: `npm start` (Remotion Studio), `npm run render:all` (renders all 4 compositions → `out/`)
 - AI microservice: no script wrapper yet, run directly via `uvicorn main:app` inside WSL2
 - No CI configuration.
 
@@ -611,6 +642,37 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
   useful end-to-end: a real orchestrator producing real shots
   (AI-004/005) and a REST route wiring it up (BACKEND-004/INTEG-001).
 - Updated this file and PROJECT_STATE.yaml (8/35 tasks complete).
+
+2026-08-10 (session 8)
+- Completed SETUP-003: .env.example created at repo root, mirroring
+  PROJECT_ARCHITECTURE.md Section 13 exactly (same variable list, same
+  confirmed defaults for CRITIC_MAX_RETRIES/ANALYSIS_SCORE_THRESHOLD).
+- Completed BACKEND-002: MongoDB connection + Mongoose schemas.
+  - User asked whether their existing/production MongoDB was needed —
+    answered no, and recommended against connecting a scaffold-stage
+    project to a real personal database. User chose local MongoDB.
+  - First attempt: local MongoDB via Docker Compose (docker-compose.yml
+    added, mongo:7 image, localhost-only port binding, named volume).
+    Hit BLOCK-002 (Docker Desktop's Inference component fails to start
+    due to a corrupted socket file) — see Section 9 for the full
+    troubleshooting record and why it was worked around rather than
+    fixed.
+  - Pivoted to `winget install MongoDB.Server` — installed cleanly,
+    self-registered as an auto-start Windows service, listening on
+    27017 within a couple minutes, zero credentials needed.
+  - backend/src/config/db.js (connectDB), backend/src/models/Prompt.js,
+    backend/src/models/Storyboard.js (embeds world_state/shots per the
+    Section 10.2 ER diagram) — field names deliberately snake_case to
+    match the proposal's actual JSON and remotion/src/types.ts, not the
+    ER diagram's camelCase (documented as a naming note in
+    PROJECT_ARCHITECTURE.md Section 10, since the camelCase there was
+    this doc's own drafting inconsistency, not a real requirement).
+  - Verified end-to-end: connected to the real local instance, created
+    a Prompt + a Storyboard (with nested subdocuments), read both back,
+    deleted the test docs, closed the connection cleanly.
+- Updated PROJECT_ARCHITECTURE.md Section 10 status (NOT_IMPLEMENTED ->
+  IN_PROGRESS) and added the snake_case naming note.
+- Updated this file and PROJECT_STATE.yaml (10/35 tasks complete).
 ```
 
 ---
@@ -620,11 +682,11 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
 | Problem | Cause | Impact | Attempted solutions | Next action |
 |---|---|---|---|---|
 | ~~BLOCK-001: spaCy fails to import on this dev machine~~ **RESOLVED 2026-08-10** | Windows Smart App Control blocks spaCy's unsigned compiled `.pyd` files (confirmed via Code Integrity event log) | Was blocking AI-002 (spaCy prompt analyzer) on Windows specifically | User chose to run ai-service inside WSL2 (Ubuntu, already installed). User ran `sudo apt install python3-venv python3-pip` in WSL. A `.venv-wsl` venv was created at `ai-service/.venv-wsl` (via `/mnt/c/...`), spaCy 3.8.15 + `en_core_web_sm` installed and verified: `nlp('A lone astronaut walks slowly across a dusty red Martian landscape at sunset.')` correctly tokenized, POS-tagged, and extracted one entity | **Decision: the `ai-service` component runs inside WSL2 Ubuntu going forward, not native Windows Python.** The Windows-native `ai-service/.venv` (torch/numpy/opencv/faiss/sentence-transformers — all of which worked natively) is superseded by `.venv-wsl` for consistency; a future session should scaffold AI-001 inside WSL2 and can remove the native `.venv` at that point. |
+| ~~BLOCK-002: Docker Desktop won't start on this dev machine~~ **RESOLVED 2026-08-10 (worked around, not fixed)** | Docker Desktop's "Inference" (AI model runner) component fails to start: `initializing Inference manager: listening on unix://.../dockerInference: remove .../dockerInference: The file cannot be accessed by the system.` The `dockerInference` file is a corrupted reparse point (likely an orphaned AF_UNIX socket from an unclean shutdown) at `C:\Users\majid\AppData\Local\Docker\run\dockerInference` | Blocked the originally-chosen "local MongoDB via Docker" path for BACKEND-002 | Tried `Remove-Item -Force`, `fsutil reparsepoint query`, and a `robocopy /MIR` purge trick — all three failed with the identical underlying error (`Error 1920: The file cannot be accessed by the system`), meaning this is stuck at the OS/filesystem level, not something fixable from user-mode file operations | **Not actually fixed — worked around.** Installed MongoDB natively instead (`winget install MongoDB.Server`), which registered itself as an auto-start Windows service and required zero further setup. `docker-compose.yml` (root) is kept for other environments where Docker works normally; this machine just doesn't use it. If Docker is needed for something else later, try rebooting first — that's the standard fix for a Windows file lock/reparse-point corruption like this one, and hasn't been tried yet since it's disruptive mid-session. |
 
 **Open decisions that will block specific later tasks if not resolved in time** (not blockers *today*, but flagged so they don't become surprise blockers later — see `PROJECT_ARCHITECTURE.md` Section 24 for full detail):
 - PROVIDER-001 (which concrete API providers to use per tier) must be resolved before BACKEND-005 can start — target: during Phase 7, but researching options earlier reduces risk.
 - The authentication/authorization question (R-9) should be resolved before FRONTEND work that depends on user-specific history/state, to avoid rework.
-- The shot→Remotion-composition mapping strategy (R-11) should be resolved early in Phase 4 — it's on the critical path to the Minimum Viable success criterion.
 
 ---
 
@@ -633,27 +695,14 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
-NEXT 1 (parallel-safe, unblocks the rest of the backend):
-Task ID: BACKEND-002
-MongoDB connection + Mongoose schema draft
-Why:
-BACKEND-003/004, RAG-001 all depend on this. Needs a MongoDB instance
-(local or Atlas free tier — not yet decided/tested).
-Dependencies:
-BACKEND-001 (done)
-Expected files:
-backend/src/models/
-Acceptance criteria:
-Schemas defined for prompts, storyboards; connection verified.
-
-NEXT 2 (parallel-safe, the other core FR):
+NEXT 1 (the other core FR, now fully unblocked):
 Task ID: AI-002
 spaCy prompt analyzer (FR-1)
 Why:
-spaCy is now confirmed working in WSL2 (BLOCK-001 resolved, ADR-008).
-This is the first real piece of agentic/NLP functionality, and the
-Remotion pathway (REMOTION-001..003) is now done, so this is the next
-concrete FR to tackle.
+spaCy is confirmed working in WSL2 (BLOCK-001 resolved, ADR-008). This
+is the first real piece of agentic/NLP functionality — the Remotion
+pathway (REMOTION-001..003) and the MongoDB layer (BACKEND-002) are
+both done, so this is the next concrete FR to tackle.
 Dependencies:
 AI-001 (done)
 Expected files:
@@ -662,11 +711,24 @@ ai-service/analyzer/antonyms.json
 Acceptance criteria:
 Returns a structured score for a real prompt (per FR-1 schema); note
 the scoring formula/weights are still an open design decision
-(PROJECT_ARCHITECTURE.md Section 24, R-12).
+(PROJECT_ARCHITECTURE.md Section 24, R-12) — will need a reasonable
+default chosen and recorded as an ADR, not silently hard-coded.
 
-Also still open, lower urgency:
-SETUP-003 (.env.example) — worth doing before BACKEND-002/AI-002 need
-real config values (MONGODB_URI, GROQ_API_KEY, etc.)
+NEXT 2 (parallel-safe, rounds out the backend infra):
+Task ID: BACKEND-003
+Redis + Bull.js queue scaffold
+Why:
+Needed before BACKEND-004 (real REST routes) and the external-API
+pathway (BACKEND-005) can do anything async. Same "which local infra"
+question BACKEND-002 just answered (Docker was broken on this
+machine) will likely resurface — check for a native Redis-for-Windows
+option or reuse whatever pattern unblocks it fastest.
+Dependencies:
+BACKEND-001 (done)
+Expected files:
+backend/src/queues/
+Acceptance criteria:
+A trivial job can be enqueued and processed.
 ```
 
 ---

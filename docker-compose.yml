@@ -1,0 +1,25 @@
+# Local dev infrastructure only (not a deployment/production config —
+# see PROJECT_ARCHITECTURE.md Section 14.2, which leaves containerization
+# of the app itself as TBD). No credentials: bound to localhost only,
+# data lives in a named volume for easy reset via `docker compose down -v`.
+#
+# NOT currently in use on the primary dev machine: Docker Desktop there
+# has a corrupted internal socket file (dockerInference reparse point)
+# that survives Remove-Item/fsutil/robocopy attempts to clear it — see
+# PROJECT_PROGRESS.md Section 9 for the full record. That machine runs
+# MongoDB natively instead (`winget install MongoDB.Server`, registered
+# as an auto-start Windows service). This file is kept for other
+# environments where Docker works normally — MONGODB_URI is identical
+# either way (mongodb://localhost:27017/vidcraft).
+services:
+  mongodb:
+    image: mongo:7
+    container_name: vidcraft-mongodb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  mongodb-data:

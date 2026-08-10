@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 22.9
-  completion_basis: "verified_tasks / total_tasks (8 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 28.6
+  completion_basis: "verified_tasks / total_tasks (10 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — REMOTION-003 (shot->composition mapping, resolves R-11)"
-  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified) that can now also invoke real Remotion renders via src/services/remotionService.js. ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 compositions plus a programmatic render-shot.mjs entry point with shot->composition selection + documented fallback, verified end-to-end from the backend for both a matching and a fallback case. The Remotion pathway (FR-5) is now functionally complete for a single hand-provided shot; no real storyboard/orchestrator exists yet to drive it (AI-004/005), and it isn't wired into a REST endpoint yet."
+  last_updated_by: "Claude (Sonnet 5) — SETUP-003 (.env.example) and BACKEND-002 (MongoDB connection + schemas)"
+  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified) that can invoke real Remotion renders (remotionService.js) and now has a working MongoDB connection with Prompt/Storyboard Mongoose schemas, verified against a real local MongoDB instance (native Windows service, not Docker — see resolved_blockers). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 compositions plus a programmatic render-shot.mjs entry point with shot->composition selection + documented fallback, verified end-to-end from the backend. No real storyboard/orchestrator exists yet (AI-004/005), and nothing is wired into a REST endpoint yet (BACKEND-004/INTEG-001)."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -65,9 +65,11 @@ phases:
         verified_by: "Claude (Sonnet 5) — ran `git init`, `git status`; confirmed frontend/, backend/, ai-service/ exist"
       - id: "SETUP-003"
         name: "Create .env.example"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "CRITICAL"
         dependencies: ["SETUP-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — .env.example created at repo root, mirrors PROJECT_ARCHITECTURE.md Section 13; backend/.env created locally from it (gitignored, confirmed via git check-ignore)"
 
   - id: "phase_2"
     name: "Backend, DB & Vector Index"
@@ -83,9 +85,11 @@ phases:
         verified_by: "Claude (Sonnet 5) — started server, curled GET /api/health, got 200 {\"status\":\"ok\",\"service\":\"backend\"}"
       - id: "BACKEND-002"
         name: "MongoDB connection + schema draft"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["BACKEND-001"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — connected to a real local MongoDB instance, created+read back a Prompt and a Storyboard (with embedded world_state/shots), deleted the test docs, closed the connection cleanly"
       - id: "BACKEND-003"
         name: "Redis + Bull.js queue scaffold"
         status: "NOT_STARTED"
@@ -332,8 +336,9 @@ components:
     verified: true
     note: "Express app with health-check only (BACKEND-001). No routes, DB, or queue yet."
   - name: "Database Layer (MongoDB)"
-    status: "NOT_IMPLEMENTED"
-    verified: false
+    status: "IN_PROGRESS"
+    verified: true
+    note: "prompts/storyboards schemas + connection module verified (BACKEND-002). embeddings/jobs/evaluation_runs collections not started."
   - name: "Evaluation Study Tooling"
     status: "NOT_IMPLEMENTED"
     verified: false

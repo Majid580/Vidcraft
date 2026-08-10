@@ -851,7 +851,9 @@ No authentication/authorization middleware is listed because **no auth system is
 
 ## 10. Database Architecture
 
-**Current status: `NOT_IMPLEMENTED`.** No database connection, schema, or migration exists. Database technology is confirmed as **MongoDB** (proposal §5.2, §9.6); schema field names below are `PROPOSED`.
+**Current status: `IN_PROGRESS`.** `prompts` and `storyboards` (of the 5 collections below) have real Mongoose schemas (`backend/src/models/Prompt.js`, `backend/src/models/Storyboard.js`) and a working connection module (`backend/src/config/db.js`), verified 2026-08-10 with a real local MongoDB instance: connect, write, read-back, and clean disconnect all confirmed. `embeddings`, `jobs`, and `evaluation_runs` remain `NOT_IMPLEMENTED` (they belong to RAG-001, BACKEND-003, and the EVAL-* tasks respectively). Database technology is confirmed as **MongoDB** (proposal §5.2, §9.6); schema field names below are `PROPOSED`.
+
+**Naming note:** the Mongoose schemas use **snake_case** field names (`raw_text`, `world_state`, `duration_s`, etc.), matching the proposal's actual wire-format JSON (§6.1, §6.3) and `remotion/src/types.ts` — not the camelCase shown in the ER diagram below, which is this document's own drafting inconsistency rather than a deliberate choice to diverge from the proposal. Treat the field *names* in this ER diagram as illustrative of the *shape*, not the literal case convention.
 
 ### 10.1 Collections
 
