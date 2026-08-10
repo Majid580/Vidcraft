@@ -436,7 +436,7 @@ decisions:
   - id: "ADR-011"
     title: "Concrete Groq model selected: llama-3.3-70b-versatile"
     date: "2026-08-10"
-    summary: "Section 11.2 left the specific Groq model TBD. Queried the live Groq /models endpoint, selected llama-3.3-70b-versatile as the GROQ_MODEL default (env-overridable), confirmed via a live JSON-mode structured-output smoke test. Chosen over llama-3.1-8b-instant for stronger structured-reasoning quality on the orchestrator agents' tasks. Does not resolve the fallback-provider choice (still TBD, AI-006/PROVIDER-001)."
+    summary: "Section 11.2 left the specific Groq model TBD. Queried the live Groq /models endpoint, selected llama-3.3-70b-versatile as the GROQ_MODEL default (env-overridable), confirmed via a live JSON-mode structured-output smoke test. Chosen over llama-3.1-8b-instant for stronger structured-reasoning quality on the orchestrator agents' tasks. The fallback-provider choice was later resolved by ADR-015 (hosted-only, never local) + ADR-016 (default = second Groq model llama-3.1-8b-instant)."
   - id: "ADR-012"
     title: "Screenwriter drafts full shot shape (camera + pathway placeholder), not just narrative fields"
     date: "2026-08-10"

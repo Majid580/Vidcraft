@@ -551,7 +551,7 @@ Source: proposal §9 ("Tools and Technologies") and §6 ("Proposed Methodology")
 | spaCy (`en_core_web_sm`) | NLP prompt analysis | AI microservice — FR-1 | Dependency parsing, POS, NER for scoring | Not documented |
 | LangChain / LangGraph | Multi-agent orchestration | AI microservice — FR-3 | "chosen over a hand-rolled if/else pipeline because the state-graph model gives explicit, inspectable control flow, conditional branching and bounded cycles for the retry logic" (proposal §9.1) | Hand-rolled if/else pipeline — explicitly rejected |
 | Groq API | Primary LLM inference | AI microservice — FR-2, FR-3 | "chosen because the orchestrator issues multiple sequential calls per generation, where inference latency compounds noticeably" — low-latency priority (proposal §9.1) | A single higher-latency provider for all calls — implicitly rejected in favour of a tiered primary/fallback split |
-| Fallback LLM API (e.g. OpenAI GPT — example only, not finalized) | Higher-complexity reasoning, vision-based critic scoring | AI microservice — FR-3 (hard cases), FR-8 (critic) | Used selectively, not as default path, to control cost | **Specific provider TBD** — proposal only gives "e.g. OpenAI GPT" as an example |
+| Fallback LLM API (DECIDED — ADR-016: hosted, default = second Groq model `llama-3.1-8b-instant`) | Absorbs Groq primary unavailability (429/5xx/connection); higher-complexity reasoning | AI microservice — FR-3 (hard cases), FR-8 (critic) | Used only on primary failure, not the default path | **Resolved (ADR-015 hosted-only, ADR-016 default vendor).** Any OpenAI-compatible host works via `FALLBACK_LLM_BASE_URL`. Vision capability for the FR-8 critic is a separate open item. |
 | sentence-transformers (`all-MiniLM-L6-v2`) | Embeddings | AI microservice — FR-3 (intent similarity), FR-4 (RAG) | — | Not documented |
 | FAISS + MongoDB metadata | Vector similarity search | AI microservice — FR-4 | "chosen for simplicity and to avoid depending on a separate managed vector-database service" (proposal §9.1) | A managed vector-database service — explicitly rejected |
 | Remotion | Programmatic video rendering | AI microservice/backend — FR-5 | Guaranteed determinism/consistency at zero API cost | Not documented |
@@ -952,7 +952,7 @@ erDiagram
 | | |
 |---|---|
 | Primary provider | Groq API, model `llama-3.3-70b-versatile` (confirmed 2026-08-10, ADR-011 — proposal itself only said "Groq-hosted open-weight models," e.g. Llama-family, without committing to a specific id) |
-| Fallback provider | A cloud LLM API, "e.g. OpenAI GPT" (proposal's own wording — example, not final commitment) |
+| Fallback provider | DECIDED (ADR-015/016): a HOSTED cloud LLM API, never local. Default = a second Groq model (`llama-3.1-8b-instant`) on the same key; env-overridable to any OpenAI-compatible host |
 | Purpose | Storyboard decomposition, per-shot style assignment, provider routing, clarification-question generation |
 | Input | Clarified prompt / shot description / RAG-retrieved context |
 | Output | Structured JSON (storyboard, shot parameters, routing decision, clarification questions) via structured-output mode |
@@ -1024,7 +1024,7 @@ This mirrors the generic template in the user's documentation request, adapted t
 | Service | Status |
 |---|---|
 | **Groq API** | `PLANNED` (primary LLM). Purpose: low-latency inference for the multi-agent orchestration layer. Auth: API key (`GROQ_API_KEY`, placeholder — see Section 13). Rate limits: `TBD`, not documented. Fallback behavior: falls through to the secondary LLM API on failure or insufficient quality. Cost: proposal budgets "Rs. 0 – 2,000" assuming free-tier usage during development. |
-| **Fallback LLM API** | `PLANNED`, provider `TBD` ("e.g. OpenAI GPT" — example only). Purpose: harder reasoning steps + vision-based critic. Auth: API key placeholder `FALLBACK_LLM_API_KEY`. Cost: budgeted "Rs. 3,000 – 5,000." |
+| **Fallback LLM API** | `IMPLEMENTED` (AI-006). DECIDED (ADR-015/016): a HOSTED OpenAI-compatible endpoint, never local; default = second Groq model `llama-3.1-8b-instant` on the same `GROQ_API_KEY`. Purpose: absorb Groq primary unavailability. Auth: `FALLBACK_LLM_API_KEY` (blank → reuse `GROQ_API_KEY`). Cost: Rs. 0 on the Groq default; only a non-Groq override incurs the budgeted "Rs. 3,000 – 5,000." |
 | **External video/image generation providers (Tier 1/2/3)** | `PLANNED` strategy, **no specific vendor selected**. The proposal deliberately does not name vendors in its final version — it specifies only a tiering *policy* (free-tier first, then affordable paid, then premium). Selecting concrete providers is an explicit Phase 7 task. Cost: budgeted "Rs. 8,000 – 12,000" combined for video, "Rs. 2,000 – 4,000" for image. |
 | **Text-to-speech provider** | `PLANNED` (stretch-only), provider `TBD`. A single free-tier provider by explicit scope rule (proposal §5.2). Cost: budgeted "Rs. 0." |
 | **Cloud media hosting** | `PLANNED`, provider `TBD`. Purpose: serve final video/image assets on the API pathway. Not named in the proposal. |
@@ -1090,7 +1090,7 @@ ANALYSIS_SCORE_THRESHOLD=60    # confirmed default per proposal §6.1 ("default:
 | `REDIS_URL` | Required | Both | — |
 | `GROQ_API_KEY` | Required | Both | Never commit real value |
 | `GROQ_MODEL` | Required | Both | Default `llama-3.3-70b-versatile`, confirmed available on the Groq API as of 2026-08-10 (ADR-011) |
-| `FALLBACK_LLM_API_KEY` | Required | Both | Provider undecided |
+| `FALLBACK_LLM_API_KEY` | Optional | ai-service | Blank → reuses `GROQ_API_KEY` (ADR-016 default: second Groq model, hosted) |
 | `VIDEO_API_KEY_TIER1/2/3` | Required for FR-6 | Both | Providers undecided — Phase 7 |
 | `TTS_API_KEY` | Optional | Both | Stretch feature only |
 | `CRITIC_MAX_RETRIES` | Required | Both | Default confirmed: `2` |
@@ -1563,7 +1563,7 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Options considered:** Queried the live Groq `/models` endpoint with the project's API key; available options included `llama-3.1-8b-instant`, `llama-3.3-70b-versatile`, `openai/gpt-oss-20b`/`120b`, `qwen/qwen3.6-27b`, among others.
 - **Selected:** `llama-3.3-70b-versatile` as the default (`GROQ_MODEL` env var, overridable), confirmed working via a live JSON-mode structured-output smoke test.
 - **Why:** Larger/more capable than the `8b-instant` variant for the structured-reasoning tasks the orchestrator agents will need (question generation, storyboard decomposition), while still served on Groq's low-latency infrastructure per ADR-002. Kept as an env var rather than hard-coded so it can be swapped without a code change if latency/quality tradeoffs need revisiting.
-- **Consequences:** AI-004/AI-005/AI-006 (Screenwriter/Producer/Groq-integration agents) should default to the same `GROQ_MODEL` unless a specific step is later found to need a different model. This does not resolve the fallback-provider choice (still `TBD`, blocks AI-006/PROVIDER-001 territory) — only the primary Groq model id.
+- **Consequences:** AI-004/AI-005/AI-006 (Screenwriter/Producer/Groq-integration agents) should default to the same `GROQ_MODEL` unless a specific step is later found to need a different model. This ADR fixed only the primary Groq model id; the fallback-provider choice was subsequently resolved by ADR-015 (hosted-only, never local) + ADR-016 (default = second Groq model `llama-3.1-8b-instant`).
 
 ### ADR-012: Screenwriter drafts full shot shape (camera + pathway placeholder), not just narrative fields
 - **Date:** 2026-08-10

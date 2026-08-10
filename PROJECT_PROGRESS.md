@@ -1241,41 +1241,43 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
-NEXT 1 (continues the AI critical path):
-Task ID: AI-006
-Groq + fallback LLM integration
+NEXT 1 (highest demo value; makes the whole pipeline clickable):
+Task ID: FRONTEND-002
+Prompt input + clarification chat UI
 Why:
-AI-003/AI-004/AI-005 all call Groq as the sole provider today (per
-ADR-002) with no fallback on failure — the proposal calls for a
-fallback provider "where a step requires stronger reasoning than the
-primary model reliably provides" or on outright failure. This is the
-last remaining Phase 5 HIGH task; after it, INTEG-001 is unblocked by
-AI-006/AI-008/REMOTION-003/BACKEND-005/FRONTEND-002 only.
+Phase 5's HIGH tasks (AI-002..006) are all VERIFIED, so the
+prompt -> clarify -> storyboard slice already works through the Node
+backend (BACKEND-004). FRONTEND-002 turns that invisible backend into
+a real UI. Fully unblocked (FRONTEND-001 + BACKEND-004 done), zero
+open decisions.
 Dependencies:
-AI-004 (done)
+FRONTEND-001 (done), BACKEND-004 (done)
 Expected files:
-ai-service/llm/ (extend groq_client.py or add a fallback module)
+frontend/src/ (prompt input page, clarification chat components,
+API client to POST /api/prompts + /api/prompts/:id/clarify + /api/storyboards)
 Acceptance criteria:
-Fallback triggers correctly on primary (Groq) failure — needs a
-concrete fallback provider chosen and documented as an ADR (still TBD
-per PROVIDER-001/R-8 territory for the fallback LLM specifically, not
-just the video-generation API tiers).
+A user can type a prompt, see clarifying questions, answer them, and
+get a storyboard back — verified in-browser against the running backend.
 
-NEXT 2 (parallel-safe, ahead of RAG-002/003 and AI-007):
-Task ID: RAG-001
-FAISS index scaffold + MongoDB metadata sync design
+NEXT 2 (content-heavy; unblocks the RAG pathway):
+Task ID: RAG-002
+Curate cinematography reference corpus
 Why:
-Needed before RAG-002 (curate corpus) and RAG-003 (embed + populate)
-can do anything, and those in turn block AI-007 (Cinematographer).
+RAG-001's index scaffold exists; RAG-002 supplies the content that
+RAG-003 (embed + populate) then AI-007 (Cinematographer) need. Open
+film-technique references only (FR-4 security note).
 Dependencies:
-BACKEND-002 (done)
-Expected files:
-ai-service/rag/
+none (content curation); RAG-003 additionally needs RAG-001 (done)
+NOTE (ADR-015): RAG-003's embedding step must use a HOSTED embeddings
+API, not RAG-001's local sentence-transformers+torch — reconcile before
+RAG-003 starts. See open follow-up below.
 Acceptance criteria:
-Empty index can be created, queried, returns no results gracefully.
+A curated, license-clean corpus file set ready to embed.
 ```
 
-BACKEND-004 (REST routes, middleware, error handler) and BACKEND-003 (Redis + Bull.js queue scaffold) are now both VERIFIED — see Section 2. FRONTEND-002 is unblocked as a result of BACKEND-004.
+BACKEND-003/004 and now AI-006 are VERIFIED — see Section 2. With AI-006 done, all Phase 5 HIGH tasks are complete.
+
+**Open follow-up (ADR-015 consistency):** RAG-001's embedder runs local `sentence-transformers`+`torch`, which contradicts the no-local-heavy-compute policy the user set (ADR-015 — all inference via hosted APIs, we use Groq's API). Migrate corpus/query embedding to a hosted embeddings API as part of RAG-003 (Groq does not currently expose an embeddings endpoint, so this needs a hosted embeddings provider decision). Same applies to AI-008's similarity check.
 
 ---
 
