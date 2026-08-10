@@ -20,8 +20,8 @@ build/
 out/
 
 # Remotion render output
-frontend/out/
-**/remotion-render/
+remotion/out/
+.remotion/
 
 # Logs
 *.log

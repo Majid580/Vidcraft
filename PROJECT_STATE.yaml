@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 14.3
-  completion_basis: "verified_tasks / total_tasks (5 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 17.1
+  completion_basis: "verified_tasks / total_tasks (6 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — BACKEND-001, AI-001, FRONTEND-001 (three app scaffolds)"
-  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). No feature functionality (FR-1..FR-12) implemented yet — this is scaffolding only."
+  last_updated_by: "Claude (Sonnet 5) — REMOTION-001 (Remotion scaffold + verified test render)"
+  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ is a working Remotion project (top-level dir per ADR-009) that renders a real MP4 (ffprobe-verified) and previews correctly in Remotion Studio. No feature functionality (FR-1..FR-12) implemented yet — this is scaffolding only."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -132,9 +132,11 @@ phases:
     tasks:
       - id: "REMOTION-001"
         name: "Remotion project scaffold, first composition"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["SETUP-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — rendered remotion/out/test.mp4, verified with ffprobe (h264, 1920x1080, 30fps, 3.05s); also confirmed the TitleCard composition renders correctly in Remotion Studio via browser preview"
       - id: "REMOTION-002"
         name: "Composition library (>=3 distinct styles)"
         status: "NOT_STARTED"
@@ -383,6 +385,14 @@ decisions:
     title: "Scope deliberately trimmed (single TTS provider, small tiered API set)"
     date: "2026-08-10"
     summary: "Keeps the project achievable for a 4-person team within the timeline."
+  - id: "ADR-008"
+    title: "ai-service runs inside WSL2 (Ubuntu), not native Windows Python"
+    date: "2026-08-10"
+    summary: "Resolves BLOCK-001 (spaCy blocked by Windows Smart App Control) without disabling a system security feature."
+  - id: "ADR-009"
+    title: "Remotion lives in a dedicated top-level remotion/ directory, not inside ai-service/"
+    date: "2026-08-10"
+    summary: "Remotion is a Node/React toolkit; keeps it isolated from the Python ai-service, mirroring frontend/backend separation."
 
 open_questions:
   - id: "R-8"

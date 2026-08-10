@@ -1119,6 +1119,13 @@ fyp/
 │   ├── rag/
 │   ├── critic/
 │   └── main.py
+├── remotion/                  [top-level, per ADR-009 — not nested under ai-service/]
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── src/
+│       ├── index.ts           (registerRoot)
+│       ├── Root.tsx           (<Composition> registrations)
+│       └── *.tsx               (individual compositions)
 ├── .env.example                [PROPOSED — Section 13]
 └── docker-compose.yml          [TBD — not confirmed the team will containerize]
 ```
@@ -1345,7 +1352,7 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 
 | Task ID | Name | Depends on | Files/components | Acceptance criteria | Complexity |
 |---|---|---|---|---|---|
-| REMOTION-001 | Remotion project scaffold, first composition | SETUP-002 | `ai-service/` or dedicated `remotion/` dir (`TBD` exact placement) | One composition renders a test MP4 locally | Medium |
+| REMOTION-001 | Remotion project scaffold, first composition | SETUP-002 | `remotion/` (top-level dir, per ADR-009) | One composition renders a test MP4 locally | Medium |
 | REMOTION-002 | Composition library covering ≥3 distinct shot styles | REMOTION-001 | compositions dir | Meets proposal's "at least 3 distinct animated compositions" acceptance criterion (§5.2) | High |
 | REMOTION-003 | Shot → composition mapping logic | REMOTION-002 | `backend/src/services/remotionService.js` | Arbitrary shot JSON maps to a valid composition or documented default | High (open design question, Section 6.5) |
 
@@ -1505,6 +1512,15 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Selected:** WSL2 (Ubuntu, already installed on the dev machine as the default distro).
 - **Why:** Sidesteps the OS-level security policy entirely with no security tradeoff, and is the standard approach for Python native-extension-heavy workloads on Windows. Confirmed working: a venv at `ai-service/.venv-wsl` (created via the `/mnt/c/...` path into this same repo) has spaCy 3.8.15 + `en_core_web_sm` installed and verified with a real-sentence smoke test (correct tokenization, POS tags, and one named entity extracted).
 - **Consequences:** Future sessions building AI-001 (FastAPI microservice scaffold) onward should develop and run `ai-service` from within WSL2, not native Windows Python. The backend (Node/Express) and frontend (React/Vite) are unaffected — no native compiled-extension dependencies were found to trigger this issue for either stack, so they can stay on native Windows unless a similar block surfaces. The native-Windows `ai-service/.venv` created earlier in SETUP-001 (which worked for everything except spaCy) is superseded by `.venv-wsl` and should be removed once AI-001 is actually scaffolded inside WSL2.
+
+### ADR-009: Remotion lives in a dedicated top-level `remotion/` directory, not inside `ai-service/`
+- **Date:** 2026-08-10
+- **Context:** Section 20's roadmap and Section 14.2's proposed folder structure both left Remotion's placement `TBD` ("`ai-service/` or dedicated `remotion/` dir"). REMOTION-001 needed a real answer to scaffold anything.
+- **Options considered:** (1) Inside `ai-service/` — rejected: Remotion is a Node.js/React rendering toolkit (uses JSX compositions, `@remotion/cli`, a Node-based renderer), and `ai-service/` is a Python/FastAPI project; mixing runtimes in one directory would require an awkward dual-toolchain setup with no benefit. (2) A dedicated top-level `remotion/` directory with its own `package.json` — selected.
+- **Selected:** Top-level `remotion/` directory, independently `npm install`-able, with its own `package.json`, `tsconfig.json`, and `src/` (compositions in `src/*.tsx`, root registration in `src/Root.tsx`/`src/index.ts`).
+- **Why:** Keeps the Node/React toolchain (Remotion, React, TypeScript) isolated from the Python AI microservice, mirroring how `frontend/` and `backend/` are already separate Node projects. The backend (per Section 6.5, "Local process invocation") will shell out to this directory's `remotion render` CLI, the same way it will shell out to FFmpeg.
+- **Consequences:** `backend/src/services/remotionService.js` (REMOTION-003 / Section 6.5) should invoke `npx remotion render` (or `@remotion/renderer`'s programmatic API) with `cwd` set to `remotion/`, not treat Remotion as a Python-side dependency. Update Section 14.2's proposed structure to show `remotion/` as a top-level sibling of `frontend/`/`backend/`/`ai-service/`, not nested under `ai-service/`.
+- **Also noted (not an architecture decision, an environment gotcha):** TypeScript 7.x (installed by default via `npm install -D typescript` at the time of this session) breaks `@remotion/cli`'s esbuild-loader (`typescript.sys.readFile` is undefined) because Remotion's bundler expects the classic TS compiler API shape. Pin `typescript` to `^5` in any Remotion-adjacent package until Remotion officially supports TS 7.
 
 ---
 

@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~14.3%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 5 / 35 |
-| **Current phase** | Phase 0/1 complete; entering Phase 2/3 (Backend/DB, Frontend Dev) |
+| **Overall completion percentage** | **~17.1%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 6 / 35 |
+| **Current phase** | Phase 0/1 complete; into Phase 2/3/4 (Backend/DB, Frontend Dev, Remotion) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | Real functionality: MongoDB/schema (BACKEND-002), spaCy prompt analyzer (AI-002), or the Remotion pathway (REMOTION-001..003, recommended fastest demoable slice) |
-| **Overall status** | 🟢 **Three app scaffolds exist and are verified working.** Express backend, FastAPI ai-service (in WSL2), and Vite/React/Tailwind/shadcn frontend all confirmed running with real requests/renders. Zero feature functionality (FR-1..FR-12) implemented yet — this is infrastructure only. |
+| **Current objective** | Real functionality: MongoDB/schema (BACKEND-002), spaCy prompt analyzer (AI-002), or expanding the composition library (REMOTION-002) |
+| **Overall status** | 🟢 **Four app scaffolds exist and are verified working**, including one real end-to-end artifact: a rendered MP4. Express backend, FastAPI ai-service (in WSL2), Vite/React/Tailwind/shadcn frontend, and a Remotion project all confirmed working. Zero feature functionality (FR-1..FR-12) implemented yet — this is infrastructure only, though REMOTION-001 is the first task to produce a real user-facing artifact (a video file) rather than just a health-check response. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed BACKEND-001, AI-001, FRONTEND-001 |
+| **Last updated by** | Claude (Sonnet 5) — completed REMOTION-001 |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -31,6 +31,7 @@
 | SETUP-001 | Technology feasibility testing | VERIFIED (blocker found and resolved) | See Section 5 below for the full per-tool results | Version checks + `import` smoke tests run directly on the dev machine, see Section 5 | 2026-08-10 |
 | BACKEND-001 | Express app scaffold | VERIFIED | `backend/src/app.js`, `backend/src/routes/health.js` (Helmet, CORS, Morgan, dotenv wired in) | Ran `node src/app.js`, `curl localhost:5000/api/health` → 200 `{"status":"ok","service":"backend"}` | 2026-08-10 |
 | AI-001 | FastAPI microservice scaffold | VERIFIED | `ai-service/main.py`, `ai-service/requirements.txt`, run via `ai-service/.venv-wsl` in WSL2 (ADR-008) | Ran `uvicorn main:app` in WSL2, `curl localhost:8000/health` → 200 `{"status":"ok","service":"ai-service"}` | 2026-08-10 |
+| REMOTION-001 | Remotion project scaffold + first composition | VERIFIED | `remotion/` (top-level dir per ADR-009) — `src/index.ts`, `src/Root.tsx`, `src/TitleCard.tsx` (uses `useCurrentFrame`, `spring`, `interpolate` per FR-5) | Ran `npx remotion render TitleCard out/test.mp4` → 90/90 frames encoded, 226 kB. `ffprobe` confirms valid h264, 1920x1080, 30fps, 3.05s. Also loaded Remotion Studio in-browser: composition renders correctly, zero console errors | 2026-08-10 |
 | FRONTEND-001 | Vite/React/Tailwind/shadcn-ui scaffold | VERIFIED | `frontend/` — Vite React-TS template + Tailwind v4 (`@tailwindcss/vite`) + shadcn/ui (Nova preset, Radix base); `frontend/src/App.tsx` renders a real shadcn `Button` | Ran dev server via Browser preview at localhost:5173; `get_page_text`/`read_page` confirmed rendered content; zero console errors; network tab confirmed 200s for `index.css`, `button.tsx`, `radix-ui`, `class-variance-authority`, `tailwind-merge` | 2026-08-10 |
 
 This is not an application feature — it's repository scaffolding. The table stays otherwise empty until real functionality lands; do not pre-fill it with "expected" features.
@@ -78,8 +79,7 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 | AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 |
 | AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 |
 | AI-006 | Groq + fallback LLM integration | AI-004 |
-| REMOTION-001 | Remotion project scaffold, first composition | SETUP-002 (done) |
-| REMOTION-002 | Composition library (≥3 distinct styles) | REMOTION-001 |
+| REMOTION-002 | Composition library (≥3 distinct styles) | REMOTION-001 (done) |
 | REMOTION-003 | Shot → composition mapping logic | REMOTION-002 |
 | INTEG-001 | Full end-to-end wiring | all of the above |
 | INTEG-002 | FFmpeg post-processing pipeline | REMOTION-002, BACKEND-005 |
@@ -193,10 +193,37 @@ Verified on: 2026-08-10
 Verified by (agent/person): Claude (Sonnet 5)
 ```
 
+```text
+[VERIFIED]
+Remotion Rendering Engine scaffold (REMOTION-001)
+Files:
+- remotion/package.json, remotion/tsconfig.json
+- remotion/src/index.ts (registerRoot)
+- remotion/src/Root.tsx (<Composition id="TitleCard">, 1920x1080, 30fps, 90 frames)
+- remotion/src/TitleCard.tsx (uses useCurrentFrame, spring, interpolate per FR-5)
+Verified by:
+- test execution (`npx remotion render`) + external validation (`ffprobe`)
+  + manual run (Remotion Studio in browser)
+Result:
+PASS — render completed 90/90 frames, encoded to remotion/out/test.mp4
+(226 kB, untracked). ffprobe confirms a valid, playable file: h264,
+1920x1080, 30/1 fps, duration 3.05s. Remotion Studio loads the
+composition and renders it correctly with zero console errors.
+This is the first task in the project to produce a real user-facing
+artifact (a video) rather than only a health-check response.
+Only ONE composition exists — the composition library (>=3 distinct
+styles) is REMOTION-002, and the shot->composition mapping is
+REMOTION-003 (still an open design question, R-11).
+Gotcha recorded: TypeScript 7.x breaks @remotion/cli's bundler; this
+project pins typescript@^5 in remotion/package.json. See ADR-009.
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Sonnet 5)
+```
+
 No other component in this project has been inspected, run, or tested,
 because no other component has been written yet. This section exists to
 prevent exactly the failure mode it is named after: a future agent
-assuming something works because a document says it should. All three
+assuming something works because a document says it should. All four
 components above are scaffolding/infrastructure only — no feature
 requirement (FR-1 through FR-12) has been implemented or verified.
 
@@ -280,7 +307,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] Clarification agent (FR-2) generates and processes at least one Q&A round
 - [ ] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt
 - [ ] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query
-- [ ] Remotion pathway (FR-5) renders at least one MP4 from a shot
+- [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: renders an MP4 from a *hardcoded test composition*, NOT yet from a real shot object (that needs REMOTION-003 mapping logic). Partial only.
 - [ ] External API pathway (FR-6) successfully generates at least one real video via a connected provider
 - [ ] Critic loop (FR-8) triggers at least one real retry
 - [ ] FFmpeg post-processing (FR-9) produces one concatenated, playable final MP4
@@ -319,16 +346,24 @@ fyp/
 │   ├── requirements.txt
 │   ├── .venv/                   (untracked — native-Windows venv from SETUP-001, superseded by .venv-wsl)
 │   └── .venv-wsl/                (untracked — the venv actually used to run the service, per ADR-008)
-└── frontend/
-    ├── package.json, package-lock.json
+├── frontend/
+│   ├── package.json, package-lock.json
+│   ├── node_modules/            (untracked)
+│   ├── vite.config.ts, tsconfig*.json, components.json
+│   ├── index.html
+│   ├── public/
+│   └── src/
+│       ├── App.tsx, main.tsx, index.css
+│       ├── components/ui/button.tsx
+│       └── lib/utils.ts
+└── remotion/                    (top-level per ADR-009)
+    ├── package.json, package-lock.json, tsconfig.json
     ├── node_modules/            (untracked)
-    ├── vite.config.ts, tsconfig*.json, components.json
-    ├── index.html
-    ├── public/
+    ├── out/                     (untracked — rendered MP4s)
     └── src/
-        ├── App.tsx, main.tsx, index.css
-        ├── components/ui/button.tsx
-        └── lib/utils.ts
+        ├── index.ts             (registerRoot)
+        ├── Root.tsx             (<Composition> registrations)
+        └── TitleCard.tsx        (the one existing composition)
 ```
 The `xx00`..`xx05` split-file artifacts mentioned in earlier snapshots of
 this section are gone — deleted 2026-08-10 before the first commit.
@@ -338,6 +373,7 @@ this section are gone — deleted 2026-08-10 before the first commit.
 - `backend/src/app.js` — Express app: Helmet, CORS, Morgan, dotenv, one route file. Starts via `npm run dev` (nodemon) or `npm start`.
 - `ai-service/main.py` — FastAPI app, one health-check route. Must be run from WSL2 (`./.venv-wsl/bin/uvicorn main:app`), not native Windows Python — see ADR-008.
 - `frontend/src/App.tsx` — Vite/React entry rendering a real shadcn/ui `Button`, styled with Tailwind v4.
+- `remotion/src/TitleCard.tsx` — the project's only Remotion composition. Renders via `npm run render` (from `remotion/`), previews via `npm start` (Remotion Studio on :3000).
 
 ### Actual implemented endpoints
 - `GET /api/health` (backend, Express) — returns `{"status":"ok","service":"backend"}`
@@ -362,6 +398,7 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
 ### Actual scripts
 - Backend: `npm start` (`node src/app.js`), `npm run dev` (`nodemon src/app.js`)
 - Frontend: standard Vite scripts (`npm run dev`, `build`, etc.)
+- Remotion: `npm start` (Remotion Studio), `npm run render` (renders TitleCard → `out/test.mp4`)
 - AI microservice: no script wrapper yet, run directly via `uvicorn main:app` inside WSL2
 - No CI configuration.
 
@@ -434,6 +471,25 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
     verification of the frontend dev server.
 - Updated this file and PROJECT_STATE.yaml to reflect all three tasks
   as VERIFIED (5/35 tasks complete).
+- Committed and pushed all three scaffolds to GitHub.
+
+2026-08-10 (session 5)
+- Completed REMOTION-001: scaffolded a Remotion project in a new
+  top-level remotion/ directory, with one composition (TitleCard) using
+  useCurrentFrame/spring/interpolate per FR-5.
+- Resolved the long-standing "where does Remotion live" TBD as ADR-009
+  (top-level remotion/, not nested under ai-service/) — the Python vs
+  Node toolchain split made this the clear answer.
+- Hit and fixed a real environment issue: TypeScript 7.x (npm's current
+  default) breaks @remotion/cli's esbuild-loader with
+  "Cannot read properties of undefined (reading 'readFile')". Pinned
+  typescript@^5 in remotion/package.json. Recorded in ADR-009 so a
+  future session doesn't rediscover it.
+- Verified with a real render: 90/90 frames → out/test.mp4, then
+  independently validated with ffprobe (h264, 1920x1080, 30fps, 3.05s),
+  plus a visual check in Remotion Studio via browser preview.
+- Added a remotion-studio entry to .claude/launch.json (untracked).
+- Updated this file and PROJECT_STATE.yaml (6/35 tasks complete).
 ```
 
 ---
@@ -456,21 +512,22 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
-NEXT 1 (recommended, fastest route to a demoable slice):
-Task ID: REMOTION-001
-Remotion project scaffold, first composition
+NEXT 1 (continues the fastest route to a demoable slice):
+Task ID: REMOTION-002
+Composition library (>=3 distinct styles)
 Why:
-Per the critical-path note in PROJECT_ARCHITECTURE.md Section 21, the
-Remotion pathway has no dependency on an undecided external provider
-(unlike PROVIDER-001/BACKEND-005) and is the fastest route to a
-genuinely working, demoable end-to-end slice.
+REMOTION-001 proved the pipeline works but produced only one hardcoded
+composition. A library of distinct styles is what makes the
+Cinematographer agent's style decisions (FR-3/FR-4) meaningful, and is
+a prerequisite for REMOTION-003's mapping logic.
 Dependencies:
-SETUP-002 (done)
+REMOTION-001 (done)
 Expected files:
-ai-service/ or a dedicated remotion/ dir (exact placement TBD per
-PROJECT_ARCHITECTURE.md Section 20)
+remotion/src/*.tsx (new compositions), registered in remotion/src/Root.tsx
 Acceptance criteria:
-One composition renders a test MP4 locally.
+At least 3 visually distinct compositions, each renderable to MP4.
+Note: this is where the R-11 open question (composition taxonomy) starts
+to bite — decide the taxonomy here, before REMOTION-003 needs it.
 
 NEXT 2 (parallel-safe, unblocks the rest of the backend):
 Task ID: BACKEND-002
