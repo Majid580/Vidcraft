@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Remotion render output
+frontend/out/
+**/remotion-render/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor/OS
+.DS_Store
+.vscode/
+.idea/
+
+# Test/coverage
+coverage/
+.pytest_cache/

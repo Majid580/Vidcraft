@@ -1,0 +1,383 @@
+# PROJECT_STATE.yaml — machine-readable mirror of PROJECT_PROGRESS.md
+#
+# This file must stay consistent with PROJECT_PROGRESS.md and
+# PROJECT_ARCHITECTURE.md. If you update task/component status here,
+# update the prose files too (and vice versa) — do not let them drift.
+#
+# Full context for every field below lives in:
+#   - PROJECT_ARCHITECTURE.md  (what/why/how — Sections 1-25)
+#   - PROJECT_PROGRESS.md      (current state, verification log, next actions)
+
+project:
+  name: "VidCraft"
+  full_title: "VidCraft: A Multi-Agent, Retrieval-Augmented Pipeline for Prompt-Driven Video Generation"
+  version: "0.0.0-pre-development"
+  status: "in_progress"
+  current_phase: "phase_0_1_research_env_setup"
+  completion_percent: 2.9
+  completion_basis: "verified_tasks / total_tasks (1 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  last_updated: "2026-08-10"
+  last_updated_by: "Claude (Sonnet 5) — SETUP-002 (git init + base folder structure)"
+  repository_reality: "Git repo initialized (no commits yet). frontend/, backend/, ai-service/ exist with placeholder READMEs. .gitignore added. No application code exists."
+  timeline:
+    start: "2026-05"
+    end: "2027-04"
+    total_phases: 10
+
+team:
+  - name: "Muhammad Majid"
+    reg_no: "2023-CS-580"
+    role: "Lead — AI/orchestration"
+  - name: "Tahir Zaka"
+    reg_no: "2023-CS-596"
+    role: "Backend"
+  - name: "Hammad"
+    reg_no: "2023-CS-567"
+    role: "Frontend"
+  - name: "Maida Ibrar"
+    reg_no: "2023-CS-505"
+    role: "NLP / RAG / research"
+  - name: "Ms. Rabia Sana"
+    role: "Supervisor"
+  - name: "Dr. Yaeen-ul-Haq"
+    role: "Co-Supervisor"
+
+phases:
+  - id: "phase_0_1"
+    name: "Research & Environment Setup"
+    window: "2026-05"
+    status: "not_started"
+    tasks:
+      - id: "SETUP-001"
+        name: "Technology feasibility testing"
+        status: "NOT_STARTED"
+        priority: "CRITICAL"
+        dependencies: []
+      - id: "SETUP-002"
+        name: "Initialize git repo, .gitignore, base folder structure"
+        status: "VERIFIED"
+        priority: "CRITICAL"
+        dependencies: []
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — ran `git init`, `git status`; confirmed frontend/, backend/, ai-service/ exist"
+      - id: "SETUP-003"
+        name: "Create .env.example"
+        status: "NOT_STARTED"
+        priority: "CRITICAL"
+        dependencies: ["SETUP-002"]
+
+  - id: "phase_2"
+    name: "Backend, DB & Vector Index"
+    window: "2026-06"
+    status: "not_started"
+    tasks:
+      - id: "BACKEND-001"
+        name: "Node.js/Express project setup"
+        status: "NOT_STARTED"
+        priority: "CRITICAL"
+        dependencies: ["SETUP-002"]
+      - id: "BACKEND-002"
+        name: "MongoDB connection + schema draft"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["BACKEND-001"]
+      - id: "BACKEND-003"
+        name: "Redis + Bull.js queue scaffold"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["BACKEND-001"]
+      - id: "BACKEND-004"
+        name: "REST routes, middleware, error handler"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["BACKEND-002"]
+      - id: "RAG-001"
+        name: "FAISS index scaffold"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["BACKEND-002"]
+
+  - id: "phase_3"
+    name: "Frontend Development"
+    window: "2026-06/2026-07"
+    status: "not_started"
+    tasks:
+      - id: "FRONTEND-001"
+        name: "React/Vite/Tailwind/shadcn-ui project setup"
+        status: "NOT_STARTED"
+        priority: "CRITICAL"
+        dependencies: ["SETUP-002"]
+      - id: "FRONTEND-002"
+        name: "Prompt input + clarification chat UI"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["FRONTEND-001", "BACKEND-004"]
+      - id: "FRONTEND-003"
+        name: "Style configurator UI"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["FRONTEND-001"]
+
+  - id: "phase_4"
+    name: "Remotion Integration"
+    window: "2026-07/2026-08"
+    status: "not_started"
+    tasks:
+      - id: "REMOTION-001"
+        name: "Remotion project scaffold, first composition"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["SETUP-002"]
+      - id: "REMOTION-002"
+        name: "Composition library (>=3 distinct styles)"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["REMOTION-001"]
+      - id: "REMOTION-003"
+        name: "Shot to composition mapping logic"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["REMOTION-002"]
+        note: "Open design question — see PROJECT_ARCHITECTURE.md risk R-11"
+
+  - id: "phase_5"
+    name: "Multi-Agent Orchestration & NLP Core"
+    window: "2026-08/2026-10"
+    status: "not_started"
+    tasks:
+      - id: "AI-001"
+        name: "FastAPI microservice scaffold"
+        status: "NOT_STARTED"
+        priority: "CRITICAL"
+        dependencies: ["SETUP-002"]
+      - id: "AI-002"
+        name: "spaCy prompt analyzer (FR-1)"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["AI-001"]
+      - id: "AI-003"
+        name: "Conversational clarification agent (FR-2)"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["AI-002"]
+      - id: "AI-004"
+        name: "LangGraph orchestrator: Screenwriter agent"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["AI-003"]
+      - id: "AI-005"
+        name: "LangGraph orchestrator: Producer/Router agent"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["AI-004"]
+      - id: "AI-006"
+        name: "Groq + fallback LLM integration"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["AI-004"]
+
+  - id: "phase_6"
+    name: "RAG Knowledge Base & Style Grounding"
+    window: "2026-09/2026-11"
+    status: "not_started"
+    tasks:
+      - id: "RAG-002"
+        name: "Curate cinematography reference corpus"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: []
+      - id: "RAG-003"
+        name: "Embed corpus, populate vector index"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["RAG-001", "RAG-002"]
+      - id: "AI-007"
+        name: "Cinematographer agent (RAG-grounded)"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["AI-004", "RAG-003"]
+      - id: "AI-008"
+        name: "Sentence-similarity intent check + retry loop"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["AI-007"]
+
+  - id: "phase_7"
+    name: "Critic Loop & API Integration"
+    window: "2026-11/2026-12"
+    status: "not_started"
+    tasks:
+      - id: "PROVIDER-001"
+        name: "Select concrete Tier 1/2/3 external providers"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: []
+        note: "Decision-heavy, not just code — see PROJECT_ARCHITECTURE.md risk R-8"
+      - id: "BACKEND-005"
+        name: "External API adapter layer (provider abstraction)"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["PROVIDER-001", "BACKEND-003"]
+      - id: "CRITIC-001"
+        name: "Critic loop implementation (bounded retries)"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["BACKEND-005"]
+
+  - id: "phase_8"
+    name: "Integration & Optimization"
+    window: "2027-01"
+    status: "not_started"
+    tasks:
+      - id: "INTEG-001"
+        name: "Full end-to-end wiring"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["AI-006", "AI-008", "REMOTION-003", "BACKEND-005", "FRONTEND-002"]
+      - id: "INTEG-002"
+        name: "FFmpeg post-processing pipeline"
+        status: "NOT_STARTED"
+        priority: "HIGH"
+        dependencies: ["REMOTION-002", "BACKEND-005"]
+
+  - id: "phase_9"
+    name: "Evaluation Study"
+    window: "2027-02"
+    status: "not_started"
+    tasks:
+      - id: "EVAL-001"
+        name: "Curate fixed 50-prompt test set"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: []
+      - id: "EVAL-002"
+        name: "Run baseline (single-shot) condition"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["INTEG-001", "EVAL-001"]
+      - id: "EVAL-003"
+        name: "Run multi-agent condition"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["INTEG-001", "EVAL-001"]
+      - id: "EVAL-004"
+        name: "Score both conditions"
+        status: "NOT_STARTED"
+        priority: "MEDIUM"
+        dependencies: ["EVAL-002", "EVAL-003"]
+
+  - id: "phase_10"
+    name: "Report Writing & Demo Preparation"
+    window: "2027-03/2027-04"
+    status: "not_started"
+    tasks:
+      - id: "DOCS-001"
+        name: "Final report writing"
+        status: "NOT_STARTED"
+        priority: "LOW"
+        dependencies: ["EVAL-004"]
+      - id: "DEMO-001"
+        name: "Live demonstration rehearsal"
+        status: "NOT_STARTED"
+        priority: "LOW"
+        dependencies: ["INTEG-001"]
+
+components:
+  - name: "Prompt Analyzer (spaCy)"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Conversational Clarification Agent"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Multi-Agent Orchestrator (LangGraph)"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "RAG Style Knowledge Base"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Remotion Rendering Engine"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "External API Integration Layer"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Critic / Feedback Loop"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Post-Processing Pipeline (FFmpeg)"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Frontend Application"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Backend API Gateway"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Database Layer (MongoDB)"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+  - name: "Evaluation Study Tooling"
+    status: "NOT_IMPLEMENTED"
+    verified: false
+
+blockers: []
+# No blockers to *starting* development. See PROJECT_PROGRESS.md Section 9
+# for time-sensitive open decisions that will become blockers later if not
+# resolved (provider selection, auth model, composition-mapping strategy).
+
+next_tasks:
+  - id: "SETUP-001"
+    reason: "Confirms the tech stack is actually runnable before code is written against it"
+  - id: "BACKEND-001"
+    reason: "Backend scaffold — parallel with AI-001 and FRONTEND-001 once SETUP-002 is done"
+  - id: "AI-001"
+    reason: "AI microservice scaffold — parallel with BACKEND-001 and FRONTEND-001"
+  - id: "FRONTEND-001"
+    reason: "Frontend scaffold — parallel with BACKEND-001 and AI-001"
+
+decisions:
+  - id: "ADR-001"
+    title: "LangGraph for multi-agent orchestration"
+    date: "2026-08-10"
+    summary: "Chosen over a hand-rolled if/else pipeline for explicit, inspectable control flow and bounded retry cycles."
+  - id: "ADR-002"
+    title: "Groq as primary LLM, secondary provider as fallback only"
+    date: "2026-08-10"
+    summary: "Minimizes compounding latency across multiple sequential agent calls per generation."
+  - id: "ADR-003"
+    title: "Dual-mode generation: Remotion (guaranteed) + tiered external APIs (best-effort)"
+    date: "2026-08-10"
+    summary: "Keeps the system demonstrable at zero cost; avoids an unsupportable guaranteed-consistency claim on the API pathway."
+  - id: "ADR-004"
+    title: "FAISS + MongoDB metadata instead of a managed vector database"
+    date: "2026-08-10"
+    summary: "Simplicity; avoids adding another managed/paid dependency."
+  - id: "ADR-005"
+    title: "Bounded retry loops everywhere (default max 2)"
+    date: "2026-08-10"
+    summary: "Predictable cost and demo timing; never unbounded self-refinement."
+  - id: "ADR-006"
+    title: "Evaluation study uses an independent metric, not the triggering spaCy heuristic"
+    date: "2026-08-10"
+    summary: "Avoids circularity between the enhancement trigger and the evaluation metric."
+  - id: "ADR-007"
+    title: "Scope deliberately trimmed (single TTS provider, small tiered API set)"
+    date: "2026-08-10"
+    summary: "Keeps the project achievable for a 4-person team within the timeline."
+
+open_questions:
+  - id: "R-8"
+    question: "Which concrete providers within Tier 1/2/3 external APIs?"
+    blocks: ["PROVIDER-001", "BACKEND-005", "FR-6"]
+  - id: "R-9"
+    question: "Is any user authentication/authorization system required?"
+    blocks: ["frontend history/state features"]
+  - id: "R-11"
+    question: "What is the shot-to-Remotion-composition mapping strategy for arbitrary shot descriptions?"
+    blocks: ["REMOTION-003"]
+  - id: "R-12"
+    question: "Exact numeric values: storyboard similarity threshold, spaCy scoring formula/weights"
+    blocks: ["AI-002", "AI-008"]
+  - id: "R-13"
+    question: "Fail-closed behavior when all LLM fallbacks or all API tiers fail"
+    blocks: ["error handling in INTEG-001"]
