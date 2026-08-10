@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~17.1%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 6 / 35 |
+| **Overall completion percentage** | **~20.0%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 7 / 35 |
 | **Current phase** | Phase 0/1 complete; into Phase 2/3/4 (Backend/DB, Frontend Dev, Remotion) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | Real functionality: MongoDB/schema (BACKEND-002), spaCy prompt analyzer (AI-002), or expanding the composition library (REMOTION-002) |
-| **Overall status** | 🟢 **Four app scaffolds exist and are verified working**, including one real end-to-end artifact: a rendered MP4. Express backend, FastAPI ai-service (in WSL2), Vite/React/Tailwind/shadcn frontend, and a Remotion project all confirmed working. Zero feature functionality (FR-1..FR-12) implemented yet — this is infrastructure only, though REMOTION-001 is the first task to produce a real user-facing artifact (a video file) rather than just a health-check response. |
+| **Current objective** | Real functionality: MongoDB/schema (BACKEND-002), spaCy prompt analyzer (AI-002), or REMOTION-003 (shot→composition selection logic, taxonomy already decided) |
+| **Overall status** | 🟢 **Four app scaffolds exist and are verified working**, and the Remotion pathway now has a real 4-composition library (not just one test render). Express backend, FastAPI ai-service (in WSL2), Vite/React/Tailwind/shadcn frontend, and Remotion all confirmed working end-to-end. Zero feature functionality (FR-1..FR-12) implemented yet — this is infrastructure only. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed REMOTION-001 |
+| **Last updated by** | Claude (Sonnet 5) — completed REMOTION-002 |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -31,6 +31,7 @@
 | SETUP-001 | Technology feasibility testing | VERIFIED (blocker found and resolved) | See Section 5 below for the full per-tool results | Version checks + `import` smoke tests run directly on the dev machine, see Section 5 | 2026-08-10 |
 | BACKEND-001 | Express app scaffold | VERIFIED | `backend/src/app.js`, `backend/src/routes/health.js` (Helmet, CORS, Morgan, dotenv wired in) | Ran `node src/app.js`, `curl localhost:5000/api/health` → 200 `{"status":"ok","service":"backend"}` | 2026-08-10 |
 | AI-001 | FastAPI microservice scaffold | VERIFIED | `ai-service/main.py`, `ai-service/requirements.txt`, run via `ai-service/.venv-wsl` in WSL2 (ADR-008) | Ran `uvicorn main:app` in WSL2, `curl localhost:8000/health` → 200 `{"status":"ok","service":"ai-service"}` | 2026-08-10 |
+| REMOTION-002 | Composition library (WideShot/MediumShot/CloseUpShot) | VERIFIED | `remotion/src/types.ts` (Shot/WorldState types), `remotion/src/theme.ts` (deterministic style_tokens→palette), `remotion/src/compositions/{Wide,Medium,CloseUp}Shot.tsx`, updated `remotion/src/Root.tsx` (dynamic duration via `calculateMetadata`) | `npm run render:all` → 4/4 MP4s rendered; `ffprobe` confirmed each has correct duration matching its sample `shot.duration_s` (wide=4.05s, medium/closeup/title=3.05s); confirmed visually distinct content per composition via Remotion Studio (get_page_text on each route) | 2026-08-10 |
 | REMOTION-001 | Remotion project scaffold + first composition | VERIFIED | `remotion/` (top-level dir per ADR-009) — `src/index.ts`, `src/Root.tsx`, `src/TitleCard.tsx` (uses `useCurrentFrame`, `spring`, `interpolate` per FR-5) | Ran `npx remotion render TitleCard out/test.mp4` → 90/90 frames encoded, 226 kB. `ffprobe` confirms valid h264, 1920x1080, 30fps, 3.05s. Also loaded Remotion Studio in-browser: composition renders correctly, zero console errors | 2026-08-10 |
 | FRONTEND-001 | Vite/React/Tailwind/shadcn-ui scaffold | VERIFIED | `frontend/` — Vite React-TS template + Tailwind v4 (`@tailwindcss/vite`) + shadcn/ui (Nova preset, Radix base); `frontend/src/App.tsx` renders a real shadcn `Button` | Ran dev server via Browser preview at localhost:5173; `get_page_text`/`read_page` confirmed rendered content; zero console errors; network tab confirmed 200s for `index.css`, `button.tsx`, `radix-ui`, `class-variance-authority`, `tailwind-merge` | 2026-08-10 |
 
@@ -79,8 +80,7 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 | AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 |
 | AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 |
 | AI-006 | Groq + fallback LLM integration | AI-004 |
-| REMOTION-002 | Composition library (≥3 distinct styles) | REMOTION-001 (done) |
-| REMOTION-003 | Shot → composition mapping logic | REMOTION-002 |
+| REMOTION-003 | Shot → composition mapping logic (selection function + fallback) | REMOTION-002 (done — taxonomy already decided, see R-11) |
 | INTEG-001 | Full end-to-end wiring | all of the above |
 | INTEG-002 | FFmpeg post-processing pipeline | REMOTION-002, BACKEND-005 |
 | FRONTEND-002 | Prompt input + clarification chat UI | FRONTEND-001 (done), BACKEND-004 |
@@ -220,10 +220,42 @@ Verified on: 2026-08-10
 Verified by (agent/person): Claude (Sonnet 5)
 ```
 
+```text
+[VERIFIED]
+Remotion composition library (REMOTION-002)
+Files:
+- remotion/src/types.ts (Shot/WorldState types, mirrors proposal Section 6.3)
+- remotion/src/theme.ts (style_tokens -> deterministic palette, for FR-7)
+- remotion/src/compositions/WideShot.tsx
+- remotion/src/compositions/MediumShot.tsx
+- remotion/src/compositions/CloseUpShot.tsx
+- remotion/src/Root.tsx (registers all 4 compositions, calculateMetadata
+  for per-shot dynamic duration)
+Verified by:
+- test execution (`npm run render:all`) + external validation (`ffprobe`)
+  + manual visual check (Remotion Studio, each of the 3 new routes)
+Result:
+PASS — all 4 compositions render to distinct MP4s. ffprobe confirmed
+correct per-shot duration (wide=4.05s matching duration_s:4;
+medium/closeup/title=3.05s matching duration_s:3) — proves
+calculateMetadata is deriving duration from real shot data, not a
+hardcoded composition length. Remotion Studio confirmed each
+composition shows visually and textually distinct content driven by
+its shot/worldState props (get_page_text on /WideShot, /MediumShot,
+/CloseUpShot all showed the correct camera/description/setting text).
+Composition selection is keyed on the leading word of shot.camera
+("wide"/"medium"/"close-up") — this taxonomy decision makes partial
+progress on open question R-11, but the actual selection function
+(camera string -> component, plus fallback) is NOT built here — that's
+REMOTION-003.
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Sonnet 5)
+```
+
 No other component in this project has been inspected, run, or tested,
 because no other component has been written yet. This section exists to
 prevent exactly the failure mode it is named after: a future agent
-assuming something works because a document says it should. All four
+assuming something works because a document says it should. All
 components above are scaffolding/infrastructure only — no feature
 requirement (FR-1 through FR-12) has been implemented or verified.
 
@@ -307,7 +339,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] Clarification agent (FR-2) generates and processes at least one Q&A round
 - [ ] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt
 - [ ] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query
-- [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: renders an MP4 from a *hardcoded test composition*, NOT yet from a real shot object (that needs REMOTION-003 mapping logic). Partial only.
+- [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: 3 compositions now render from real `Shot`/`WorldState`-typed props (REMOTION-002); still partial because the `shot` data is a hardcoded sample, not output from a real orchestrator (AI-004/005 don't exist yet), and there's no automatic selection function yet (REMOTION-003).
 - [ ] External API pathway (FR-6) successfully generates at least one real video via a connected provider
 - [ ] Critic loop (FR-8) triggers at least one real retry
 - [ ] FFmpeg post-processing (FR-9) produces one concatenated, playable final MP4
@@ -362,8 +394,14 @@ fyp/
     ├── out/                     (untracked — rendered MP4s)
     └── src/
         ├── index.ts             (registerRoot)
-        ├── Root.tsx             (<Composition> registrations)
-        └── TitleCard.tsx        (the one existing composition)
+        ├── Root.tsx             (registers 4 <Composition>s, calculateMetadata)
+        ├── types.ts             (Shot/WorldState, mirrors proposal Section 6.3)
+        ├── theme.ts             (style_tokens -> deterministic palette, FR-7)
+        ├── TitleCard.tsx        (generic intro/branding card)
+        └── compositions/
+            ├── WideShot.tsx
+            ├── MediumShot.tsx
+            └── CloseUpShot.tsx
 ```
 The `xx00`..`xx05` split-file artifacts mentioned in earlier snapshots of
 this section are gone — deleted 2026-08-10 before the first commit.
@@ -490,6 +528,29 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
   plus a visual check in Remotion Studio via browser preview.
 - Added a remotion-studio entry to .claude/launch.json (untracked).
 - Updated this file and PROJECT_STATE.yaml (6/35 tasks complete).
+
+2026-08-10 (session 6)
+- Completed REMOTION-002: built a real composition library.
+  - remotion/src/types.ts: Shot/WorldState types mirroring the proposal's
+    Section 6.3 storyboard JSON example exactly (not invented fields).
+  - remotion/src/theme.ts: deterministic style_tokens -> palette mapping
+    (same style_tokens always produce the same look), making FR-7
+    continuity visible on screen rather than just claimed in docs.
+  - Three new compositions (WideShot, MediumShot, CloseUpShot), each
+    keyed to a shot "type" derived from shot.camera's leading word —
+    this taxonomy decision makes partial progress on R-11 (recorded in
+    PROJECT_ARCHITECTURE.md's risk table and as a note in ADR context;
+    the selection function itself is still REMOTION-003).
+  - Root.tsx now uses calculateMetadata so each composition's rendered
+    duration comes from shot.duration_s, not a hardcoded frame count —
+    verified wide (duration_s:4) rendered as 4.05s, medium/closeup
+    (duration_s:3) as 3.05s.
+- Verified via `npm run render:all` (4/4 MP4s) + ffprobe + Remotion
+  Studio visual/text check on each new route.
+- Updated PROJECT_ARCHITECTURE.md: Section 6.5 status NOT_IMPLEMENTED ->
+  IN_PROGRESS, R-11 risk-table row updated (High -> Medium, partially
+  resolved).
+- Updated this file and PROJECT_STATE.yaml (7/35 tasks complete).
 ```
 
 ---
@@ -512,22 +573,25 @@ Three scaffolds exist (backend, ai-service, frontend) — see Section 5 `[VERIFI
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
-NEXT 1 (continues the fastest route to a demoable slice):
-Task ID: REMOTION-002
-Composition library (>=3 distinct styles)
+NEXT 1 (completes the Remotion pathway to Minimum Viable):
+Task ID: REMOTION-003
+Shot -> composition mapping logic
 Why:
-REMOTION-001 proved the pipeline works but produced only one hardcoded
-composition. A library of distinct styles is what makes the
-Cinematographer agent's style decisions (FR-3/FR-4) meaningful, and is
-a prerequisite for REMOTION-003's mapping logic.
+REMOTION-002 decided the taxonomy (shot.camera leading word -> Wide/
+Medium/CloseUp) but didn't build the selection function. This is the
+last piece needed before INTEG-001 (full end-to-end wiring) can treat
+the Remotion pathway as complete, and is explicitly on the critical
+path to the Minimum Viable success criterion.
 Dependencies:
-REMOTION-001 (done)
+REMOTION-002 (done)
 Expected files:
-remotion/src/*.tsx (new compositions), registered in remotion/src/Root.tsx
+remotion/src/selectComposition.ts (or similar) — a pure function
+(shot: Shot) => composition id, used by whatever invokes rendering
+(eventually backend/src/services/remotionService.js, per Section 6.5)
 Acceptance criteria:
-At least 3 visually distinct compositions, each renderable to MP4.
-Note: this is where the R-11 open question (composition taxonomy) starts
-to bite — decide the taxonomy here, before REMOTION-003 needs it.
+Arbitrary shot JSON maps to a valid composition; shots whose camera
+doesn't start with wide/medium/close-up fall back to a documented
+default (don't just throw).
 
 NEXT 2 (parallel-safe, unblocks the rest of the backend):
 Task ID: BACKEND-002

@@ -5,7 +5,11 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "remotion studio",
-    "render": "remotion render TitleCard out/test.mp4"
+    "render": "remotion render TitleCard out/test.mp4",
+    "render:wide": "remotion render WideShot out/wide-shot.mp4",
+    "render:medium": "remotion render MediumShot out/medium-shot.mp4",
+    "render:closeup": "remotion render CloseUpShot out/closeup-shot.mp4",
+    "render:all": "npm run render && npm run render:wide && npm run render:medium && npm run render:closeup"
   },
   "keywords": [],
   "author": "",

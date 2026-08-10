@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 17.1
-  completion_basis: "verified_tasks / total_tasks (6 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 20.0
+  completion_basis: "verified_tasks / total_tasks (7 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — REMOTION-001 (Remotion scaffold + verified test render)"
-  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ is a working Remotion project (top-level dir per ADR-009) that renders a real MP4 (ffprobe-verified) and previews correctly in Remotion Studio. No feature functionality (FR-1..FR-12) implemented yet — this is scaffolding only."
+  last_updated_by: "Claude (Sonnet 5) — REMOTION-002 (composition library: WideShot/MediumShot/CloseUpShot)"
+  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 working compositions (TitleCard + 3 shot-type compositions keyed by camera type), each rendering a real MP4 with shot-driven duration and world_state-driven theme, ffprobe-verified. No feature functionality (FR-1..FR-12) implemented yet — this is scaffolding/infrastructure only."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -139,9 +139,12 @@ phases:
         verified_by: "Claude (Sonnet 5) — rendered remotion/out/test.mp4, verified with ffprobe (h264, 1920x1080, 30fps, 3.05s); also confirmed the TitleCard composition renders correctly in Remotion Studio via browser preview"
       - id: "REMOTION-002"
         name: "Composition library (>=3 distinct styles)"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["REMOTION-001"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — rendered WideShot/MediumShot/CloseUpShot + TitleCard, all ffprobe-validated with correct per-shot durations (calculateMetadata); confirmed visually distinct content per composition in Remotion Studio"
+        note: "Also made partial progress on R-11 (taxonomy: shot.camera leading word -> composition). The selection function itself is still REMOTION-003."
       - id: "REMOTION-003"
         name: "Shot to composition mapping logic"
         status: "NOT_STARTED"
@@ -403,6 +406,7 @@ open_questions:
     blocks: ["frontend history/state features"]
   - id: "R-11"
     question: "What is the shot-to-Remotion-composition mapping strategy for arbitrary shot descriptions?"
+    status: "Partially resolved 2026-08-10: taxonomy decided (shot.camera leading word -> wide/medium/close-up composition, matching REMOTION-002). Selection function + fallback-default still open."
     blocks: ["REMOTION-003"]
   - id: "R-12"
     question: "Exact numeric values: storyboard similarity threshold, spaCy scoring formula/weights"
