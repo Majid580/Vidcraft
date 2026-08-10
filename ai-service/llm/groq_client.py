@@ -1,7 +1,9 @@
-"""Thin wrapper over the Groq SDK for JSON-mode structured completions.
+"""Groq provider: JSON-mode structured completions (the PRIMARY LLM per ADR-002).
 
-Primary-provider only (per ADR-002/dependency graph: fallback-provider
-integration is AI-006's scope, not AI-003's).
+This module is provider-specific. The public, fallback-aware entrypoint the
+rest of the app calls is ``llm.complete_json`` (see ``llm/completion.py``),
+which invokes ``groq_complete_json`` first and only reaches for a secondary
+provider when Groq is unavailable.
 """
 
 import functools
@@ -25,7 +27,7 @@ def _get_client() -> Groq:
     return Groq(api_key=GROQ_API_KEY)
 
 
-def complete_json(system: str, user: str, temperature: float = 0.3) -> dict:
+def groq_complete_json(system: str, user: str, temperature: float = 0.3) -> dict:
     """Call the Groq chat API in JSON mode and parse the response into a dict."""
     client = _get_client()
     response = client.chat.completions.create(

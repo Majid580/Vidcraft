@@ -1048,9 +1048,14 @@ REDIS_URL=                    # required (Bull.js job queue backing store)
 GROQ_API_KEY=<API_KEY>        # required, primary agent-orchestration inference
 GROQ_MODEL=llama-3.3-70b-versatile   # confirmed working model id (ADR-011)
 
-# --- Fallback LLM (provider TBD) ---
-FALLBACK_LLM_API_KEY=<API_KEY>   # required for harder reasoning + critic loop
-FALLBACK_LLM_PROVIDER=            # TBD — e.g. "openai" (not finalized)
+# --- Fallback LLM (AI-006; ADR-015 hosted-only, ADR-016 default vendor) ---
+# Hosted OpenAI-compatible /chat/completions endpoint, never a local model.
+# Defaults (config.py) = a second Groq model on the same free key.
+LLM_FALLBACK_ENABLED=true                          # false -> Groq failures fatal
+FALLBACK_LLM_BASE_URL=https://api.groq.com/openai/v1
+FALLBACK_LLM_API_KEY=                              # blank -> reuse GROQ_API_KEY
+FALLBACK_LLM_MODEL=llama-3.1-8b-instant
+LLM_TIMEOUT_SECONDS=60
 
 # --- External video/image generation (providers TBD per tier) ---
 VIDEO_API_KEY_TIER1=<API_KEY>     # TBD provider
@@ -1375,7 +1380,7 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 | AI-003 | Conversational clarification agent (FR-2) | AI-002 | `ai-service/clarification/` | ≤2 questions generated, brief object produced, capped correctly | Medium |
 | AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 | `ai-service/orchestrator/agents/screenwriter.py` | Decomposes a prompt into 3–5 shots | Done — see PROJECT_PROGRESS.md verification log |
 | AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 | `ai-service/orchestrator/agents/producer.py` | Assigns pathway per shot per tiering policy | Done — see PROJECT_PROGRESS.md verification log |
-| AI-006 | Groq + fallback LLM integration | AI-004 | `ai-service/orchestrator/` | Fallback triggers correctly on primary failure | Medium |
+| AI-006 | Groq + fallback LLM integration | AI-004 | `ai-service/llm/{completion,groq_client,http_llm_client}.py` | Fallback triggers correctly on primary failure | Done — hosted OpenAI-compatible fallback (ADR-015/016); see PROJECT_PROGRESS.md verification log |
 
 ### Phase 6 — RAG Knowledge Base & Style Grounding (September–November 2026)
 
@@ -1473,7 +1478,19 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Options considered:** A single LLM provider for everything; a low-latency primary with a stronger fallback for hard cases.
 - **Selected:** Groq primary, fallback provider for high-complexity/vision cases only.
 - **Why:** Minimizes compounding latency on the hot path while preserving access to stronger reasoning when needed.
-- **Consequences:** Two providers to integrate/maintain; fallback provider's identity is still `TBD` (see Section 12) — this ADR fixes the *policy*, not the *vendor*.
+- **Consequences:** Two providers to integrate/maintain; this ADR fixes the *policy*, not the *vendor*. UPDATE (AI-006, 2026-08-10): the vendor and mechanism are now decided — ADR-015 mandates the fallback be a **hosted** OpenAI-compatible endpoint (never a local model, per the user's no-local-heavy-compute constraint), and ADR-016 sets the default to a second Groq model (`llama-3.1-8b-instant`) on the same free key, env-overridable to any independent provider. Also note the fallback now triggers on ANY primary unavailability (429/5xx/connection/no-key/bad-JSON), not only "high-complexity/vision" cases — that framing is superseded.
+
+### ADR-015: No local LLM / heavy on-device compute — all inference via hosted APIs
+- **Date:** 2026-08-10
+- **Context:** The user directed that no LLM or heavy work run locally: it consumes dev-machine resources and yields slow responses, hurting UX.
+- **Selected:** All LLM inference goes through hosted APIs. AI-006's fallback is a hosted OpenAI-compatible endpoint; an initial local Ollama/llama3 draft was implemented and **removed** the same session after a cold-start warm-up exceeded 120s (and, running native on Windows, it was unreachable from the WSL2 ai-service anyway).
+- **Consequences:** Forward implication — RAG-001's local `sentence-transformers`+`torch` embedder and AI-008's similarity check conflict with this policy and should migrate to a **hosted embeddings API** (logged as an open follow-up on RAG-003).
+
+### ADR-016: Fallback LLM default — a second Groq model via the OpenAI-compatible endpoint
+- **Date:** 2026-08-10
+- **Context:** Section 12/13 left the fallback vendor `TBD`. A zero-cost, no-extra-signup, API-based default was wanted.
+- **Selected:** Default fallback = Groq `llama-3.1-8b-instant` through `https://api.groq.com/openai/v1` on the same free `GROQ_API_KEY` — a different per-model rate bucket than the primary `llama-3.3-70b-versatile`, directly mitigating the 30 req/min free-tier 429s. The client is provider-agnostic: `FALLBACK_LLM_BASE_URL`/`_API_KEY`/`_MODEL` override to any OpenAI-compatible host (OpenRouter, Together, Google Gemini OpenAI-compat, OpenAI) with no code change.
+- **Consequences:** A same-provider fallback does not cover a *full* Groq outage; revisit if an independent secondary becomes warranted (relates to R-8/R-13).
 
 ### ADR-003: Dual-mode generation — Remotion (guaranteed) + tiered external APIs (best-effort)
 - **Date:** Finalized 2026-08-10
