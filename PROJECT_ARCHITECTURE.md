@@ -616,14 +616,14 @@ Each component below currently has **zero implementation**. "Current implementat
 - **Inputs:** Clarified prompt.
 - **Outputs:** Storyboard JSON (see FR-3).
 - **Dependencies:** LangGraph, Groq API, fallback LLM API, sentence-transformers.
-- **Internal structure (PROPOSED):** `orchestrator/graph.py` (LangGraph state graph definition), `orchestrator/agents/screenwriter.py`, `orchestrator/agents/cinematographer.py`, `orchestrator/agents/producer.py`, `orchestrator/state.py` (shared state schema).
+- **Internal structure:** `ai-service/orchestrator/graph.py` (LangGraph `StateGraph` definition — a single `screenwriter` node today, per ADR-001), `ai-service/orchestrator/agents/screenwriter.py` (IMPLEMENTED — AI-004), `ai-service/orchestrator/agents/cinematographer.py` (`NOT_IMPLEMENTED` — AI-007), `ai-service/orchestrator/agents/producer.py` (`NOT_IMPLEMENTED` — AI-005), `ai-service/orchestrator/state.py` (shared `OrchestratorState` TypedDict).
 - **Communication:** Cinematographer agent communicates with the RAG module (Section 6.4); Producer agent communicates with the tiered-routing logic (Section 6.5/6.6).
 - **Failure modes:** Incoherent storyboard output (Risk table: Medium likelihood, Medium impact — mitigated by bounded retry + similarity check); LLM API failure requiring fallback.
 - **Security considerations:** Same prompt-injection surface as 6.2, compounded across 3 agent roles.
 - **Performance considerations:** Multiple sequential LLM calls per generation (1 + N shots × 2) — latency compounds, which is *why* Groq was selected as primary (Section 5).
 - **Testing requirements:** Unit tests with mocked LLM responses; integration test on real storyboard generation (proposal §6.11).
-- **Current implementation status:** `NOT_IMPLEMENTED`.
-- **Future work:** Define the exact similarity threshold (numeric value TBD); define the composition-mapping strategy referenced in FR-5's error cases.
+- **Current implementation status:** `IN_PROGRESS`. Screenwriter agent (AI-004) is implemented and verified: `POST /storyboard/generate` (ai-service) decomposes a clarified prompt into a 3-5 shot storyboard (`storyboard_id`, `world_state{characters, setting, style_tokens}`, `shots[]{shot_id, description, camera, duration_s, pathway}`), matching the FR-3 JSON shape exactly. Per ADR-012, `camera` is a Screenwriter best-effort draft and `pathway` is hardcoded to `"remotion"` — both are placeholders for Cinematographer (AI-007) and Producer/Router (AI-005) to overwrite, not final decisions. Cinematographer and Producer/Router nodes do not exist yet; the similarity-check retry loop (AI-008) does not exist yet.
+- **Future work:** Define the exact similarity threshold (numeric value TBD); implement Producer/Router (AI-005) and Cinematographer (AI-007) as additional graph nodes.
 
 ### 6.4 RAG Style Knowledge Base
 
@@ -1367,7 +1367,7 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 | AI-001 | FastAPI microservice scaffold | SETUP-002 | `ai-service/main.py` | Health-check endpoint responds | Low |
 | AI-002 | spaCy prompt analyzer (FR-1) | AI-001 | `ai-service/analyzer/` | Returns structured score per proposal §6.1 schema, unit-tested | Medium |
 | AI-003 | Conversational clarification agent (FR-2) | AI-002 | `ai-service/clarification/` | ≤2 questions generated, brief object produced, capped correctly | Medium |
-| AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 | `ai-service/orchestrator/agents/screenwriter.py` | Decomposes a prompt into 3–5 shots | High |
+| AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 | `ai-service/orchestrator/agents/screenwriter.py` | Decomposes a prompt into 3–5 shots | Done — see PROJECT_PROGRESS.md verification log |
 | AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 | `ai-service/orchestrator/agents/producer.py` | Assigns pathway per shot per tiering policy | Medium |
 | AI-006 | Groq + fallback LLM integration | AI-004 | `ai-service/orchestrator/` | Fallback triggers correctly on primary failure | Medium |
 
@@ -1541,6 +1541,14 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Selected:** `llama-3.3-70b-versatile` as the default (`GROQ_MODEL` env var, overridable), confirmed working via a live JSON-mode structured-output smoke test.
 - **Why:** Larger/more capable than the `8b-instant` variant for the structured-reasoning tasks the orchestrator agents will need (question generation, storyboard decomposition), while still served on Groq's low-latency infrastructure per ADR-002. Kept as an env var rather than hard-coded so it can be swapped without a code change if latency/quality tradeoffs need revisiting.
 - **Consequences:** AI-004/AI-005/AI-006 (Screenwriter/Producer/Groq-integration agents) should default to the same `GROQ_MODEL` unless a specific step is later found to need a different model. This does not resolve the fallback-provider choice (still `TBD`, blocks AI-006/PROVIDER-001 territory) — only the primary Groq model id.
+
+### ADR-012: Screenwriter drafts full shot shape (camera + pathway placeholder), not just narrative fields
+- **Date:** 2026-08-10
+- **Context:** The proposal splits shot generation across three agents — Screenwriter (narrative decomposition), Cinematographer (per-shot camera/lighting/mood, RAG-grounded, AI-007), Producer/Router (pathway assignment, AI-005). Building AI-004 alone raised the question of whether the Screenwriter's output should omit `camera`/`pathway` entirely (leaving a partial shape until AI-005/007 exist) or draft placeholder values for them now.
+- **Options considered:** (a) Screenwriter output omits `camera`/`pathway`, leaving the storyboard incomplete until AI-005/AI-007 land; (b) Screenwriter drafts a best-effort `camera` value per shot and a hardcoded `pathway` default, both explicitly documented as placeholders for later agents to overwrite.
+- **Selected:** (b). `ai-service/orchestrator/agents/screenwriter.py` asks the LLM for a `camera` framing per shot and hardcodes every shot's `pathway` to `"remotion"` (`DEFAULT_PATHWAY`).
+- **Why:** Matches the same "reasonable, documented default" precedent as ADR-010/REMOTION-003's fallback default — it lets AI-004's output already conform to the full FR-3 storyboard JSON shape and flow directly into the existing Remotion pathway (REMOTION-003) today, rather than sitting unusable until AI-005/AI-007 are built. AI-005 (Producer/Router) is expected to overwrite `pathway` per its tiering policy; AI-007 (Cinematographer) is expected to overwrite/refine `camera` and populate `style_tokens` (left as `[]` by the Screenwriter) using RAG-grounded retrieval — neither treats the Screenwriter's draft as final.
+- **Consequences:** Until AI-005/AI-007 exist, every generated storyboard routes 100% of shots through Remotion with camera framings that are a first-draft LLM guess, not retrieval-grounded. This is acceptable for the Minimum Viable criterion (Remotion-only end-to-end demo) but must not be read as Cinematographer/Producer logic already existing.
 
 ---
 

@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from analyzer import EmptyPromptError, score_prompt
 from clarification import build_brief, generate_questions
 from llm import GroqConfigError
+from orchestrator import ScreenwriterOutputError, generate_storyboard
 
 app = FastAPI(title="VidCraft AI Microservice")
 
@@ -70,3 +71,23 @@ def clarify_resolve(request: ClarifyResolveRequest):
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+class StoryboardRequest(BaseModel):
+    clarified_prompt: str = Field(..., min_length=1)
+
+
+class StoryboardResponse(BaseModel):
+    storyboard_id: str
+    world_state: dict
+    shots: list[dict]
+
+
+@app.post("/storyboard/generate", response_model=StoryboardResponse)
+def storyboard_generate(request: StoryboardRequest):
+    try:
+        return generate_storyboard(request.clarified_prompt)
+    except GroqConfigError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except ScreenwriterOutputError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
