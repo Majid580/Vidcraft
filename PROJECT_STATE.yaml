@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 28.6
-  completion_basis: "verified_tasks / total_tasks (10 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 34.3
+  completion_basis: "verified_tasks / total_tasks (12 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — SETUP-003 (.env.example) and BACKEND-002 (MongoDB connection + schemas)"
-  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified) that can invoke real Remotion renders (remotionService.js) and now has a working MongoDB connection with Prompt/Storyboard Mongoose schemas, verified against a real local MongoDB instance (native Windows service, not Docker — see resolved_blockers). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 compositions plus a programmatic render-shot.mjs entry point with shot->composition selection + documented fallback, verified end-to-end from the backend. No real storyboard/orchestrator exists yet (AI-004/005), and nothing is wired into a REST endpoint yet (BACKEND-004/INTEG-001)."
+  last_updated_by: "Claude (Sonnet 5) — AI-003 (conversational clarification agent)"
+  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified) that can invoke real Remotion renders (remotionService.js) and now has a working MongoDB connection with Prompt/Storyboard Mongoose schemas, verified against a real local MongoDB instance (native Windows service, not Docker — see resolved_blockers). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008) and now also exposes: (1) POST /analyze (AI-002, FR-1 five-dimension prompt scorer), and (2) POST /clarify/questions + POST /clarify/resolve (AI-003, FR-2 clarification agent, real Groq API calls, unit-tested with a mocked LLM and live-verified end-to-end including a re-analysis showing score improve from 33 to 72). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). remotion/ has 4 compositions plus a programmatic render-shot.mjs entry point with shot->composition selection + documented fallback, verified end-to-end from the backend. No real storyboard/orchestrator exists yet (AI-004/005), and nothing is wired into a REST endpoint on the backend side yet (BACKEND-004/INTEG-001) — the AI-002/003 endpoints are only reachable directly on the ai-service port for now."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -172,14 +172,20 @@ phases:
         verified_by: "Claude (Sonnet 5) — ran inside WSL2 (ai-service/.venv-wsl per ADR-008), curled GET /health, got 200 {\"status\":\"ok\",\"service\":\"ai-service\"}"
       - id: "AI-002"
         name: "spaCy prompt analyzer (FR-1)"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["AI-001"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — 9/9 pytest unit tests pass in ai-service/.venv-wsl (WSL2, per ADR-008); started uvicorn and curl-verified POST /analyze end-to-end for a vague prompt (correctly flags vague_action/missing_setting/low_visual_detail), a rich prompt (86/100, no flags), and a whitespace-only prompt (422 rejected)"
+        note: "Scoring formula (equal-weight average of 5 dimensions, 40-point flag threshold) adopted as a documented default — see ADR-010. Domain antonym dictionary authored (ai-service/analyzer/antonyms.json, 36 pairs). DB persistence of the analysis result (Section 10) and the backend-side REST wiring are out of scope for this task — that's BACKEND-004/INTEG-001."
       - id: "AI-003"
         name: "Conversational clarification agent (FR-2)"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "HIGH"
         dependencies: ["AI-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — 17/17 pytest tests pass (7 new, LLM mocked via monkeypatch) in ai-service/.venv-wsl; live end-to-end run against the real Groq API: analyzed a vague prompt (33/100, 3 flags) -> generated 2 real clarifying questions -> resolved answers into a brief + clarified prompt -> re-analyzed the clarified prompt (72/100, 0 flags), demonstrating the loop actually closes back into FR-1. Also verified the no-flags no-op path (empty questions, zero LLM calls) and the mismatched questions/answers 400 error path."
+        note: "Single-round design (generate <=2 questions, then one resolve call) — no iteration loop, so termination is structural rather than a retry-count cap. Concrete Groq model (llama-3.3-70b-versatile) selected and confirmed working — see ADR-011. Fallback-provider integration is explicitly out of scope (that's AI-006/PROVIDER-001)."
       - id: "AI-004"
         name: "LangGraph orchestrator: Screenwriter agent"
         status: "NOT_STARTED"
@@ -304,11 +310,13 @@ phases:
 
 components:
   - name: "Prompt Analyzer (spaCy)"
-    status: "NOT_IMPLEMENTED"
-    verified: false
+    status: "IMPLEMENTED"
+    verified: true
+    note: "FastAPI POST /analyze (AI-002): ai-service/analyzer/{pipeline,scoring}.py + antonyms.json. Returns overall_score/dimensions/flags/suggestions per proposal Section 6.1 schema. Not yet reachable via the Node backend (BACKEND-004/INTEG-001)."
   - name: "Conversational Clarification Agent"
-    status: "NOT_IMPLEMENTED"
-    verified: false
+    status: "IMPLEMENTED"
+    verified: true
+    note: "FastAPI POST /clarify/questions + POST /clarify/resolve (AI-003): ai-service/clarification/agent.py + ai-service/llm/groq_client.py. Real Groq API calls, structured JSON-mode output. Not yet reachable via the Node backend (BACKEND-004/INTEG-001); no frontend chat UI yet (FRONTEND-002)."
   - name: "Multi-Agent Orchestrator (LangGraph)"
     status: "NOT_IMPLEMENTED"
     verified: false
@@ -357,14 +365,14 @@ resolved_blockers:
     resolved_by: "Claude (Sonnet 5), with user running `sudo apt install python3-venv python3-pip` in WSL"
 
 next_tasks:
-  - id: "SETUP-003"
-    reason: ".env.example — needed before BACKEND-002/AI-002 wire up real config (MongoDB URI, Groq key, etc.)"
-  - id: "REMOTION-001"
-    reason: "Fastest route to a real demoable slice per the critical-path note; no dependency on undecided external providers"
-  - id: "BACKEND-002"
-    reason: "MongoDB connection + schema draft, now that BACKEND-001 exists"
-  - id: "AI-002"
-    reason: "spaCy prompt analyzer (FR-1) — spaCy confirmed working in WSL2 (BLOCK-001 resolved), AI-001 scaffold exists"
+  - id: "AI-004"
+    reason: "LangGraph orchestrator: Screenwriter agent — continues the AI critical path now that AI-003 (clarified prompt + brief) exists as its input; can reuse ai-service/llm/groq_client.py"
+  - id: "BACKEND-003"
+    reason: "Redis + Bull.js queue scaffold — unblocked since BACKEND-001; needed before job-based generation work"
+  - id: "BACKEND-004"
+    reason: "REST routes/middleware/error handler — unblocked since BACKEND-002; needed to expose AI-002/AI-003 through the Node backend instead of hitting ai-service directly"
+  - id: "RAG-001"
+    reason: "FAISS index scaffold — unblocked since BACKEND-002; needed ahead of RAG-002/003"
 
 decisions:
   - id: "ADR-001"
@@ -403,6 +411,14 @@ decisions:
     title: "Remotion lives in a dedicated top-level remotion/ directory, not inside ai-service/"
     date: "2026-08-10"
     summary: "Remotion is a Node/React toolkit; keeps it isolated from the Python ai-service, mirroring frontend/backend separation."
+  - id: "ADR-010"
+    title: "FR-1 scoring formula: equal-weight average, 40-point flag threshold"
+    date: "2026-08-10"
+    summary: "overall_score is the unweighted mean of the 5 dimension scores; any dimension below 40/100 raises its corresponding flag+suggestion. Simplest defensible default absent a specified formula (R-12); documented here rather than left as a silent hard-coded choice. Per-dimension heuristics (subject-clarity from nsubj/nsubjpass presence, action-specificity from a vague-verb lemma list, environment-detail from GPE/LOC/FAC NER + locative prepositions + time-of-day words, visual-richness from adjective density, temporal-coherence from temporal-marker presence + finite-tense mixing) live as inline comments in ai-service/analyzer/scoring.py. Revisit if the curated 50-prompt test set (EVAL-001) shows systematic miscalibration."
+  - id: "ADR-011"
+    title: "Concrete Groq model selected: llama-3.3-70b-versatile"
+    date: "2026-08-10"
+    summary: "Section 11.2 left the specific Groq model TBD. Queried the live Groq /models endpoint, selected llama-3.3-70b-versatile as the GROQ_MODEL default (env-overridable), confirmed via a live JSON-mode structured-output smoke test. Chosen over llama-3.1-8b-instant for stronger structured-reasoning quality on the orchestrator agents' tasks. Does not resolve the fallback-provider choice (still TBD, AI-006/PROVIDER-001)."
 
 open_questions:
   - id: "R-8"
@@ -417,7 +433,8 @@ open_questions:
     blocks: []
   - id: "R-12"
     question: "Exact numeric values: storyboard similarity threshold, spaCy scoring formula/weights"
-    blocks: ["AI-002", "AI-008"]
+    status: "PARTIALLY RESOLVED 2026-08-10 — spaCy scoring formula/weights decided, see ADR-010. Storyboard similarity threshold (blocks AI-008) still open."
+    blocks: ["AI-008"]
   - id: "R-13"
     question: "Fail-closed behavior when all LLM fallbacks or all API tiers fail"
     blocks: ["error handling in INTEG-001"]

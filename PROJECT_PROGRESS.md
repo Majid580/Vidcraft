@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~28.6%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 10 / 35 |
-| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3 (Backend/DB, Frontend Dev) |
+| **Overall completion percentage** | **~34.3%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 12 / 35 |
+| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; into Phase 2/3/5 (Backend/DB, Frontend Dev, AI Core) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | spaCy prompt analyzer (AI-002) — the other core FR alongside the now-complete Remotion pathway and MongoDB layer |
-| **Overall status** | 🟢 **Database layer now real.** `prompts`/`storyboards` Mongoose schemas exist and are verified against a real local MongoDB instance (write, read-back, clean disconnect). The Remotion pathway (REMOTION-001..003) is done end-to-end. Four app scaffolds all confirmed working. Zero *storyboard-generation* functionality (FR-1..FR-4, FR-6..FR-12) implemented yet — no real prompt ever produces a real shot, only hand-written sample data does. |
+| **Current objective** | LangGraph orchestrator: Screenwriter agent (AI-004), continuing the AI critical path — or BACKEND-003/004/RAG-001 in parallel (all unblocked backend infra) |
+| **Overall status** | 🟢 **First two real FRs are live and chained together.** FR-1 (prompt quality analysis, AI-002) and FR-2 (conversational clarification, AI-003) are both implemented and, critically, verified to actually work *together*: a vague prompt (33/100, 3 flags) → 2 real Groq-generated clarifying questions → merged brief + clarified prompt → re-analyzed at 72/100 with 0 flags. The MongoDB layer and the Remotion pathway (REMOTION-001..003) are also done. Four app scaffolds all confirmed working. Still not wired together: neither AI-002 nor AI-003's output is persisted to Mongo or reachable through the Node backend (that's BACKEND-004/INTEG-001), and FR-3/FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Sonnet 5) — completed SETUP-003 and BACKEND-002 |
+| **Last updated by** | Claude (Sonnet 5) — completed AI-003 (conversational clarification agent) |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,8 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| AI-003 | Conversational clarification agent (FR-2) | VERIFIED | `ai-service/llm/groq_client.py` (Groq SDK wrapper, JSON-mode structured completions), `ai-service/clarification/agent.py` (`generate_questions` <=2 questions, `build_brief` merges answers), `ai-service/config.py` (env loading), `POST /clarify/questions` + `POST /clarify/resolve` in `ai-service/main.py` | 17/17 pytest tests pass (7 new, LLM mocked via monkeypatch). Live end-to-end against the real Groq API: vague prompt (33/100, 3 flags) → 2 real generated questions → resolved into brief + clarified prompt → re-analyzed at 72/100 with 0 flags. No-flags no-op path and mismatched-length 400 error path also verified. | 2026-08-10 |
+| AI-002 | spaCy prompt analyzer (FR-1) | VERIFIED | `ai-service/analyzer/pipeline.py` (cached spaCy load), `ai-service/analyzer/scoring.py` (5-dimension heuristic scorer, flags/suggestions), `ai-service/analyzer/antonyms.json` (36-pair domain antonym dictionary), `POST /analyze` in `ai-service/main.py` | 9/9 pytest unit tests pass (`ai-service/tests/test_analyzer.py`) in `.venv-wsl`; started uvicorn and curled `/analyze` for a vague prompt (`vague_action`/`missing_setting`/`low_visual_detail` flagged, 35/100), a rich prompt (86/100, no flags), and a whitespace-only prompt (422 rejected) | 2026-08-10 |
 | SETUP-002 | Git repo + base folder structure | VERIFIED | `.git/`, `.gitignore`, `frontend/`, `backend/`, `ai-service/` (placeholder READMEs only); pushed to `origin/main` at https://github.com/Majid580/Vidcraft | `git status` succeeds; three top-level dirs confirmed present via file listing; `git push` succeeded | 2026-08-10 |
 | SETUP-001 | Technology feasibility testing | VERIFIED (blocker found and resolved) | See Section 5 below for the full per-tool results | Version checks + `import` smoke tests run directly on the dev machine, see Section 5 | 2026-08-10 |
 | BACKEND-001 | Express app scaffold | VERIFIED | `backend/src/app.js`, `backend/src/routes/health.js` (Helmet, CORS, Morgan, dotenv wired in) | Ran `node src/app.js`, `curl localhost:5000/api/health` → 200 `{"status":"ok","service":"backend"}` | 2026-08-10 |
@@ -75,9 +77,7 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 | BACKEND-003 | Redis + Bull.js queue scaffold | BACKEND-001 (done) |
 | BACKEND-004 | REST routes, middleware, error handler | BACKEND-002 (done) |
 | RAG-001 | FAISS index scaffold | BACKEND-002 (done) |
-| AI-002 | spaCy prompt analyzer (FR-1) | AI-001 (done) |
-| AI-003 | Conversational clarification agent (FR-2) | AI-002 |
-| AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 |
+| AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 (done) |
 | AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 |
 | AI-006 | Groq + fallback LLM integration | AI-004 |
 | INTEG-001 | Full end-to-end wiring | all of the above |
@@ -167,6 +167,87 @@ PASS — server starts, logs "Application startup complete"; GET /health
 returns 200 {"status":"ok","service":"ai-service"}. Runs from WSL2, not
 native Windows Python, per ADR-008 (spaCy/Smart App Control blocker).
 No analyzer/orchestrator/RAG logic yet — that's AI-002 onward.
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Sonnet 5)
+```
+
+```text
+[VERIFIED]
+Prompt Analyzer / FR-1 (AI-002)
+Files:
+- ai-service/analyzer/__init__.py
+- ai-service/analyzer/pipeline.py (spaCy model load, cached via functools.lru_cache)
+- ai-service/analyzer/scoring.py (5-dimension heuristic scorer; flags/suggestions;
+  overall_score = equal-weight mean; 40-point flag threshold — see ADR-010)
+- ai-service/analyzer/antonyms.json (36 hand-authored domain antonym pairs)
+- ai-service/main.py (POST /analyze, pydantic request/response models, 422 on
+  empty/whitespace/<3-char prompt)
+- ai-service/tests/test_analyzer.py (9 tests: schema shape, well-formed prompt,
+  missing-setting/vague-subject, vague-action, contradictory-descriptors,
+  4x empty/short-prompt rejection cases)
+Verified by:
+- test execution (`pytest`, inside WSL2 `.venv-wsl` per ADR-008)
+- manual run (`uvicorn main:app`) + external validation (`curl`)
+Result:
+PASS — 9/9 pytest tests pass. Live-server curl checks: (1) "the cat moves"
+-> 35/100, flags=[vague_action, missing_setting, low_visual_detail]; (2) a
+rich Mars-astronaut prompt (proposal-style) -> 86/100, no flags; (3)
+whitespace-only prompt -> HTTP 422 with a descriptive error. Output shape
+matches VidCraft_Proposal.tex Section 6.1 exactly (overall_score,
+dimensions{5 keys}, flags[], suggestions[]).
+Not yet done (out of scope for this task): persisting the analysis result
+to the `prompts` Mongo collection, and exposing this through the Node
+backend instead of hitting ai-service directly — that's BACKEND-004/INTEG-001.
+Verified on: 2026-08-10
+Verified by (agent/person): Claude (Sonnet 5)
+```
+
+```text
+[VERIFIED]
+Conversational Clarification Agent / FR-2 (AI-003)
+Files:
+- ai-service/config.py (dotenv loading: GROQ_API_KEY, GROQ_MODEL,
+  ANALYSIS_SCORE_THRESHOLD)
+- ai-service/llm/__init__.py, ai-service/llm/groq_client.py (cached Groq
+  client, complete_json() JSON-mode wrapper; primary provider only per
+  ADR-002 — fallback provider is AI-006's scope)
+- ai-service/clarification/__init__.py, ai-service/clarification/agent.py
+  (generate_questions(): <=2 questions, no-op if flags empty;
+  build_brief(): merges Q&A into a brief dict + clarified_prompt, no-op
+  if no questions — single-round design, no iteration loop, so
+  termination is structural)
+- ai-service/main.py: POST /clarify/questions, POST /clarify/resolve
+  (pydantic models; 500 on missing GROQ_API_KEY, 400 on mismatched
+  questions/answers length or malformed LLM output)
+- ai-service/tests/test_clarification.py (7 tests, Groq client mocked via
+  monkeypatch: no-flags no-op, question capping, non-string filtering,
+  no-questions no-op, mismatched-length error, successful merge,
+  malformed-response error)
+- ai-service/.env (untracked, gitignored) now holds a real GROQ_API_KEY
+  provided directly by the user for local testing
+Verified by:
+- test execution (`pytest`, WSL2 `.venv-wsl`, LLM mocked — no network
+  calls in the test suite itself)
+- manual run (`uvicorn main:app`) + external validation (`curl`) against
+  the REAL Groq API (llama-3.3-70b-versatile, see ADR-011)
+Result:
+PASS — 17/17 pytest tests pass (9 analyzer + 7 clarification, +1 from a
+prior session). Live end-to-end chain against the real API: (1) analyzed
+"someone does something in a place" -> 33/100,
+flags=[vague_action, missing_setting, low_visual_detail]; (2)
+/clarify/questions on those flags -> 2 real, on-topic questions ("What
+specific action..." / "Where exactly..."); (3) /clarify/resolve with
+answers ("a chef is chopping vegetables" / "in a busy restaurant kitchen
+at night") -> brief={action, setting, character} +
+clarified_prompt="A chef is chopping vegetables in a busy restaurant
+kitchen at night."; (4) re-ran /analyze on the clarified prompt -> 72/100,
+0 flags — confirms the clarification loop actually improves FR-1 score.
+Also verified: flags=[] -> /clarify/questions returns [] with zero LLM
+calls; mismatched questions/answers lengths -> HTTP 400.
+Not yet done (out of scope for this task): persisting brief/clarified
+prompt to Mongo, exposing through the Node backend, and any frontend chat
+UI — that's BACKEND-004/FRONTEND-002/INTEG-001. Fallback-provider
+integration on LLM failure is AI-006's scope, not implemented here.
 Verified on: 2026-08-10
 Verified by (agent/person): Claude (Sonnet 5)
 ```
@@ -390,8 +471,8 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] Redis connects successfully
 - [ ] At least one REST endpoint (Section 9) responds correctly
 - [ ] WebSocket connection between frontend and backend established
-- [ ] Prompt analyzer (FR-1) returns a structured score for a real prompt
-- [ ] Clarification agent (FR-2) generates and processes at least one Q&A round
+- [x] Prompt analyzer (FR-1) returns a structured score for a real prompt — 2026-08-10 (AI-002, ai-service only — not yet reachable via the Node backend)
+- [x] Clarification agent (FR-2) generates and processes at least one Q&A round — 2026-08-10 (AI-003, real Groq API, ai-service only — not yet reachable via the Node backend or a frontend chat UI)
 - [ ] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt
 - [ ] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query
 - [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: fully wired end-to-end (REMOTION-001..003) including automatic composition selection + fallback; still partial only because the `shot`/`worldState` data used is hand-written sample data, not real output from an orchestrator (AI-004/005 don't exist yet) or a real REST request (not wired into a route — that's INTEG-001/BACKEND-004).
@@ -399,7 +480,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] Critic loop (FR-8) triggers at least one real retry
 - [ ] FFmpeg post-processing (FR-9) produces one concatenated, playable final MP4
 - [ ] Frontend displays a delivered video end-to-end from a real prompt submission
-- [ ] Unit tests exist and pass for the prompt analyzer
+- [x] Unit tests exist and pass for the prompt analyzer — 2026-08-10 (9/9, `ai-service/tests/test_analyzer.py`)
 - [ ] Unit/integration tests exist and pass for the orchestrator
 - [ ] Production/demo build succeeds (frontend build, backend start in production mode)
 - [ ] Evaluation study (FR-12) has been run and produced a comparison table
@@ -479,23 +560,26 @@ this section are gone — deleted 2026-08-10 before the first commit.
 ### Actual implemented endpoints
 - `GET /api/health` (backend, Express) — returns `{"status":"ok","service":"backend"}`
 - `GET /health` (ai-service, FastAPI) — returns `{"status":"ok","service":"ai-service"}`
+- `POST /analyze` (ai-service, FastAPI) — takes `{"prompt": string}`, returns FR-1 schema (`overall_score`, `dimensions`, `flags`, `suggestions`); 422 on empty/whitespace/<3-char input
+- `POST /clarify/questions` (ai-service, FastAPI) — takes `{"prompt": string, "flags": string[], "suggestions": string[]}`, returns `{"questions": string[]}` (0-2 items, real Groq call, empty flags -> empty list with no LLM call)
+- `POST /clarify/resolve` (ai-service, FastAPI) — takes `{"prompt": string, "questions": string[], "answers": string[]}`, returns `{"brief": object, "clarified_prompt": string}`; 400 on mismatched lengths or malformed LLM output, 500 if `GROQ_API_KEY` unset
 
-Neither is part of the Section 9 API surface (`/api/prompts`, `/api/storyboards`, etc.) — those are still `PLANNED`/`PROPOSED`, not implemented.
+None of these are part of the Section 9 API surface (`/api/prompts`, `/api/storyboards`, etc.) — those are still `PLANNED`/`PROPOSED`, not implemented. All three are only reachable directly on the ai-service port; the Node backend doesn't proxy them yet (BACKEND-004).
 
 ### Actual models (database schemas)
 `Prompt` and `Storyboard` Mongoose schemas exist (`backend/src/models/`), verified against a real local MongoDB instance (BACKEND-002). `embeddings`, `jobs`, `evaluation_runs` (Section 10.1) do not exist yet.
 
 ### Actual components (frontend/backend/AI)
-Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5 `[VERIFIED]` blocks above for exactly what was checked. The Remotion pathway (FR-5) and the MongoDB layer are functionally real; no other feature component (prompt analyzer, orchestrator, RAG, critic loop) exists yet.
+Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5 `[VERIFIED]` blocks above for exactly what was checked. The Remotion pathway (FR-5), the MongoDB layer, the prompt analyzer (FR-1), and now the clarification agent (FR-2) are functionally real; no other feature component (orchestrator, RAG, critic loop) exists yet.
 
 ### Actual dependencies (package.json / requirements.txt contents)
 - `backend/package.json`: express, helmet, morgan, cors, dotenv, mongoose (+ nodemon, dev)
-- `ai-service/requirements.txt`: fastapi, uvicorn[standard], spacy (+ en_core_web_sm model), and their transitive deps — generated via `pip freeze` in the WSL2 venv
+- `ai-service/requirements.txt`: fastapi, uvicorn[standard], spacy (+ en_core_web_sm model), pytest, groq, python-dotenv, and their transitive deps — generated via `pip freeze` in the WSL2 venv
 - `frontend/package.json`: react, react-dom, tailwindcss v4, @tailwindcss/vite, shadcn/ui deps (radix-ui, class-variance-authority, clsx, tailwind-merge, lucide-react)
 - `remotion/package.json`: remotion, react, react-dom, @remotion/cli, @remotion/bundler, @remotion/renderer, typescript (pinned `^5` — see ADR-009's TS 7.x gotcha note)
 
 ### Actual configuration
-`.env.example` exists at repo root (SETUP-003), mirrors `PROJECT_ARCHITECTURE.md` Section 13. `backend/.env` exists locally (untracked, gitignored — confirmed via `git check-ignore`) with `MONGODB_URI`, `PORT`, `NODE_ENV`, `AI_SERVICE_URL` set. `ai-service/` and `remotion/` don't need `.env` yet — nothing in either reads an env var so far.
+`.env.example` exists at repo root (SETUP-003), mirrors `PROJECT_ARCHITECTURE.md` Section 13, now also lists `GROQ_MODEL` (added in AI-003, see ADR-011). `backend/.env` exists locally (untracked, gitignored — confirmed via `git check-ignore`) with `MONGODB_URI`, `PORT`, `NODE_ENV`, `AI_SERVICE_URL` set. `ai-service/.env` now also exists locally (untracked, gitignored — confirmed via `git check-ignore`) with a real `GROQ_API_KEY` (provided directly by the user for local dev/testing, never committed), `GROQ_MODEL`, `ANALYSIS_SCORE_THRESHOLD`. `remotion/` doesn't need `.env` yet.
 
 ### Actual scripts
 - Backend: `npm start` (`node src/app.js`), `npm run dev` (`nodemon src/app.js`)
@@ -673,6 +757,88 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 - Updated PROJECT_ARCHITECTURE.md Section 10 status (NOT_IMPLEMENTED ->
   IN_PROGRESS) and added the snake_case naming note.
 - Updated this file and PROJECT_STATE.yaml (10/35 tasks complete).
+
+2026-08-10 (session 9)
+- Completed AI-002: spaCy prompt analyzer (FR-1), the first real
+  NLP/agentic functionality in the project (previously only scaffolds
+  and infra existed).
+  - ai-service/analyzer/pipeline.py: cached spaCy `en_core_web_sm` load.
+  - ai-service/analyzer/scoring.py: 5-dimension heuristic scorer
+    (subject_clarity via nsubj/nsubjpass presence + vague-pronoun
+    penalty; action_specificity via a vague-verb lemma list + advmod
+    bonus; environment_detail via GPE/LOC/FAC NER + locative
+    prepositions + time-of-day words; visual_richness via adjective
+    density; temporal_coherence via temporal-marker presence + finite
+    past/present tense-mixing check), plus flags[]/suggestions[]
+    generation (40-point threshold per dimension) and antonym-pair
+    contradiction detection.
+  - ai-service/analyzer/antonyms.json: 36 hand-authored domain-specific
+    contradictory descriptor pairs (bright/dim, day/night,
+    indoor/outdoor, etc.) per FR-1's "custom antonym dictionary"
+    requirement.
+  - Wired `POST /analyze` into ai-service/main.py (pydantic request/
+    response models, 422 on empty/whitespace/<3-char prompt).
+  - Adopted ADR-010 (equal-weight average scoring formula, 40-point
+    flag threshold) to resolve the spaCy-formula half of open question
+    R-12 — documented rather than silently hard-coded.
+  - Wrote ai-service/tests/test_analyzer.py (9 tests). Ran via
+    `.venv-wsl/bin/python -m pytest` inside WSL2 (per ADR-008, spaCy
+    doesn't import on native Windows here) — 9/9 pass. Added pytest to
+    requirements.txt (was missing).
+  - Started uvicorn in WSL2, curl-verified POST /analyze against three
+    real prompts: a deliberately vague one ("the cat moves" -> 35/100,
+    flags=[vague_action, missing_setting, low_visual_detail]), a rich
+    Mars-astronaut prompt in the proposal's style (-> 86/100, no
+    flags), and a whitespace-only prompt (-> HTTP 422). Output shape
+    matches VidCraft_Proposal.tex Section 6.1 exactly.
+  - Scope note: does not persist the analysis result to MongoDB, and
+    is not yet reachable through the Node backend — both explicitly
+    out of scope for AI-002 (that's BACKEND-004/INTEG-001).
+- Updated this file and PROJECT_STATE.yaml (11/35 tasks complete,
+  ~31.4%). Added ADR-010. Marked R-12 partially resolved (spaCy
+  formula decided; storyboard similarity threshold still open).
+
+2026-08-10 (session 10)
+- Completed AI-003: conversational clarification agent (FR-2).
+  - User provided a real Groq API key directly in chat; written straight
+    to the gitignored ai-service/.env (never echoed back, never
+    committed) rather than left in the chat transcript as the only
+    copy — confirmed with `git check-ignore -v ai-service/.env` before
+    and after.
+  - Queried the live Groq /models endpoint to pick a concrete model id
+    (the proposal only said "Groq-hosted open-weight models," no
+    specific id) — selected llama-3.3-70b-versatile, recorded as
+    ADR-011. Also backfilled ADR-010 (from the AI-002 session) into
+    PROJECT_ARCHITECTURE.md Section 22, which it had been missing from.
+  - ai-service/config.py: dotenv-based config (GROQ_API_KEY, GROQ_MODEL,
+    ANALYSIS_SCORE_THRESHOLD). Added GROQ_MODEL to root .env.example and
+    PROJECT_ARCHITECTURE.md Section 13 (new env var, not previously
+    documented).
+  - ai-service/llm/groq_client.py: cached Groq client, complete_json()
+    JSON-mode wrapper. Primary provider only — fallback-provider
+    integration stays AI-006's scope, per the dependency graph.
+  - ai-service/clarification/agent.py: generate_questions() (<=2
+    questions, no LLM call if no flags) and build_brief() (merges Q&A
+    into a brief + clarified_prompt, no LLM call if no questions) —
+    single-round design, so termination is structural, not a retry cap.
+  - Wired POST /clarify/questions and POST /clarify/resolve into
+    ai-service/main.py.
+  - ai-service/tests/test_clarification.py: 7 new tests, Groq client
+    mocked via monkeypatch (no network calls in the suite). Full suite:
+    17/17 pass in .venv-wsl.
+  - Live-verified against the REAL Groq API end-to-end: analyzed a
+    vague prompt (33/100) -> got 2 real clarifying questions -> resolved
+    real answers into a brief + clarified prompt -> re-analyzed the
+    clarified prompt and confirmed the score rose to 72/100 with 0
+    flags, proving the FR-1 -> FR-2 -> FR-1 loop actually works, not
+    just that each endpoint responds in isolation. Also verified the
+    no-flags no-op path and the mismatched-length 400 error path.
+  - User noted the Groq key is free-tier (30 req/min, 1,000 req/day,
+    12k tok/min, 1M tok/day) and asked that future requests keep this
+    in mind — saved as a memory for future sessions (affects pacing of
+    live-LLM testing and the eventual 50-prompt evaluation study).
+  - Updated this file and PROJECT_STATE.yaml (12/35 tasks complete,
+    ~34.3%). Added ADR-011.
 ```
 
 ---
@@ -688,6 +854,8 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 - PROVIDER-001 (which concrete API providers to use per tier) must be resolved before BACKEND-005 can start — target: during Phase 7, but researching options earlier reduces risk.
 - The authentication/authorization question (R-9) should be resolved before FRONTEND work that depends on user-specific history/state, to avoid rework.
 
+**Not a blocker, but a real constraint to plan around:** the project's Groq API key is free-tier — 30 requests/min, 1,000 requests/day, 12,000 tokens/min, 1,000,000 tokens/day. Fine for scaffold-stage testing (AI-003 used well under a dozen calls total), but AI-004/005/006 development and especially the EVAL-002/003 evaluation runs (50 prompts × 2 conditions, with the multi-agent condition issuing 1 + 2×N-shot calls per generation) should be paced/budgeted against this, not assumed unlimited.
+
 ---
 
 ## 10. Next Recommended Actions
@@ -695,24 +863,25 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
-NEXT 1 (the other core FR, now fully unblocked):
-Task ID: AI-002
-spaCy prompt analyzer (FR-1)
+NEXT 1 (continues the AI critical path):
+Task ID: AI-004
+LangGraph orchestrator: Screenwriter agent
 Why:
-spaCy is confirmed working in WSL2 (BLOCK-001 resolved, ADR-008). This
-is the first real piece of agentic/NLP functionality — the Remotion
-pathway (REMOTION-001..003) and the MongoDB layer (BACKEND-002) are
-both done, so this is the next concrete FR to tackle.
+AI-003 now produces a clarified prompt + brief — the real input this
+agent is supposed to decompose into a 3-5 shot storyboard. Can reuse
+ai-service/llm/groq_client.py for the underlying LLM call, but this is
+the first task that actually needs LangGraph wired in (per ADR-001,
+not a hand-rolled if/else pipeline).
 Dependencies:
-AI-001 (done)
+AI-003 (done)
 Expected files:
-ai-service/analyzer/pipeline.py, ai-service/analyzer/scoring.py,
-ai-service/analyzer/antonyms.json
+ai-service/orchestrator/ (per PROJECT_ARCHITECTURE.md Section 20)
 Acceptance criteria:
-Returns a structured score for a real prompt (per FR-1 schema); note
-the scoring formula/weights are still an open design decision
-(PROJECT_ARCHITECTURE.md Section 24, R-12) — will need a reasonable
-default chosen and recorded as an ADR, not silently hard-coded.
+Decomposes at least one real clarified prompt into a 3-5 shot
+storyboard JSON (per the world_state/shots shape in
+VidCraft_Proposal.tex Section 6.3's example), unit-tested with a
+mocked LLM plus at least one live Groq-verified run (mind the
+free-tier rate limits — see Section 9 above).
 
 NEXT 2 (parallel-safe, rounds out the backend infra):
 Task ID: BACKEND-003
@@ -729,6 +898,23 @@ Expected files:
 backend/src/queues/
 Acceptance criteria:
 A trivial job can be enqueued and processed.
+
+NEXT 3 (parallel-safe, exposes AI-002/AI-003 to the rest of the app):
+Task ID: BACKEND-004
+REST routes, middleware, error handler
+Why:
+AI-002's /analyze and AI-003's /clarify/* endpoints are currently only
+reachable directly on the ai-service port — nothing on the
+frontend/backend side can call them yet. This is also required before
+FRONTEND-002 (prompt input + clarification chat UI) has anything real
+to submit to.
+Dependencies:
+BACKEND-002 (done)
+Expected files:
+backend/src/routes/, backend/src/middleware/
+Acceptance criteria:
+At least one real REST endpoint (e.g. POST /api/prompts) round-trips
+through the backend to ai-service's /analyze and /clarify/* and back.
 ```
 
 ---

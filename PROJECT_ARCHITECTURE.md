@@ -947,7 +947,7 @@ erDiagram
 
 | | |
 |---|---|
-| Primary provider | Groq API (specific model: `TBD` — proposal says "Groq-hosted open-weight models," e.g. Llama-family, but does not commit to a specific model name/version) |
+| Primary provider | Groq API, model `llama-3.3-70b-versatile` (confirmed 2026-08-10, ADR-011 — proposal itself only said "Groq-hosted open-weight models," e.g. Llama-family, without committing to a specific id) |
 | Fallback provider | A cloud LLM API, "e.g. OpenAI GPT" (proposal's own wording — example, not final commitment) |
 | Purpose | Storyboard decomposition, per-shot style assignment, provider routing, clarification-question generation |
 | Input | Clarified prompt / shot description / RAG-retrieved context |
@@ -1033,7 +1033,7 @@ For every service above, credentials must be supplied via environment variables 
 
 ## 13. Environment Variables
 
-No `.env` or `.env.example` file exists yet. The table below is `PROPOSED` — derived from the services and components named in the proposal — and should become the actual `.env.example` content when Phase 1 (Foundation) begins.
+`.env.example` now exists at the repo root (SETUP-003) and is the source of truth; the table below mirrors it. `GROQ_MODEL` was added in AI-003 once a concrete Groq model id was confirmed working (see ADR-011) — the proposal only committed to "a Groq-hosted open-weight model," not a specific id.
 
 ```text
 # --- Database ---
@@ -1042,6 +1042,7 @@ REDIS_URL=                    # required (Bull.js job queue backing store)
 
 # --- Primary LLM ---
 GROQ_API_KEY=<API_KEY>        # required, primary agent-orchestration inference
+GROQ_MODEL=llama-3.3-70b-versatile   # confirmed working model id (ADR-011)
 
 # --- Fallback LLM (provider TBD) ---
 FALLBACK_LLM_API_KEY=<API_KEY>   # required for harder reasoning + critic loop
@@ -1077,6 +1078,7 @@ ANALYSIS_SCORE_THRESHOLD=60    # confirmed default per proposal §6.1 ("default:
 | `MONGODB_URI` | Required | Both | — |
 | `REDIS_URL` | Required | Both | — |
 | `GROQ_API_KEY` | Required | Both | Never commit real value |
+| `GROQ_MODEL` | Required | Both | Default `llama-3.3-70b-versatile`, confirmed available on the Groq API as of 2026-08-10 (ADR-011) |
 | `FALLBACK_LLM_API_KEY` | Required | Both | Provider undecided |
 | `VIDEO_API_KEY_TIER1/2/3` | Required for FR-6 | Both | Providers undecided — Phase 7 |
 | `TTS_API_KEY` | Optional | Both | Stretch feature only |
@@ -1524,6 +1526,22 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Consequences:** `backend/src/services/remotionService.js` (REMOTION-003 / Section 6.5) should invoke Remotion, not treat it as a Python-side dependency. Update Section 14.2's proposed structure to show `remotion/` as a top-level sibling of `frontend/`/`backend/`/`ai-service/`, not nested under `ai-service/`. **Implemented 2026-08-10 (REMOTION-003):** rather than shelling out to the `remotion render` CLI, `remotionService.js` invokes `node remotion/render-shot.mjs <propsPath> <outputPath>` via `child_process.execFile` — `render-shot.mjs` uses `@remotion/bundler`'s `bundle()` + `@remotion/renderer`'s `renderMedia()` programmatic API directly. This was chosen over the CLI because it avoids any shell/argv escaping question for shot text (props travel through a temp JSON file, never a command-line string) and is the API Remotion itself recommends for render-triggered-by-application-code use cases (vs. the CLI, meant for one-off/manual renders).
 - **Also noted (not an architecture decision, an environment gotcha):** TypeScript 7.x (installed by default via `npm install -D typescript` at the time of this session) breaks `@remotion/cli`'s esbuild-loader (`typescript.sys.readFile` is undefined) because Remotion's bundler expects the classic TS compiler API shape. Pin `typescript` to `^5` in any Remotion-adjacent package until Remotion officially supports TS 7.
 
+### ADR-010: FR-1 scoring formula — equal-weight average, 40-point flag threshold
+- **Date:** 2026-08-10
+- **Context:** R-12 left the spaCy scoring formula/weights as `TBD` — the proposal specifies the 5 dimensions and the illustrative output shape (§6.1) but not how they combine into `overall_score`, nor the threshold for raising a flag.
+- **Options considered:** (1) Equal-weight mean of the 5 dimensions — simplest, no basis yet to justify weighting one dimension over another. (2) A weighted formula favoring, e.g., subject/action over visual richness — rejected for now: no data or stated rationale to justify specific weights; would be an arbitrary choice presented as a principled one.
+- **Selected:** `overall_score = round(mean(5 dimension scores))`; any single dimension below 40/100 raises that dimension's flag + a matching suggestion string.
+- **Why:** Simplest defensible default absent a specified formula — documented here rather than left as a silent hard-coded choice buried in code.
+- **Consequences:** Per-dimension heuristics (subject-clarity from `nsubj`/`nsubjpass` presence + vague-pronoun penalty; action-specificity from a vague-verb lemma list + `advmod` bonus; environment-detail from GPE/LOC/FAC NER + locative prepositions + time-of-day words; visual-richness from adjective density; temporal-coherence from temporal-marker presence + finite past/present tense-mixing) live as code in `ai-service/analyzer/scoring.py`. Revisit both the weights and the flag threshold once the curated 50-prompt test set (EVAL-001) exists and can show whether this default is systematically miscalibrated.
+
+### ADR-011: Concrete Groq model selected — `llama-3.3-70b-versatile`
+- **Date:** 2026-08-10
+- **Context:** Section 11.2 left the specific Groq model `TBD` ("Groq-hosted open-weight models, e.g. Llama-family," not a committed id). AI-003 (clarification agent) needed a real model id to make its first LLM call.
+- **Options considered:** Queried the live Groq `/models` endpoint with the project's API key; available options included `llama-3.1-8b-instant`, `llama-3.3-70b-versatile`, `openai/gpt-oss-20b`/`120b`, `qwen/qwen3.6-27b`, among others.
+- **Selected:** `llama-3.3-70b-versatile` as the default (`GROQ_MODEL` env var, overridable), confirmed working via a live JSON-mode structured-output smoke test.
+- **Why:** Larger/more capable than the `8b-instant` variant for the structured-reasoning tasks the orchestrator agents will need (question generation, storyboard decomposition), while still served on Groq's low-latency infrastructure per ADR-002. Kept as an env var rather than hard-coded so it can be swapped without a code change if latency/quality tradeoffs need revisiting.
+- **Consequences:** AI-004/AI-005/AI-006 (Screenwriter/Producer/Groq-integration agents) should default to the same `GROQ_MODEL` unless a specific step is later found to need a different model. This does not resolve the fallback-provider choice (still `TBD`, blocks AI-006/PROVIDER-001 territory) — only the primary Groq model id.
+
 ---
 
 ## 23. Constraints and Rules — PROJECT RULES
@@ -1571,7 +1589,7 @@ Combines the proposal's own Risk table (§6.9) with additional gaps surfaced dur
 | R-9 | **No authentication/authorization model specified anywhere** | Medium — blocks any user-specific feature (history, saved storyboards) | None | Team must explicitly decide: single-tenant demo vs. accounts, before Phase 3 UI work depends on it | Medium | Open (newly surfaced by this doc) |
 | R-10 | **Codec/resolution mismatch risk when concatenating Remotion output with external-API output** | Medium — could break FR-9 for mixed-pathway storyboards | None | Standardize output resolution/codec at the generation-adapter boundary before FFmpeg concat | Medium | Open (newly surfaced by this doc) |
 | R-11 | ~~**Shot → Remotion composition mapping strategy undefined**~~ **RESOLVED 2026-08-10** | Was High — blocked REMOTION-003, and by extension the Minimum Viable success criterion | REMOTION-002 established the taxonomy (leading word of `shot.camera` → Wide/Medium/CloseUp). REMOTION-003 implemented `selectCompositionId()` in `remotion/render-shot.mjs`: matches `wide`/`medium`/`close-up`-prefixed camera values to their composition, and falls back to `MediumShot` (documented, chosen as the most visually neutral option) for anything else — verified with both a matching shot and a deliberately unrecognized `camera` value ("aerial drone, 360 orbit"), both rendered to valid MP4s without error. | N/A — resolved | N/A | Resolved |
-| R-12 | **Numeric thresholds undefined** (storyboard similarity threshold; exact spaCy scoring formula/weights) | Medium — blocks AI-002, AI-008 from being fully specified | Reasonable defaults will need to be chosen and documented, not silently hard-coded without record | Decide and record as an ADR once chosen | Medium | Open (newly surfaced by this doc) |
+| R-12 | **Numeric thresholds undefined** (storyboard similarity threshold; exact spaCy scoring formula/weights) | Medium — blocks AI-008 from being fully specified | Reasonable defaults will need to be chosen and documented, not silently hard-coded without record | Decide and record as an ADR once chosen | Medium | **Partially resolved 2026-08-10** — spaCy scoring formula/weights decided (ADR-010). Storyboard similarity threshold still open, blocks AI-008. |
 | R-13 | No error-handling policy for "all LLM fallbacks fail" or "all API tiers fail" cases | Medium | None | Define fail-closed behavior (job marked failed, user-facing error) before Phase 8 integration | Medium | Open (newly surfaced by this doc) |
 
 ---
