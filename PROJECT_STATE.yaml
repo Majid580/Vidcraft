@@ -14,11 +14,11 @@ project:
   version: "0.0.0-pre-development"
   status: "in_progress"
   current_phase: "phase_0_1_research_env_setup"
-  completion_percent: 5.7
-  completion_basis: "verified_tasks / total_tasks (2 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
+  completion_percent: 14.3
+  completion_basis: "verified_tasks / total_tasks (5 / 35) — see PROJECT_ARCHITECTURE.md Section 20 for the full task list"
   last_updated: "2026-08-10"
-  last_updated_by: "Claude (Sonnet 5) — SETUP-001 (tech feasibility testing) and SETUP-002 (git init + base folder structure)"
-  repository_reality: "Git repo initialized and pushed to https://github.com/Majid580/Vidcraft (main branch). frontend/, backend/, ai-service/ exist with placeholder READMEs and ai-service/.venv (untracked). .gitignore added. No application code exists."
+  last_updated_by: "Claude (Sonnet 5) — BACKEND-001, AI-001, FRONTEND-001 (three app scaffolds)"
+  repository_reality: "Git repo pushed to https://github.com/Majid580/Vidcraft (main branch). backend/ is a working Express app (health-check verified). ai-service/ is a working FastAPI app run from WSL2 (health-check verified, per ADR-008). frontend/ is a working Vite/React/Tailwind/shadcn-ui app (verified rendering in-browser). No feature functionality (FR-1..FR-12) implemented yet — this is scaffolding only."
   timeline:
     start: "2026-05"
     end: "2027-04"
@@ -76,9 +76,11 @@ phases:
     tasks:
       - id: "BACKEND-001"
         name: "Node.js/Express project setup"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "CRITICAL"
         dependencies: ["SETUP-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — started server, curled GET /api/health, got 200 {\"status\":\"ok\",\"service\":\"backend\"}"
       - id: "BACKEND-002"
         name: "MongoDB connection + schema draft"
         status: "NOT_STARTED"
@@ -107,9 +109,11 @@ phases:
     tasks:
       - id: "FRONTEND-001"
         name: "React/Vite/Tailwind/shadcn-ui project setup"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "CRITICAL"
         dependencies: ["SETUP-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — ran dev server via Browser preview, confirmed rendered content, zero console errors, all Tailwind/shadcn assets (button.tsx, radix-ui, class-variance-authority, tailwind-merge) loaded 200"
       - id: "FRONTEND-002"
         name: "Prompt input + clarification chat UI"
         status: "NOT_STARTED"
@@ -150,9 +154,11 @@ phases:
     tasks:
       - id: "AI-001"
         name: "FastAPI microservice scaffold"
-        status: "NOT_STARTED"
+        status: "VERIFIED"
         priority: "CRITICAL"
         dependencies: ["SETUP-002"]
+        verified_on: "2026-08-10"
+        verified_by: "Claude (Sonnet 5) — ran inside WSL2 (ai-service/.venv-wsl per ADR-008), curled GET /health, got 200 {\"status\":\"ok\",\"service\":\"ai-service\"}"
       - id: "AI-002"
         name: "spaCy prompt analyzer (FR-1)"
         status: "NOT_STARTED"
@@ -311,11 +317,13 @@ components:
     status: "NOT_IMPLEMENTED"
     verified: false
   - name: "Frontend Application"
-    status: "NOT_IMPLEMENTED"
-    verified: false
+    status: "SCAFFOLDED"
+    verified: true
+    note: "Vite/React/Tailwind/shadcn-ui project setup only (FRONTEND-001). No real pages/features (FRONTEND-002/003) yet."
   - name: "Backend API Gateway"
-    status: "NOT_IMPLEMENTED"
-    verified: false
+    status: "SCAFFOLDED"
+    verified: true
+    note: "Express app with health-check only (BACKEND-001). No routes, DB, or queue yet."
   - name: "Database Layer (MongoDB)"
     status: "NOT_IMPLEMENTED"
     verified: false
@@ -337,12 +345,14 @@ resolved_blockers:
     resolved_by: "Claude (Sonnet 5), with user running `sudo apt install python3-venv python3-pip` in WSL"
 
 next_tasks:
-  - id: "BACKEND-001"
-    reason: "Backend scaffold — parallel with AI-001 and FRONTEND-001 once SETUP-002 is done"
-  - id: "AI-001"
-    reason: "AI microservice scaffold — parallel with BACKEND-001 and FRONTEND-001"
-  - id: "FRONTEND-001"
-    reason: "Frontend scaffold — parallel with BACKEND-001 and AI-001"
+  - id: "SETUP-003"
+    reason: ".env.example — needed before BACKEND-002/AI-002 wire up real config (MongoDB URI, Groq key, etc.)"
+  - id: "REMOTION-001"
+    reason: "Fastest route to a real demoable slice per the critical-path note; no dependency on undecided external providers"
+  - id: "BACKEND-002"
+    reason: "MongoDB connection + schema draft, now that BACKEND-001 exists"
+  - id: "AI-002"
+    reason: "spaCy prompt analyzer (FR-1) — spaCy confirmed working in WSL2 (BLOCK-001 resolved), AI-001 scaffold exists"
 
 decisions:
   - id: "ADR-001"
