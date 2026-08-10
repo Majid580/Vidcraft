@@ -1,0 +1,302 @@
+[
+  {
+    "text": "An extreme wide shot (or extreme long shot) places the subject as a tiny element within a vast environment. It establishes scale, isolation, and geography, and is often used as an opening establishing shot to show where a scene takes place. Use it to make a character feel small against a landscape, city skyline, or expanse.",
+    "metadata": { "id": "framing-extreme-wide", "category": "framing", "technique": "Extreme wide shot", "tags": ["establishing", "scale", "isolation", "landscape", "epic", "vast", "small", "geography"] }
+  },
+  {
+    "text": "A wide shot (long shot) frames the full subject from head to toe with a clear sense of the surrounding space. It balances the character against their environment, showing body language and movement while keeping context visible. It is the natural choice for establishing action and spatial relationships.",
+    "metadata": { "id": "framing-wide", "category": "framing", "technique": "Wide shot", "tags": ["establishing", "full body", "environment", "context", "movement", "space"] }
+  },
+  {
+    "text": "A full shot frames a character from head to toe, filling the frame with the figure while retaining a little environment. It emphasizes costume, posture, and physical action, and is common in dance, fight, and entrance moments where the whole body matters.",
+    "metadata": { "id": "framing-full", "category": "framing", "technique": "Full shot", "tags": ["full body", "costume", "action", "entrance", "posture"] }
+  },
+  {
+    "text": "A medium shot frames a subject from roughly the waist up. It is the conversational workhorse of narrative film: close enough to read facial expression and gesture, wide enough to include some setting and a second person. It feels natural and neutral, neither intimate nor detached.",
+    "metadata": { "id": "framing-medium", "category": "framing", "technique": "Medium shot", "tags": ["waist up", "dialogue", "conversation", "neutral", "gesture", "natural"] }
+  },
+  {
+    "text": "A medium close-up frames from the chest or shoulders up, tightening focus on the face while keeping a hint of the shoulders and background. It is ideal for dialogue with emotional weight, letting subtle expression carry the moment without the full intensity of a close-up.",
+    "metadata": { "id": "framing-medium-closeup", "category": "framing", "technique": "Medium close-up", "tags": ["chest up", "dialogue", "emotion", "expression", "intimate"] }
+  },
+  {
+    "text": "A close-up fills the frame with a subject's face (or a small object), removing the surrounding environment to focus entirely on emotion or detail. It creates intimacy and intensity, and is used at emotional peaks to let the audience read every micro-expression.",
+    "metadata": { "id": "framing-closeup", "category": "framing", "technique": "Close-up", "tags": ["face", "emotion", "intimate", "intensity", "detail", "reaction"] }
+  },
+  {
+    "text": "An extreme close-up isolates a single detail — an eye, lips, a trembling hand, a ticking watch. It magnifies tension and significance, drawing the eye to a fragment that carries dramatic weight, and is a staple of suspense and thriller cinematography.",
+    "metadata": { "id": "framing-extreme-closeup", "category": "framing", "technique": "Extreme close-up", "tags": ["detail", "eye", "tension", "suspense", "significance", "fragment"] }
+  },
+  {
+    "text": "An over-the-shoulder shot frames one character from behind the shoulder of another, so the near person's shoulder and head anchor the foreground. It establishes spatial relationship and eyeline in conversations, and builds a sense of connection or confrontation between two people.",
+    "metadata": { "id": "framing-over-shoulder", "category": "framing", "technique": "Over-the-shoulder shot", "tags": ["conversation", "dialogue", "eyeline", "two people", "relationship", "confrontation"] }
+  },
+  {
+    "text": "A two-shot frames two subjects together within a single composition. It shows relationship, proximity, and dynamic between the pair — closeness for intimacy, distance for tension — without cutting away, keeping both reactions visible at once.",
+    "metadata": { "id": "framing-two-shot", "category": "framing", "technique": "Two-shot", "tags": ["two people", "relationship", "couple", "proximity", "dynamic"] }
+  },
+  {
+    "text": "An insert shot is a tight cutaway to a specific detail — a note, a phone screen, a key turning — that the audience needs to notice. It directs attention to story-critical information and controls the flow of revelation within a scene.",
+    "metadata": { "id": "framing-insert", "category": "framing", "technique": "Insert shot", "tags": ["detail", "cutaway", "object", "information", "close detail"] }
+  },
+  {
+    "text": "A point-of-view (POV) shot shows what a character sees, placing the camera at their eyeline so the audience experiences the scene through their perspective. It builds identification and immersion, and can heighten fear, desire, or discovery.",
+    "metadata": { "id": "framing-pov", "category": "framing", "technique": "Point-of-view shot", "tags": ["pov", "perspective", "subjective", "immersion", "first person", "eyeline"] }
+  },
+  {
+    "text": "A low-angle shot places the camera below the subject, looking up. It makes the subject appear powerful, dominant, heroic, or threatening by exaggerating height and looming presence. Use it to empower a hero or menace a villain.",
+    "metadata": { "id": "angle-low", "category": "angle", "technique": "Low-angle shot", "tags": ["power", "dominance", "heroic", "threatening", "looming", "imposing"] }
+  },
+  {
+    "text": "A high-angle shot places the camera above the subject, looking down. It tends to diminish the subject, suggesting vulnerability, weakness, defeat, or being overwhelmed. It can also provide an observational, map-like read of a space.",
+    "metadata": { "id": "angle-high", "category": "angle", "technique": "High-angle shot", "tags": ["vulnerable", "weak", "small", "defeat", "overwhelmed", "observational"] }
+  },
+  {
+    "text": "An eye-level shot places the camera at the subject's eye height, the most neutral and naturalistic angle. It treats the subject as an equal to the viewer, neither empowering nor diminishing, and underlies most conventional coverage.",
+    "metadata": { "id": "angle-eye-level", "category": "angle", "technique": "Eye-level shot", "tags": ["neutral", "natural", "equal", "conventional", "realistic"] }
+  },
+  {
+    "text": "A Dutch angle (canted angle) tilts the camera so the horizon runs diagonally. The off-kilter frame signals unease, disorientation, tension, madness, or a world out of balance, and is a favorite for psychological and horror sequences.",
+    "metadata": { "id": "angle-dutch", "category": "angle", "technique": "Dutch angle", "tags": ["tilted", "unease", "disorientation", "tension", "psychological", "off-balance", "madness"] }
+  },
+  {
+    "text": "A bird's-eye or overhead shot looks straight down from directly above. It abstracts the scene into pattern and geometry, gives a god-like omniscient vantage, and can make figures look like pieces on a board — useful for scale, order, or fate.",
+    "metadata": { "id": "angle-overhead", "category": "angle", "technique": "Overhead / bird's-eye shot", "tags": ["top-down", "overhead", "god view", "pattern", "geometry", "omniscient", "aerial"] }
+  },
+  {
+    "text": "A worm's-eye view sets the camera at ground level looking sharply upward, exaggerating the towering scale of subjects and architecture above. It creates awe or oppression, emphasizing how enormous the world feels from below.",
+    "metadata": { "id": "angle-worms-eye", "category": "angle", "technique": "Worm's-eye view", "tags": ["ground level", "towering", "scale", "awe", "oppressive", "upward"] }
+  },
+  {
+    "text": "A static (locked-off) shot keeps the camera perfectly still on a tripod. The stillness invites the audience to observe composition and performance, creating calm, formality, or unsettling tension when nothing moves. It contrasts strongly with movement for emphasis.",
+    "metadata": { "id": "movement-static", "category": "movement", "technique": "Static shot", "tags": ["locked", "still", "tripod", "calm", "formal", "observational", "stable"] }
+  },
+  {
+    "text": "A pan pivots the camera horizontally from a fixed position. It reveals space, follows lateral movement, or connects two subjects within one continuous frame, guiding the eye across a landscape or room.",
+    "metadata": { "id": "movement-pan", "category": "movement", "technique": "Pan", "tags": ["horizontal", "reveal", "follow", "sweep", "landscape", "connect"] }
+  },
+  {
+    "text": "A tilt pivots the camera vertically from a fixed position, panning up or down. Tilting up a tall structure conveys grandeur or intimidation; tilting down can reveal a detail or a drop, controlling how information is disclosed.",
+    "metadata": { "id": "movement-tilt", "category": "movement", "technique": "Tilt", "tags": ["vertical", "reveal", "grandeur", "up", "down", "disclosure"] }
+  },
+  {
+    "text": "A dolly or tracking shot moves the whole camera smoothly through space, often on rails or a wheeled rig, following or leading a subject. It creates immersive, fluid motion that pulls the audience into the world alongside the character.",
+    "metadata": { "id": "movement-dolly", "category": "movement", "technique": "Dolly / tracking shot", "tags": ["tracking", "smooth", "follow", "immersive", "fluid", "moving", "rails"] }
+  },
+  {
+    "text": "A slow push-in gradually moves the camera toward a subject, tightening the frame over time. The creeping intimacy intensifies emotion or dawning realization, drawing the audience closer to a character's inner state without a cut.",
+    "metadata": { "id": "movement-push-in", "category": "movement", "technique": "Push-in", "tags": ["push in", "slow", "intimacy", "realization", "emotion", "tension", "creeping"] }
+  },
+  {
+    "text": "A dolly zoom (Vertigo effect) moves the camera toward or away from a subject while zooming the opposite direction, so the subject stays the same size but the background warps and stretches. It visualizes vertigo, dread, or a disorienting psychological shift.",
+    "metadata": { "id": "movement-dolly-zoom", "category": "movement", "technique": "Dolly zoom (Vertigo effect)", "tags": ["dolly zoom", "vertigo", "dread", "disorientation", "warp", "psychological", "unsettling"] }
+  },
+  {
+    "text": "A crane or jib shot lifts the camera high or sweeps it through the air on a boom arm, delivering grand vertical reveals and sweeping vantage changes. It is used for epic scope, emotional climaxes, and dramatic pull-outs that reveal a whole world.",
+    "metadata": { "id": "movement-crane", "category": "movement", "technique": "Crane / jib shot", "tags": ["crane", "sweeping", "epic", "grand", "reveal", "vertical", "climax"] }
+  },
+  {
+    "text": "A handheld shot lets the camera ride the operator's body, introducing natural shake and immediacy. The instability reads as documentary realism, chaos, urgency, or raw emotion, placing the viewer inside the turmoil of a scene.",
+    "metadata": { "id": "movement-handheld", "category": "movement", "technique": "Handheld shot", "tags": ["handheld", "shaky", "realism", "documentary", "urgency", "chaos", "raw", "immediacy"] }
+  },
+  {
+    "text": "A Steadicam shot uses a stabilizing rig to glide the camera smoothly through complex space, even while walking or running. It produces flowing, dreamlike continuous movement — following a character through corridors and crowds without the jitter of handheld.",
+    "metadata": { "id": "movement-steadicam", "category": "movement", "technique": "Steadicam shot", "tags": ["steadicam", "smooth", "gliding", "flowing", "continuous", "walking", "long take"] }
+  },
+  {
+    "text": "An aerial or drone shot films from high above while moving through the air, sweeping over landscapes, cities, or coastlines. It delivers breathtaking scale and geography, and is a signature opening for establishing an epic or expansive world.",
+    "metadata": { "id": "movement-aerial", "category": "movement", "technique": "Aerial / drone shot", "tags": ["aerial", "drone", "flying", "sweeping", "landscape", "epic", "scale", "establishing"] }
+  },
+  {
+    "text": "A whip pan snaps the camera rapidly sideways, blurring the frame into streaks before landing on a new subject. It creates energetic, kinetic transitions and comedic or frantic beats, and can hide an edit between two shots.",
+    "metadata": { "id": "movement-whip-pan", "category": "movement", "technique": "Whip pan", "tags": ["whip pan", "fast", "kinetic", "energetic", "blur", "transition", "frantic"] }
+  },
+  {
+    "text": "A wide-angle lens (short focal length) exaggerates depth and space, making foreground elements loom large while backgrounds recede. It can feel immersive and expansive, but up close it distorts faces, lending a surreal or aggressive edge.",
+    "metadata": { "id": "lens-wide-angle", "category": "lens", "technique": "Wide-angle lens", "tags": ["wide angle", "depth", "expansive", "immersive", "distortion", "space", "exaggerated"] }
+  },
+  {
+    "text": "A telephoto lens (long focal length) compresses distance, flattening perspective so background and subject feel stacked together. It isolates a subject from a soft background and can create a sense of surveillance, longing, or claustrophobic compression.",
+    "metadata": { "id": "lens-telephoto", "category": "lens", "technique": "Telephoto lens", "tags": ["telephoto", "compression", "flatten", "isolate", "surveillance", "long lens", "stacked"] }
+  },
+  {
+    "text": "Shallow depth of field keeps the subject sharp while the foreground and background melt into soft blur. It directs attention, creates intimacy and a filmic, dreamy quality, and produces attractive out-of-focus highlights (bokeh).",
+    "metadata": { "id": "lens-shallow-dof", "category": "lens", "technique": "Shallow depth of field", "tags": ["shallow depth of field", "bokeh", "blur", "isolate", "dreamy", "filmic", "soft background"] }
+  },
+  {
+    "text": "Deep focus keeps foreground, middle ground, and background all in sharp focus at once. It lets multiple planes of action play simultaneously and invites the viewer's eye to explore the whole composition, a hallmark of classical staging.",
+    "metadata": { "id": "lens-deep-focus", "category": "lens", "technique": "Deep focus", "tags": ["deep focus", "sharp", "all in focus", "layers", "staging", "planes"] }
+  },
+  {
+    "text": "A macro lens captures extreme detail at very close range — dewdrops, textures, insect eyes, skin pores. It reveals a hidden micro-world with striking texture and abstraction, magnifying tiny subjects to fill the frame.",
+    "metadata": { "id": "lens-macro", "category": "lens", "technique": "Macro lens", "tags": ["macro", "extreme detail", "texture", "close", "tiny", "abstract", "micro"] }
+  },
+  {
+    "text": "Anamorphic lenses squeeze a wide field onto the sensor, producing a cinematic wide aspect ratio, oval bokeh, and long horizontal streak flares. They read instantly as big-budget, epic, and filmic, and are prized for their organic character.",
+    "metadata": { "id": "lens-anamorphic", "category": "lens", "technique": "Anamorphic lens", "tags": ["anamorphic", "widescreen", "cinematic", "streak flare", "oval bokeh", "epic", "filmic"] }
+  },
+  {
+    "text": "A rack focus shifts focus from one subject to another within a single shot, guiding the viewer's attention from foreground to background (or back). It links two elements narratively and reveals or conceals information through focus alone.",
+    "metadata": { "id": "lens-rack-focus", "category": "lens", "technique": "Rack focus", "tags": ["rack focus", "focus pull", "attention", "reveal", "shift", "foreground background"] }
+  },
+  {
+    "text": "Lens flare occurs when a bright light source scatters inside the lens, throwing streaks, halos, and glowing artifacts across the frame. Used deliberately, it adds warmth, realism, energy, or a sci-fi sheen, and signals a strong light in the scene.",
+    "metadata": { "id": "lens-flare", "category": "lens", "technique": "Lens flare", "tags": ["lens flare", "glow", "streak", "bright light", "sci-fi", "warmth", "energy", "halo"] }
+  },
+  {
+    "text": "Three-point lighting is the foundational setup: a key light for primary illumination and shape, a fill light to soften shadows, and a back or rim light to separate the subject from the background. It produces clean, dimensional, professional coverage.",
+    "metadata": { "id": "lighting-three-point", "category": "lighting", "technique": "Three-point lighting", "tags": ["three point", "key light", "fill", "backlight", "professional", "dimensional", "clean"] }
+  },
+  {
+    "text": "High-key lighting floods a scene with bright, even light and minimal shadow, yielding a cheerful, clean, optimistic look. It suits comedy, romance, commercials, and upbeat or clinical settings where nothing hides in darkness.",
+    "metadata": { "id": "lighting-high-key", "category": "lighting", "technique": "High-key lighting", "tags": ["high key", "bright", "even", "cheerful", "optimistic", "clean", "low contrast"] }
+  },
+  {
+    "text": "Low-key lighting uses a single hard key and deep shadow to carve the subject out of darkness, creating high contrast and mystery. It is the language of noir, thriller, and horror — tense, moody, and dramatic, with much of the frame left dark.",
+    "metadata": { "id": "lighting-low-key", "category": "lighting", "technique": "Low-key lighting", "tags": ["low key", "dark", "shadow", "high contrast", "moody", "tense", "noir", "dramatic", "mystery"] }
+  },
+  {
+    "text": "Chiaroscuro is the bold interplay of concentrated light and deep shadow, borrowed from Renaissance painting. Sculptural pools of light against darkness create drama, moral tension, and a painterly, three-dimensional quality on faces and sets.",
+    "metadata": { "id": "lighting-chiaroscuro", "category": "lighting", "technique": "Chiaroscuro", "tags": ["chiaroscuro", "light and shadow", "painterly", "dramatic", "sculptural", "contrast", "moody"] }
+  },
+  {
+    "text": "Rembrandt lighting places the key at roughly 45 degrees and above, leaving a small triangle of light on the shadow-side cheek. It is a classic, flattering, and moody portrait look that adds depth and gravity to a face.",
+    "metadata": { "id": "lighting-rembrandt", "category": "lighting", "technique": "Rembrandt lighting", "tags": ["rembrandt", "portrait", "45 degrees", "triangle", "moody", "flattering", "depth"] }
+  },
+  {
+    "text": "Rim or backlight comes from behind the subject, tracing a bright edge that separates them from the background. It adds depth, a halo of glamour, or an ethereal glow, and is essential for cutting a figure out of a dark environment.",
+    "metadata": { "id": "lighting-rim", "category": "lighting", "technique": "Rim / backlight", "tags": ["rim light", "backlight", "edge", "halo", "separation", "glow", "ethereal", "silhouette"] }
+  },
+  {
+    "text": "Motivated (practical) lighting appears to come from sources visible in the scene — lamps, windows, neon signs, candles, screens. Grounding the light in the world makes it feel real and immersive, and shapes mood through the color and placement of those sources.",
+    "metadata": { "id": "lighting-practical", "category": "lighting", "technique": "Practical / motivated lighting", "tags": ["practical", "motivated", "lamp", "window", "neon", "candle", "realistic", "source"] }
+  },
+  {
+    "text": "Volumetric lighting makes beams and shafts of light visible as they pass through haze, fog, dust, or smoke — the classic 'god rays'. It adds depth, atmosphere, and a sense of the sacred or otherworldly, and reveals the air itself.",
+    "metadata": { "id": "lighting-volumetric", "category": "lighting", "technique": "Volumetric lighting", "tags": ["volumetric", "god rays", "beams", "haze", "fog", "atmosphere", "shafts", "smoke", "ethereal"] }
+  },
+  {
+    "text": "Golden hour is the brief window after sunrise or before sunset when sunlight is warm, soft, and low, casting long shadows and a honeyed glow. It reads as romantic, nostalgic, and beautiful, flattering skin and landscapes alike.",
+    "metadata": { "id": "lighting-golden-hour", "category": "lighting", "technique": "Golden hour", "tags": ["golden hour", "warm", "sunset", "sunrise", "soft", "romantic", "nostalgic", "long shadows", "glow"] }
+  },
+  {
+    "text": "Blue hour is the twilight before sunrise or after sunset when the sky glows deep, even blue. The cool, tranquil, melancholic light suits contemplative, lonely, or nocturnal-transition moods and pairs beautifully with warm practical lights.",
+    "metadata": { "id": "lighting-blue-hour", "category": "lighting", "technique": "Blue hour", "tags": ["blue hour", "twilight", "cool", "blue", "tranquil", "melancholic", "dusk", "dawn"] }
+  },
+  {
+    "text": "Hard light from a small, direct source produces crisp, well-defined shadows and high contrast, emphasizing texture and edge. It feels harsh, dramatic, or unforgiving, and suits tension, interrogation, and stark exteriors under midday sun.",
+    "metadata": { "id": "lighting-hard", "category": "lighting", "technique": "Hard light", "tags": ["hard light", "sharp shadows", "contrast", "harsh", "texture", "dramatic", "direct"] }
+  },
+  {
+    "text": "Soft light from a large or diffused source wraps around the subject with gentle, gradual shadows and low contrast. It is flattering and calm, smoothing skin and creating a tender, intimate, or dreamy atmosphere.",
+    "metadata": { "id": "lighting-soft", "category": "lighting", "technique": "Soft light", "tags": ["soft light", "diffused", "gentle", "flattering", "low contrast", "tender", "dreamy", "calm"] }
+  },
+  {
+    "text": "A silhouette lights the background brightly while leaving the subject dark, reducing them to a bold black shape against light. It is graphic and mysterious, hiding identity and emotion while conveying mood through pure form.",
+    "metadata": { "id": "lighting-silhouette", "category": "lighting", "technique": "Silhouette", "tags": ["silhouette", "backlit", "dark shape", "graphic", "mysterious", "anonymous", "outline"] }
+  },
+  {
+    "text": "Underlighting places the source below the subject's face, throwing shadows upward in an unnatural way. It reads as eerie, monstrous, or menacing — the classic campfire-horror look — and instantly signals dread or the uncanny.",
+    "metadata": { "id": "lighting-underlight", "category": "lighting", "technique": "Underlighting", "tags": ["underlight", "uplight", "eerie", "horror", "menacing", "monstrous", "uncanny", "dread"] }
+  },
+  {
+    "text": "A warm color palette of reds, oranges, and yellows evokes heat, passion, comfort, energy, or nostalgia. Warm grading can make a scene feel inviting and alive, or oppressive and feverish when pushed toward deep amber.",
+    "metadata": { "id": "color-warm", "category": "color", "technique": "Warm palette", "tags": ["warm", "red", "orange", "amber", "passion", "comfort", "nostalgic", "energy", "heat"] }
+  },
+  {
+    "text": "A cool color palette of blues, teals, and greens evokes calm, distance, sadness, cold, or the clinical and technological. Cool grading can feel serene and dreamy or isolating and bleak depending on saturation and contrast.",
+    "metadata": { "id": "color-cool", "category": "color", "technique": "Cool palette", "tags": ["cool", "blue", "teal", "green", "calm", "cold", "sad", "clinical", "isolating", "serene"] }
+  },
+  {
+    "text": "The teal-and-orange scheme pairs warm skin tones against cool teal shadows and backgrounds, a complementary contrast that makes subjects pop. It reads as modern, polished, and blockbuster, and is one of the most recognizable color-grade looks.",
+    "metadata": { "id": "color-teal-orange", "category": "color", "technique": "Teal and orange", "tags": ["teal and orange", "complementary", "blockbuster", "modern", "contrast", "polished", "skin tones"] }
+  },
+  {
+    "text": "A monochrome or black-and-white palette strips away color to emphasize light, shadow, form, and texture. It feels timeless, classic, or starkly artistic, and directs attention to composition and contrast rather than hue.",
+    "metadata": { "id": "color-monochrome", "category": "color", "technique": "Monochrome / black and white", "tags": ["monochrome", "black and white", "grayscale", "timeless", "classic", "contrast", "form", "noir"] }
+  },
+  {
+    "text": "A desaturated palette mutes colors toward gray, draining vibrancy for a grim, gritty, bleak, or realistic tone. It suits war, dystopia, and somber drama, where saturated color would feel too cheerful for the subject.",
+    "metadata": { "id": "color-desaturated", "category": "color", "technique": "Desaturated palette", "tags": ["desaturated", "muted", "gray", "grim", "gritty", "bleak", "realistic", "somber", "dystopia"] }
+  },
+  {
+    "text": "A neon or high-saturation palette floods the frame with electric pinks, cyans, purples, and greens, often from practical signs and screens. It reads as nocturnal, futuristic, and hyper-stylized — the signature look of cyberpunk and synthwave.",
+    "metadata": { "id": "color-neon", "category": "color", "technique": "Neon / high saturation", "tags": ["neon", "saturated", "electric", "pink", "cyan", "cyberpunk", "synthwave", "futuristic", "nocturnal", "vibrant"] }
+  },
+  {
+    "text": "Day-for-night shoots in daylight but grades the image cool and dark to simulate nighttime, often keeping a faint blue moonlit quality. It reads as a stylized, classic night look that preserves detail a true night shot would lose.",
+    "metadata": { "id": "color-day-for-night", "category": "color", "technique": "Day-for-night", "tags": ["day for night", "night", "blue", "moonlight", "dark", "stylized", "nocturnal"] }
+  },
+  {
+    "text": "A pastel palette uses soft, desaturated tints — powder blue, blush pink, mint, lavender — for a gentle, whimsical, dreamy, or nostalgic mood. It feels tender and stylized, and is a hallmark of quirky, storybook-like visual worlds.",
+    "metadata": { "id": "color-pastel", "category": "color", "technique": "Pastel palette", "tags": ["pastel", "soft", "whimsical", "dreamy", "nostalgic", "gentle", "storybook", "tender"] }
+  },
+  {
+    "text": "The rule of thirds divides the frame into a 3x3 grid and places key elements along the lines or at their intersections. Off-center placement creates balanced, dynamic, natural compositions and leaves room for the eye to travel.",
+    "metadata": { "id": "composition-rule-of-thirds", "category": "composition", "technique": "Rule of thirds", "tags": ["rule of thirds", "grid", "off-center", "balanced", "dynamic", "placement"] }
+  },
+  {
+    "text": "Leading lines use roads, rails, corridors, rivers, or architecture to draw the eye toward the subject or into the depth of the frame. They create direction, depth, and a strong sense of perspective and inevitability.",
+    "metadata": { "id": "composition-leading-lines", "category": "composition", "technique": "Leading lines", "tags": ["leading lines", "perspective", "depth", "direction", "roads", "corridor", "guide the eye"] }
+  },
+  {
+    "text": "Symmetry centers the subject and mirrors the frame's halves for a formal, ordered, and striking composition. Perfect symmetry can feel calm, monumental, or unsettlingly precise, and commands attention through balance.",
+    "metadata": { "id": "composition-symmetry", "category": "composition", "technique": "Symmetry", "tags": ["symmetry", "centered", "balanced", "formal", "ordered", "monumental", "mirrored"] }
+  },
+  {
+    "text": "Framing within a frame uses doorways, windows, arches, or foreground objects to enclose the subject in a second border. It adds depth and layers, focuses attention, and can suggest entrapment, voyeurism, or isolation.",
+    "metadata": { "id": "composition-frame-within-frame", "category": "composition", "technique": "Frame within a frame", "tags": ["frame within frame", "doorway", "window", "layers", "depth", "entrapment", "voyeurism", "isolation"] }
+  },
+  {
+    "text": "Negative space leaves large empty areas around a small subject. The emptiness emphasizes isolation, scale, loneliness, or calm, giving the composition room to breathe and letting the subject resonate against the void.",
+    "metadata": { "id": "composition-negative-space", "category": "composition", "technique": "Negative space", "tags": ["negative space", "empty", "minimal", "isolation", "loneliness", "scale", "calm", "breathing room"] }
+  },
+  {
+    "text": "Foreground layering places elements near the lens — foliage, crowds, objects — in front of the subject to build depth across foreground, middle ground, and background. Layers make a flat image feel three-dimensional and immersive.",
+    "metadata": { "id": "composition-depth-layering", "category": "composition", "technique": "Foreground layering / depth", "tags": ["foreground", "layers", "depth", "three-dimensional", "immersive", "planes", "middle ground"] }
+  },
+  {
+    "text": "Headroom and lead room govern the space above a subject's head and in the direction they face or move. Correct lead room ahead of a look or motion feels natural and balanced; deliberately breaking it creates tension or unease.",
+    "metadata": { "id": "composition-headroom-leadroom", "category": "composition", "technique": "Headroom and lead room", "tags": ["headroom", "lead room", "look room", "balance", "direction", "natural", "space"] }
+  },
+  {
+    "text": "Centered composition places the subject squarely in the middle of the frame for a bold, confrontational, and stable read. It can feel iconic and deliberate, isolating the subject and locking the viewer's gaze onto them.",
+    "metadata": { "id": "composition-centered", "category": "composition", "technique": "Centered composition", "tags": ["centered", "symmetrical", "bold", "confrontational", "stable", "iconic", "isolated"] }
+  },
+  {
+    "text": "The film noir look combines low-key lighting, deep shadows, hard contrast, Venetian-blind slats of light, wet streets, and Dutch angles. It evokes moral ambiguity, danger, and nocturnal urban dread, typically in black and white.",
+    "metadata": { "id": "mood-film-noir", "category": "mood", "technique": "Film noir look", "tags": ["noir", "low key", "shadows", "high contrast", "venetian blinds", "wet streets", "dread", "black and white", "nocturnal"] }
+  },
+  {
+    "text": "A horror atmosphere leans on darkness, underlighting, cold or sickly color, tight claustrophobic framing, negative space hiding threats, and unstable handheld or Dutch angles. It manufactures dread, vulnerability, and the fear of what lurks unseen.",
+    "metadata": { "id": "mood-horror", "category": "mood", "technique": "Horror atmosphere", "tags": ["horror", "dark", "dread", "underlight", "claustrophobic", "cold", "unsettling", "fear", "menacing"] }
+  },
+  {
+    "text": "A romantic look uses soft diffused light, warm golden tones, shallow depth of field, gentle backlight, and intimate close framing. It feels tender, dreamy, and glowing, flattering the subjects and idealizing the moment.",
+    "metadata": { "id": "mood-romantic", "category": "mood", "technique": "Romantic look", "tags": ["romantic", "soft", "warm", "golden", "shallow depth", "backlight", "tender", "dreamy", "intimate", "glow"] }
+  },
+  {
+    "text": "An epic look reaches for grand scale: sweeping aerial and crane moves, extreme wide vistas, anamorphic widescreen, dramatic skies, and monumental compositions. It conveys awe, heroism, and the vastness of a world or a stakes-heavy moment.",
+    "metadata": { "id": "mood-epic", "category": "mood", "technique": "Epic look", "tags": ["epic", "grand", "scale", "sweeping", "vista", "anamorphic", "heroic", "awe", "monumental", "widescreen"] }
+  },
+  {
+    "text": "A documentary or naturalistic look favors available light, handheld camera, neutral grading, and unstaged framing. It reads as authentic, observational, and immediate, as though the camera is simply witnessing real events.",
+    "metadata": { "id": "mood-documentary", "category": "mood", "technique": "Documentary / naturalistic look", "tags": ["documentary", "naturalistic", "available light", "handheld", "authentic", "observational", "realistic", "unstaged"] }
+  },
+  {
+    "text": "A cyberpunk look drenches a rain-slicked, nocturnal city in neon signage, holograms, and volumetric haze, with high-saturation cyan-and-magenta contrast and reflective wet surfaces. It feels futuristic, dense, and dystopian.",
+    "metadata": { "id": "mood-cyberpunk", "category": "mood", "technique": "Cyberpunk look", "tags": ["cyberpunk", "neon", "rain", "city", "night", "holograms", "haze", "futuristic", "dystopian", "cyan magenta", "reflections"] }
+  },
+  {
+    "text": "A western look features sun-baked wide vistas, dusty warm earth tones, hard midday light or golden-hour silhouettes, and lone figures dwarfed by expansive landscapes. It evokes solitude, endurance, and mythic frontier scale.",
+    "metadata": { "id": "mood-western", "category": "mood", "technique": "Western look", "tags": ["western", "vista", "dusty", "warm", "earth tones", "sun-baked", "lone figure", "landscape", "frontier", "silhouette"] }
+  },
+  {
+    "text": "A suspense look withholds and controls information: slow push-ins, extreme close-ups on telling details, tight framing, off-balance angles, and shadowed negative space where a threat might hide. It stretches tension and dread before a reveal.",
+    "metadata": { "id": "mood-suspense", "category": "mood", "technique": "Suspense look", "tags": ["suspense", "tension", "slow push-in", "extreme close-up", "dread", "off-balance", "shadow", "reveal", "thriller"] }
+  },
+  {
+    "text": "A dreamlike or surreal look uses soft diffusion, hazy glow, slow floating movement, pastel or otherworldly color, and gentle slow motion. It dissolves hard reality into something ethereal, nostalgic, or subconscious.",
+    "metadata": { "id": "mood-dreamlike", "category": "mood", "technique": "Dreamlike / surreal look", "tags": ["dreamlike", "surreal", "soft", "hazy", "glow", "floating", "pastel", "ethereal", "slow motion", "nostalgic", "subconscious"] }
+  }
+]
