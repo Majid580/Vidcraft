@@ -30,6 +30,9 @@ backend/generated/
 ai-service/rag/data/
 *.faiss
 
+# Redis snapshot files (Bull/Redis dev — disposable, never committed)
+*.rdb
+
 # Logs
 *.log
 npm-debug.log*

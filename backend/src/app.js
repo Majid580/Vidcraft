@@ -10,6 +10,7 @@ const { connectDB } = require('./config/db');
 const healthRoutes = require('./routes/health');
 const promptRoutes = require('./routes/prompts');
 const storyboardRoutes = require('./routes/storyboards');
+const jobRoutes = require('./routes/jobs');
 const imageRoutes = require('./routes/images');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
@@ -28,6 +29,7 @@ app.use('/media', express.static(path.join(__dirname, '..', 'generated')));
 app.use('/api', healthRoutes);
 app.use('/api', promptRoutes);
 app.use('/api', storyboardRoutes);
+app.use('/api', jobRoutes);
 app.use('/api', imageRoutes);
 
 app.use(notFoundHandler);

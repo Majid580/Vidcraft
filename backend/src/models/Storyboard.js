@@ -53,6 +53,12 @@ const storyboardSchema = new mongoose.Schema(
     world_state: { type: worldStateSchema, required: true },
     render_provider: { type: String, enum: RENDER_PROVIDERS, required: true },
     shots: { type: [shotSchema], default: [] },
+    // The Bull job id of the most recent generation run for this storyboard
+    // (INTEG-001). Lets POST /storyboards/:id/generate avoid enqueuing a
+    // duplicate while one is still in flight, and lets a client reconnect to
+    // GET /api/jobs/:id after a page reload. Bull/Redis remains the job store
+    // (no separate Mongo `jobs` collection — Section 10.1 stays deferred).
+    job_id: { type: String },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },
 );

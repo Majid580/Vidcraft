@@ -3,7 +3,7 @@ const express = require('express');
 const Prompt = require('../models/Prompt');
 const Storyboard = require('../models/Storyboard');
 const aiServiceClient = require('../services/aiServiceClient');
-const generationService = require('../services/generationService');
+const { generationQueue } = require('../queues/generationQueue');
 const { RENDER_PROVIDERS, pathwayForProvider } = require('../constants/renderProviders');
 const { requireFields, requireOneOf } = require('../middleware/validation');
 const { ApiError } = require('../middleware/errorHandler');
@@ -57,13 +57,14 @@ router.post(
   },
 );
 
-// POST /api/storyboards/:id/generate — Section 9.3 (PROPOSED as async
-// 202+jobId+WebSocket events). Deviates the same way BACKEND-004's
-// POST /api/storyboards does (ADR-014): the queue (BACKEND-003) has no
-// real generation job type wired in yet, so this runs synchronously and
-// returns the updated storyboard directly rather than a fake job id.
-// Per direct team instruction (2026-08-11), only image providers
-// (Pollinations, Cloudflare — free tier) and Remotion actually generate;
+// POST /api/storyboards/:id/generate — Section 9.3. INTEG-001: genuinely
+// async now. Enqueues one Bull job (the whole storyboard) on the BACKEND-003
+// `generation` queue and returns `202 {jobId, storyboardId, status}`
+// immediately; the worker (queues/generationQueue.js) renders/generates each
+// shot in the background, and the client polls GET /api/jobs/:id. This
+// resolves the ADR-014 synchronous stopgap — the actual per-shot work is
+// unchanged (same generationService adapters), just moved behind a job.
+// Image providers (Pollinations, Cloudflare) and Remotion generate for real;
 // the huggingface (video) provider is deliberately held, not attempted —
 // see generationService.js's HELD_PROVIDERS.
 router.post('/storyboards/:id/generate', async (req, res, next) => {
@@ -71,22 +72,39 @@ router.post('/storyboards/:id/generate', async (req, res, next) => {
     const doc = await Storyboard.findById(req.params.id);
     if (!doc) throw new ApiError(404, `Storyboard ${req.params.id} not found`);
 
-    for (const shot of doc.shots) {
-      shot.status = 'processing';
-      try {
-        shot.asset_url = await generationService.generateShotAsset(doc.id, shot, doc.world_state);
-        shot.status = 'completed';
-        shot.error = undefined;
-      } catch (err) {
-        shot.status = err.onHold ? 'on_hold' : 'failed';
-        shot.error = err.message;
+    // If a generation job for this storyboard is still in flight, hand back
+    // the same job rather than starting a duplicate run.
+    if (doc.job_id) {
+      const existing = await generationQueue.getJob(doc.job_id);
+      if (existing) {
+        const state = await existing.getState();
+        if (state === 'waiting' || state === 'active' || state === 'delayed') {
+          return res.status(202).json({
+            jobId: String(existing.id),
+            storyboardId: doc.id,
+            status: state,
+          });
+        }
       }
     }
 
+    // Fresh run: reset every shot to pending, then enqueue one job for the
+    // whole storyboard.
+    doc.shots.forEach((shot) => {
+      shot.status = 'pending';
+      shot.asset_url = undefined;
+      shot.error = undefined;
+    });
+    const job = await generationQueue.add({ storyboardId: doc.id });
+    doc.job_id = String(job.id);
     doc.markModified('shots');
     await doc.save();
 
-    res.status(200).json(doc);
+    res.status(202).json({
+      jobId: String(job.id),
+      storyboardId: doc.id,
+      status: 'queued',
+    });
   } catch (err) {
     next(err);
   }
