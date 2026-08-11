@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~60.0%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 21 / 35 |
-| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006) all complete; into Phase 2/3/6 (Backend/DB, Frontend Dev, RAG) |
+| **Overall completion percentage** | **~62.9%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 22 / 35 |
+| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006) all complete; Phase 6 RAG infra (RAG-001/002/003) complete; into Phase 2/3/6 (Backend/DB, Frontend Dev, RAG consumer) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | RAG-003 (embed the RAG-002 corpus + populate/persist the vector index, then the deferred MongoDB embeddings sync) — now fully unblocked since both deps (RAG-001 scaffold + RAG-002 curated corpus) are VERIFIED; it directly unblocks AI-007 (Cinematographer). NOTE: ADR-015 (no local heavy compute) is firm for LLMs; RAG-003's local-torch embeddings migration is DEFERRED (user, 2026-08-10) — keep local for now, move to a hosted embeddings API only if it slows the machine. |
+| **Current objective** | AI-007 (Cinematographer agent, RAG-grounded) — now fully unblocked since both deps (AI-004 orchestrator + RAG-003 populated index) are VERIFIED. Add a third LangGraph node (`screenwriter → cinematographer → producer → END`) that queries the persisted style index (`VectorIndex.load().search(...)`) and rewrites the Screenwriter's placeholder `camera` (ADR-012) into a retrieval-grounded framing/lens/lighting recommendation — the first REAL consumer of the RAG stack. NOTE: ADR-015 (no local heavy compute) is firm for LLMs; the local-torch embeddings migration remains DEFERRED (keep local, move to hosted only if it slows the machine). |
 | **Overall status** | 🟢 **The first real slice of the pipeline is now reachable end-to-end through the actual Node backend, not just the ai-service port directly.** FR-1 (AI-002), FR-2 (AI-003), and a growing slice of FR-3 (AI-004 Screenwriter + AI-005 Producer/Router) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `producer` → END) storyboard, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); Cinematographer (AI-007) doesn't exist yet, so `camera` is still a Screenwriter draft, not RAG-grounded (ADR-012); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-4/FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
-| **Last updated** | 2026-08-10 |
-| **Last updated by** | Claude (Opus 4.8) — completed RAG-002 (curated cinematography reference corpus: 75 license-clean, original technique summaries across 8 categories in `ai-service/rag/corpus/cinematography.json` + a validating `load_corpus()` loader + `test_corpus.py`; validated offline — shape/uniqueness/coverage). Branch `rag-002-corpus` (off the `frontend-003-ui` tip). Prior: FRONTEND-003 on `frontend-003-ui` (pushed). |
+| **Last updated** | 2026-08-11 |
+| **Last updated by** | Claude (Opus 4.8) — completed RAG-003 (embed corpus + populate/persist the production vector index): `ai-service/rag/build_index.py` (`build_index()` + `python -m rag.build_index`) embeds the 75-passage RAG-002 corpus with the real `all-MiniLM-L6-v2` encoder and persists `rag/data/style_index.{faiss,meta.json}` (gitignored derived artifact, rebuilt from the committed corpus). 6 new offline tests (`tests/test_build_index.py`) → 59/59 total pass; live-verified in WSL2 (built 75×384-dim vectors, reloaded + real semantic queries ranked sensibly). MongoDB embeddings sync kept deferred (new ADR-017). Branch `rag-002-corpus`. Prior: RAG-002 corpus. |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,7 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| RAG-003 | Embed corpus, populate vector index | VERIFIED | `ai-service/rag/build_index.py` — `build_index(path, embed_fn=None, files=None, dim)` loads the RAG-002 corpus (`load_corpus()`), embeds every passage with the real `all-MiniLM-L6-v2` encoder (RAG-001), and persists the populated FAISS index + JSON metadata sidecar to `VECTOR_INDEX_PATH` (`rag/data/style_index.{faiss,meta.json}`); a `python -m rag.build_index` CLI prints a per-category summary. **Idempotent** — a run rebuilds the whole index from the committed corpus (the single source of truth), so the generated index is a **gitignored, disposable derived artifact** (confirmed via `git check-ignore`). `embed_fn` injectable so tests build a real persisted index offline. `rag/__init__.py` re-exports `build_index`. AI-007 consumes this via `VectorIndex.load()`. **Scope:** MongoDB `embeddings`-collection sync (Section 10.1) DEFERRED per **ADR-017** — sole consumer AI-007 reads FAISS directly, the Python service has no Mongo client, and the JSON sidecar is the ADR-004 canonical store; an unread Mongo write wasn't added. | 6/6 new offline pytest pass (`tests/test_build_index.py`, injected deterministic embedder, ingest→embed→persist→reload run against the REAL corpus so a corpus regression fails) → **59/59 total**. Live end-to-end in WSL2 with the real model: `python -m rag.build_index` embedded all **75** passages → 384-dim FAISS index (framing 11 / lighting 14 / movement 11 / mood 9 / lens 8 / color 8 / composition 8 / angle 6), persisted the two files; a fresh `VectorIndex.load()` reloaded 75 vectors and ranked three real semantic queries sensibly (*tense/dark/threatening* → Silhouette 0.533 / Horror 0.530; *epic aerial vista* → Epic look 0.639 / Aerial-drone 0.615; *intimate face* → Close-up 0.594 / Medium close-up 0.570). | 2026-08-11 |
 | RAG-002 | Curate cinematography reference corpus | VERIFIED | `ai-service/rag/corpus/` — `cinematography.json` (**75** curated `{text, metadata}` passages), `loader.py` (`load_corpus()` reads + strictly validates into the exact `VectorIndex.add()` item shape; dedups `metadata.id`; raises `CorpusError` on missing/malformed/duplicate input), `__init__.py`, `README.md`. Coverage across 8 categories: framing 11 / angle 6 / movement 11 / lens 8 / lighting 14 / color 8 / composition 8 / mood 9. Every passage is an **original summary of common-knowledge film-technique craft** written for this project (license-clean per the FR-4 security note — nothing copied), phrased with mood vocabulary (*tense/romantic/epic/eerie*…) so shot-description queries retrieve well. Corpus curation only — embedding + populating a persisted index is RAG-003; no Cinematographer consumer yet (AI-007). | Offline validation via the loader on Windows Python (no torch/faiss): 75 items load; all 8 categories present, none thin (min 6 each); all `metadata.id` unique; every item is `{text, metadata}` with non-empty text and ≥3 tags; `load_corpus()` raises `CorpusError` on a missing file. Mirrors `ai-service/tests/test_corpus.py` (7 offline, dependency-light tests → pass under WSL2 pytest too). | 2026-08-10 |
 | FRONTEND-003 | Style configurator UI | VERIFIED | `frontend/src/components/StyleConfigurator/` — `styleOptions.ts` (declarative catalog: 8 visual styles, 6 moods, 6 lighting, 6 palettes, 4 aspect ratios; `StyleConfig` type + `DEFAULT_STYLE_CONFIG` + `toStyleTokens()` which flattens to a flat `style_tokens[]`, emitting aspect ratio as an `aspect:<r>` token) and `index.tsx` (the configurator: 3D-styled selectable tiles, conic-gradient palette **orbs** with a glossy highlight, mini aspect-ratio **frames**, a free-form custom-token input capped at 6, and a live summary showing the flattened tokens + Generate CTA). New 4th flow stage **Style** (`FlowSteps.tsx`: Compose → Refine → Style → Storyboard) replaces FRONTEND-002's plain "Ready to storyboard" block; `App.tsx` holds `styleConfig` state and passes `toStyleTokens(styleConfig)` to `api.generateStoryboard(promptId, styleTokens, demo)` (`lib/api.ts` now sends `styleTokens` in the `POST /api/storyboards` body; `lib/demo.ts` reflects them into `world_state.style_tokens`). New CSS utilities in `index.css` (`.card-3d-pop` spring hover-lift, `.tile-in` staggered entrance with `back.out` overshoot, `.animate-pop`) reusing the existing glass/tilt-3d/Reveal/violet→cyan system. Aligns with the ui-ux-pro-max Aurora-UI + Glassmorphism + 3D-depth direction and the motion DB's stagger/hover presets. **Scope:** the backend does not yet *read* `styleTokens` (full wiring into ai-service `world_state.style_tokens` is INTEG-001) — "included in submission payload" criterion is met; demo mode reflects them locally. | Clean production build (`npm run build`: full `tsc -b` type-check with `noUnusedLocals`/`noUnusedParameters` + `vite build`, 1919 modules, 0 errors). Driven end-to-end in the live browser preview via demo mode: reached the new **Style** stage, selected visual style + mood + 2 lighting + Warm Sunset palette + Cinemascope aspect + a custom token → live summary flattened to **"7 style tokens"** → generated → the storyboard's `world_state.style_tokens` reflected exactly those picks (with `aspect:2.39:1` correctly excluded from the descriptive style list). 0 React/console errors (only the expected 502 from the offline backend that triggers demo mode); no horizontal overflow at 375px. Also fixed a **pre-existing** `npm run build` blocker: `tsconfig.app.json`'s `baseUrl` tripped TS5101 under the repo's `typescript ~6.0.2`, failing `tsc -b` before `vite build` ran — added the TS-recommended `ignoreDeprecations: "6.0"` (baseUrl still needed for the `@/*` paths mapping). Added `autoPort:true` (`.claude/launch.json`) + a `PORT`-env read (`vite.config.ts`) so a preview can run beside another session's :5173 server. Not yet committed. | 2026-08-10 |
 | FRONTEND-002 | Prompt input + clarification chat UI | VERIFIED | `frontend/src/` — a guided **Compose → Refine → Storyboard** SPA. Components: `App.tsx` (flow state machine), `components/{PromptComposer,AnalysisPanel,ClarificationChat,StoryboardView,FlowSteps,AppHeader,ThemeToggle,AuroraBackground,Reveal}.tsx`, `components/ui/{card,badge,textarea}.tsx`. Data: `lib/api.ts` (typed client over the Vite `/api → :5000` proxy in `vite.config.ts`), `lib/types.ts`, `lib/demo.ts`. Theming: `hooks/useTheme.ts` + anti-FOUC script in `index.html` (light/dark, localStorage + system-pref). Visual system: violet→indigo→cyan gradient, aurora orbs, 3D scroll reveal, hover-lift/glow + pointer 3D tilt (`hooks/useTilt.ts`). Offline: a connection/502 shows a friendly message + "Explore in demo mode" (sample data via `lib/demo.ts`). Fix: clarify `brief` is a structured object from ai-service, not a string — renders either shape. | Ran the full flow through the live browser UI against the running stack (backend :5000 + ai-service :8000 + MongoDB + Redis): vague prompt → real spaCy analysis (51/100) + real Groq questions → answers → real Groq clarified prompt + structured brief → real LangGraph storyboard with pathway badges. **0 console/React errors** (verified via installed `console.error` hook), TypeScript clean, light/dark token flip confirmed, no horizontal overflow at 375px. Committed `frontend-002-ui` (0d5429f), pushed. | 2026-08-10 |
@@ -92,8 +93,7 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 
 | Task ID | Name | Depends on |
 |---|---|---|
-| RAG-003 | Embed corpus, populate vector index | RAG-001 (done), RAG-002 (done) — now fully unblocked |
-| AI-007 | Cinematographer agent (RAG-grounded) | AI-004, RAG-003 |
+| AI-007 | Cinematographer agent (RAG-grounded) | AI-004 (done), RAG-003 (done) — now fully unblocked |
 | AI-008 | Sentence-similarity intent check + retry loop | AI-007 |
 | PROVIDER-001 | Select concrete Tier 1/2/3 providers | — |
 | BACKEND-005 | External API adapter layer | PROVIDER-001, BACKEND-003 |
@@ -631,7 +631,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [x] Prompt analyzer (FR-1) returns a structured score for a real prompt — 2026-08-10 (AI-002, ai-service only — not yet reachable via the Node backend)
 - [x] Clarification agent (FR-2) generates and processes at least one Q&A round — 2026-08-10 (AI-003, real Groq API, ai-service only — not yet reachable via the Node backend or a frontend chat UI)
 - [~] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt — 2026-08-10: Screenwriter + Producer/Router nodes (AI-004/AI-005) do this against a real prompt, including real per-shot pathway routing (ADR-013); partial only because Cinematographer (AI-007, RAG-grounded camera/style) doesn't exist yet — camera is still a Screenwriter placeholder per ADR-012, and external_api-routed shots can't be rendered yet (BACKEND-005/PROVIDER-001 missing)
-- [~] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query — 2026-08-10 (RAG-001): the retrieval mechanism is verified — a semantic query returned relevant, sensibly-ranked results from a small ad-hoc cinematography corpus using the real all-MiniLM-L6-v2 encoder. The *curated* reference corpus now exists too (RAG-002: 75 passages in `ai-service/rag/corpus/`). Partial only because that curated corpus isn't embedded into a persisted production index yet (RAG-003) and no agent consumes it (AI-007); the empty index also correctly returns [] gracefully
+- [~] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query — 2026-08-11 (RAG-001/002/003): the full retrieval stack is now real end-to-end — the curated 75-passage corpus (RAG-002) is embedded and persisted into a production FAISS index (RAG-003, `rag/data/style_index`, 384-dim), and a fresh `VectorIndex.load()` ranks real semantic queries sensibly (*threatening* → Silhouette/Horror; *epic aerial* → Epic look/Aerial-drone; *intimate face* → Close-up), with the empty index still returning [] gracefully. Partial only because no agent consumes it in the pipeline yet — the Cinematographer (AI-007) is the next task and the first real reader
 - [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: fully wired end-to-end (REMOTION-001..003) including automatic composition selection + fallback; still partial only because the `shot`/`worldState` data used is hand-written sample data, not real output from an orchestrator (AI-004/005 don't exist yet) or a real REST request (not wired into a route — that's INTEG-001/BACKEND-004).
 - [ ] External API pathway (FR-6) successfully generates at least one real video via a connected provider
 - [ ] Critic loop (FR-8) triggers at least one real retry
@@ -1265,30 +1265,42 @@ VERIFIED 2026-08-10; see Section 2. 75 license-clean original technique
 passages across 8 categories in ai-service/rag/corpus/cinematography.json
 + a validating load_corpus() loader, in the exact VectorIndex.add() shape.
 
+DONE (was NEXT 1): RAG-003 — embed corpus, populate vector index.
+VERIFIED 2026-08-11; see Section 2. ai-service/rag/build_index.py
+(build_index() + `python -m rag.build_index`) embeds the 75-passage corpus
+and persists rag/data/style_index.{faiss,meta.json} (384-dim, gitignored
+derived artifact). Live-verified reload + semantic ranking. MongoDB
+embeddings sync kept DEFERRED (ADR-017: sole reader AI-007 hits FAISS
+directly; no Mongo client in the Python service; JSON sidecar is canonical).
+
 NEXT 1 (now fully unblocked — both deps VERIFIED):
-Task ID: RAG-003
-Embed corpus, populate vector index
+Task ID: AI-007
+Cinematographer agent (RAG-grounded)
 Why:
-RAG-001 (index scaffold) and RAG-002 (curated corpus) are both done, so
-RAG-003 can embed the corpus and persist a production index, which is what
-AI-007 (Cinematographer) then queries per shot.
+AI-004 (orchestrator) and RAG-003 (populated index) are both done, so the
+Cinematographer can become the FIRST real consumer of the RAG stack —
+grounding per-shot camera/style in retrieved cinematography passages
+instead of the Screenwriter's ADR-012 placeholder.
 Sketch:
-index = VectorIndex(); index.add(load_corpus()); index.save()  # -> .faiss/.meta.json
-then add the deferred MongoDB embeddings-collection sync (Section 10).
+Add a third LangGraph node between screenwriter and producer
+(screenwriter -> cinematographer -> producer -> END). Per shot: build a
+query from the shot description + world_state.style_tokens, call
+idx = VectorIndex.load(); hits = idx.search(query, k=RAG_TOP_K); feed the
+retrieved technique passages to the LLM to rewrite `camera` (and optionally
+lighting/lens/movement) into a grounded recommendation. The live index is
+already built at rag/data/style_index (rebuild via `python -m rag.build_index`
+if the corpus changes).
 Dependencies:
-RAG-001 (done), RAG-002 (done)
-NOTE (ADR-015): RAG-003 may embed locally (RAG-001's sentence-transformers
-+torch) for now — the user deferred the hosted-embeddings migration
-(2026-08-10), to be done only if local embedding slows the machine.
-See deferred follow-up below.
+AI-004 (done), RAG-003 (done)
 Acceptance criteria:
-A persisted, populated FAISS index whose search() returns relevant
-passages for representative shot-description queries.
+For a representative prompt, each shot's camera/style reflects a retrieved
+corpus technique (traceable to a corpus id), and the storyboard still
+validates against the FR-3 shape; orchestrator tests stay green.
 ```
 
 BACKEND-003/004 and now AI-006 are VERIFIED — see Section 2. With AI-006 done, all Phase 5 HIGH tasks are complete.
 
-**Deferred follow-up (ADR-015, performance-contingent):** RAG-001's embedder runs local `sentence-transformers`+`torch`. ADR-015 (all inference via hosted APIs) is firm for the LLM path, but the user **deferred** the embeddings migration (2026-08-10): keep local embeddings for now and shift to a hosted embeddings API only *if it measurably slows the machine*. So RAG-003 may embed locally for now — revisit only if performance degrades. (Groq has no embeddings endpoint, so a hosted move would need a separate embeddings provider.) Same applies to AI-008's similarity check.
+**Deferred follow-up (ADR-015, performance-contingent):** RAG-001's embedder runs local `sentence-transformers`+`torch`, and RAG-003's build ran on it locally without issue. ADR-015 (all inference via hosted APIs) is firm for the LLM path, but the user **deferred** the embeddings migration (2026-08-10): keep local embeddings for now and shift to a hosted embeddings API only *if it measurably slows the machine* — revisit only if performance degrades. (Groq has no embeddings endpoint, so a hosted move would need a separate embeddings provider.) The same local-embed note applies to AI-007's query-time embedding and AI-008's similarity check.
 
 ---
 

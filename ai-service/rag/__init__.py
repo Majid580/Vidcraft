@@ -5,7 +5,8 @@ Public surface: `VectorIndex` (the FAISS + metadata store) and `embed`
 query a populated index; corpus curation/ingestion is RAG-002/RAG-003.
 """
 
+from .build_index import build_index
 from .embedder import embed, get_model
 from .index import VectorIndex
 
-__all__ = ["VectorIndex", "embed", "get_model"]
+__all__ = ["VectorIndex", "embed", "get_model", "build_index"]
