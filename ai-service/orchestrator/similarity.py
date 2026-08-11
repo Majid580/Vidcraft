@@ -3,7 +3,7 @@
 Per proposal Section 6.3 / the AI-pipeline diagram (PROJECT_ARCHITECTURE.md
 Section 4.4), a generated storyboard's shot descriptions are checked against
 the clarified prompt's intent via sentence-transformer embeddings before the
-storyboard is handed to the Producer/Router. This reuses the same
+storyboard is finalized. This reuses the same
 all-MiniLM-L6-v2 encoder as the RAG module (RAG-001/FR-4) rather than adding
 a second embedding pathway.
 

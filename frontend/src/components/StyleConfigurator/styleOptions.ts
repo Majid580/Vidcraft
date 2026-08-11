@@ -14,7 +14,9 @@ import {
   Contrast,
   Feather,
   Flame,
+  Film,
   Ghost,
+  ImageIcon,
   Lightbulb,
   Moon,
   Boxes,
@@ -25,6 +27,8 @@ import {
   Zap,
   type LucideIcon,
 } from 'lucide-react'
+
+import type { RenderProvider } from '@/lib/types'
 
 export interface StyleOption {
   /** The literal token pushed into style_tokens. */
@@ -124,6 +128,55 @@ export const PALETTES: PaletteOption[] = [
   },
 ]
 
+// ── Rendering provider (single-select, ADR-020) ─────────────────────────────
+// The user's explicit choice of how the video is actually rendered — no
+// agent decides this (Producer/Router, AI-005, is retired). Remotion is the
+// permanent free tier; the rest are named, real providers wired up in
+// BACKEND-005, each with a small real cost.
+export interface RenderProviderOption {
+  id: RenderProvider
+  label: string
+  hint: string
+  cost: 'free' | 'paid'
+  costLabel: string
+  icon: LucideIcon
+}
+
+export const RENDER_PROVIDERS: RenderProviderOption[] = [
+  {
+    id: 'remotion',
+    label: 'Remotion',
+    hint: 'Code-driven, stylized/animated',
+    cost: 'free',
+    costLabel: 'Free',
+    icon: Film,
+  },
+  {
+    id: 'pollinations',
+    label: 'Pollinations',
+    hint: 'Photoreal image, no account',
+    cost: 'free',
+    costLabel: 'Free',
+    icon: ImageIcon,
+  },
+  {
+    id: 'cloudflare',
+    label: 'Cloudflare',
+    hint: 'Photoreal image (FLUX)',
+    cost: 'free',
+    costLabel: 'Free tier',
+    icon: Sparkles,
+  },
+  {
+    id: 'huggingface',
+    label: 'Hugging Face',
+    hint: 'Photoreal video (Wan 2.1)',
+    cost: 'paid',
+    costLabel: '~$0.05–$0.20',
+    icon: Camera,
+  },
+]
+
 // ── Aspect ratio (single-select) ────────────────────────────────────────────
 export const ASPECTS: AspectOption[] = [
   { id: '16:9', label: 'Landscape', hint: '16 : 9', ratio: 16 / 9 },
@@ -139,6 +192,7 @@ export interface StyleConfig {
   palette: string
   aspectRatio: string
   custom: string[]
+  renderProvider: RenderProvider
 }
 
 export const DEFAULT_STYLE_CONFIG: StyleConfig = {
@@ -148,6 +202,7 @@ export const DEFAULT_STYLE_CONFIG: StyleConfig = {
   palette: 'violet-cyan',
   aspectRatio: '16:9',
   custom: [],
+  renderProvider: 'remotion',
 }
 
 /**

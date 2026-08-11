@@ -2,12 +2,11 @@ import numpy as np
 import pytest
 
 from orchestrator import generate_storyboard, graph
-from orchestrator.agents import cinematographer, producer, screenwriter
+from orchestrator.agents import cinematographer, screenwriter
 from orchestrator.agents.cinematographer import (
     CinematographerOutputError,
     refine_cinematography,
 )
-from orchestrator.agents.producer import ProducerOutputError, assign_pathways
 from orchestrator.agents.screenwriter import ScreenwriterOutputError, run_screenwriter
 from orchestrator.similarity import compute_similarity
 from rag import VectorIndex
@@ -49,7 +48,6 @@ def test_run_screenwriter_builds_storyboard_shape(monkeypatch):
     assert result["world_state"]["style_tokens"] == []
     assert len(result["shots"]) == 3
     assert result["shots"][0]["shot_id"] == 1
-    assert result["shots"][0]["pathway"] == "remotion"
     assert result["shots"][1]["shot_id"] == 2
 
 
@@ -82,55 +80,6 @@ def test_run_screenwriter_rejects_shot_missing_camera(monkeypatch):
     )
     with pytest.raises(ScreenwriterOutputError):
         run_screenwriter("a prompt")
-
-
-SAMPLE_SHOTS = [
-    {"shot_id": 1, "description": "a", "camera": "wide, static", "duration_s": 3, "pathway": "remotion"},
-    {"shot_id": 2, "description": "b", "camera": "close-up, static", "duration_s": 3, "pathway": "remotion"},
-]
-SAMPLE_WORLD_STATE = {"characters": ["a chef"], "setting": "a kitchen", "style_tokens": []}
-
-
-def test_assign_pathways_empty_shots_is_noop(monkeypatch):
-    called = False
-
-    def fake_complete_json(system, user, temperature=0.3):
-        nonlocal called
-        called = True
-        return {"pathways": {}}
-
-    monkeypatch.setattr(producer, "complete_json", fake_complete_json)
-    assert assign_pathways([], SAMPLE_WORLD_STATE) == []
-    assert called is False
-
-
-def test_assign_pathways_overwrites_pathway(monkeypatch):
-    monkeypatch.setattr(
-        producer, "complete_json",
-        lambda system, user, temperature=0.3: {"pathways": {"1": "external_api", "2": "remotion"}},
-    )
-    result = assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
-    assert result[0]["pathway"] == "external_api"
-    assert result[1]["pathway"] == "remotion"
-    assert result[0]["description"] == "a"
-
-
-def test_assign_pathways_rejects_invalid_pathway(monkeypatch):
-    monkeypatch.setattr(
-        producer, "complete_json",
-        lambda system, user, temperature=0.3: {"pathways": {"1": "nonexistent", "2": "remotion"}},
-    )
-    with pytest.raises(ProducerOutputError):
-        assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
-
-
-def test_assign_pathways_rejects_malformed_response(monkeypatch):
-    monkeypatch.setattr(
-        producer, "complete_json",
-        lambda system, user, temperature=0.3: {"pathways": "not a dict"},
-    )
-    with pytest.raises(ProducerOutputError):
-        assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
 
 
 # --- Cinematographer (AI-007) ---
@@ -175,14 +124,12 @@ SHOT_A = {
     "description": "An intimate conversation between two characters",
     "camera": "medium, static",
     "duration_s": 3,
-    "pathway": "remotion",
 }
 SHOT_B = {
     "shot_id": 2,
     "description": "A sweeping vista of the landscape",
     "camera": "wide, static",
     "duration_s": 4,
-    "pathway": "remotion",
 }
 CINE_WORLD_STATE = {"characters": ["a chef"], "setting": "a kitchen", "style_tokens": []}
 
@@ -257,19 +204,11 @@ def test_generate_storyboard_runs_the_graph_end_to_end(monkeypatch):
         cinematographer, "_load_production_index",
         lambda: VectorIndex(dim=2, embed_fn=fake_embed),
     )
-    monkeypatch.setattr(
-        producer, "complete_json",
-        lambda system, user, temperature=0.3: {
-            "pathways": {"1": "remotion", "2": "external_api", "3": "remotion"}
-        },
-    )
     result = generate_storyboard("An astronaut repairs a broken antenna on Mars before nightfall.")
 
     assert result["storyboard_id"].startswith("sb_")
     assert len(result["shots"]) == 3
     assert result["world_state"]["characters"] == ["astronaut in a worn white EVA suit"]
-    assert result["shots"][0]["pathway"] == "remotion"
-    assert result["shots"][1]["pathway"] == "external_api"
 
 
 def test_generate_storyboard_grounds_camera_via_cinematographer(monkeypatch):
@@ -283,12 +222,6 @@ def test_generate_storyboard_grounds_camera_via_cinematographer(monkeypatch):
         lambda system, user, temperature=0.3: {
             "camera": "grounded camera direction",
             "style_tokens": ["low-key", "dolly-in"],
-        },
-    )
-    monkeypatch.setattr(
-        producer, "complete_json",
-        lambda system, user, temperature=0.3: {
-            "pathways": {"1": "remotion", "2": "remotion", "3": "remotion"}
         },
     )
     result = generate_storyboard("An astronaut repairs a broken antenna on Mars before nightfall.")
@@ -322,7 +255,7 @@ def test_compute_similarity_scores_matching_text_higher():
 
 
 def _patch_full_graph(monkeypatch, similarity_scores):
-    """Wire a fully-mocked graph run: fixed screenwriter/cinematographer/producer
+    """Wire a fully-mocked graph run: fixed screenwriter/cinematographer
     output, empty RAG index (no LLM call), and a queue of canned similarity
     scores (one per intent_check invocation) so retry behavior is deterministic
     without a real embedder or LLM.
@@ -334,12 +267,6 @@ def _patch_full_graph(monkeypatch, similarity_scores):
     monkeypatch.setattr(
         cinematographer, "_load_production_index",
         lambda: VectorIndex(dim=2, embed_fn=fake_embed),
-    )
-    monkeypatch.setattr(
-        producer, "complete_json",
-        lambda system, user, temperature=0.3: {
-            "pathways": {"1": "remotion", "2": "remotion", "3": "remotion"}
-        },
     )
     scores = iter(similarity_scores)
     calls = {"screenwriter": 0}

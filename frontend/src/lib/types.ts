@@ -36,12 +36,18 @@ export interface ClarifyResponse {
 
 export type Pathway = 'remotion' | 'external_api'
 
+// FR-6 / ADR-020: the user picks exactly one of these, by name, before
+// generation — no agent decides this anymore (Producer/Router, AI-005,
+// is retired).
+export type RenderProvider = 'remotion' | 'pollinations' | 'cloudflare' | 'huggingface'
+
 export interface Shot {
   shot_id: number
   description: string
   camera: string
   duration_s: number
   pathway: Pathway
+  provider: RenderProvider
   status?: 'pending' | 'processing' | 'completed' | 'failed'
   retry_count?: number
 }

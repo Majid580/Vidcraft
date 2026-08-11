@@ -129,6 +129,7 @@ function App() {
       const res = await api.generateStoryboard(
         promptId,
         toStyleTokens(styleConfig),
+        styleConfig.renderProvider,
         demoMode,
       )
       setStoryboard(res)

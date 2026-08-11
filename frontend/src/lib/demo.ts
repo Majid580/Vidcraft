@@ -6,6 +6,7 @@
 import type {
   AnalyzeResponse,
   ClarifyResponse,
+  RenderProvider,
   StoryboardResponse,
   Dimensions,
 } from './types'
@@ -87,6 +88,7 @@ export async function demoClarify(answers: string[]): Promise<ClarifyResponse> {
 
 export async function demoStoryboard(
   styleTokens: string[] = [],
+  renderProvider: RenderProvider = 'remotion',
 ): Promise<StoryboardResponse> {
   await delay(900)
   // Reflect the configurator's picks (FRONTEND-003) in world_state; fall back
@@ -95,6 +97,9 @@ export async function demoStoryboard(
   const style_tokens = chosen.length
     ? chosen
     : ['cinematic', 'volumetric light', 'violet & cyan', 'photorealistic']
+  // ADR-020: every shot gets the same user-picked provider — no agent
+  // decides pathway per shot anymore.
+  const pathway = renderProvider === 'remotion' ? 'remotion' : 'external_api'
   return {
     storyboardId: `demo-sb-${Date.now()}`,
     status: 'completed',
@@ -110,7 +115,8 @@ export async function demoStoryboard(
           'Wide establishing shot: the astronaut drifts weightlessly, silhouetted against a vast glowing violet nebula.',
         camera: 'wide shot, slow dolly-in',
         duration_s: 4,
-        pathway: 'remotion',
+        pathway,
+        provider: renderProvider,
       },
       {
         shot_id: 2,
@@ -118,7 +124,8 @@ export async function demoStoryboard(
           'Medium shot on the visor reflection catching the distant blue planet as the astronaut turns.',
         camera: 'medium shot, gentle arc',
         duration_s: 3,
-        pathway: 'external_api',
+        pathway,
+        provider: renderProvider,
       },
       {
         shot_id: 3,
@@ -126,7 +133,8 @@ export async function demoStoryboard(
           'Close-up of a gloved hand reaching toward the planet, cyan rim-light tracing the fingertips.',
         camera: 'close-up, shallow depth of field',
         duration_s: 3,
-        pathway: 'remotion',
+        pathway,
+        provider: renderProvider,
       },
     ],
   }

@@ -13,6 +13,7 @@ import {
   Sparkles,
   Wand2,
   X,
+  Zap,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -25,8 +26,10 @@ import {
   LIGHTING,
   MOODS,
   PALETTES,
+  RENDER_PROVIDERS,
   VISUAL_STYLES,
   toStyleTokens,
+  type RenderProviderOption,
   type StyleConfig,
   type StyleOption,
 } from './styleOptions'
@@ -91,6 +94,66 @@ function OptionTile({
       >
         <Icon className="size-4.5" />
       </span>
+      <span className="min-w-0">
+        <span className="block text-sm font-medium">{option.label}</span>
+        <span className="text-muted-foreground block truncate text-xs">
+          {option.hint}
+        </span>
+      </span>
+      {selected && (
+        <span className="brand-gradient animate-pop absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full text-white shadow-md">
+          <Check className="size-3" strokeWidth={3} />
+        </span>
+      )}
+    </button>
+  )
+}
+
+// ── Render-provider tile (ADR-020: user picks free Remotion or a named,
+// small-real-cost provider — no agent decides this) ────────────────────────
+function ProviderTile({
+  option,
+  selected,
+  index,
+  onClick,
+}: {
+  option: RenderProviderOption
+  selected: boolean
+  index: number
+  onClick: () => void
+}) {
+  const Icon = option.icon
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      onClick={onClick}
+      style={{ animationDelay: `${index * 45}ms` }}
+      className={cn(
+        'tile-in card-3d-pop group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left',
+        selected
+          ? 'glow-border brand-shadow border-transparent'
+          : 'border-border bg-card/40 hover:border-primary/40',
+      )}
+    >
+      <div className="flex w-full items-start justify-between gap-2">
+        <span
+          className={cn(
+            'grid size-9 place-items-center rounded-lg transition-all duration-300',
+            selected
+              ? 'brand-gradient text-white shadow-lg'
+              : 'surface-2 text-muted-foreground group-hover:text-primary',
+          )}
+        >
+          <Icon className="size-4.5" />
+        </span>
+        <Badge
+          variant={option.cost === 'free' ? 'success' : 'warning'}
+          className="shrink-0 text-[10px]"
+        >
+          {option.costLabel}
+        </Badge>
+      </div>
       <span className="min-w-0">
         <span className="block text-sm font-medium">{option.label}</span>
         <span className="text-muted-foreground block truncate text-xs">
@@ -245,6 +308,12 @@ export function StyleConfigurator({
   }
   const setPalette = (id: string) => onChange({ ...config, palette: id })
   const setAspect = (id: string) => onChange({ ...config, aspectRatio: id })
+  const setRenderProvider = (id: RenderProviderOption['id']) =>
+    onChange({ ...config, renderProvider: id })
+
+  const selectedProvider = RENDER_PROVIDERS.find(
+    (p) => p.id === config.renderProvider,
+  )
 
   const addCustom = () => {
     const v = customDraft.trim().toLowerCase()
@@ -373,6 +442,35 @@ export function StyleConfigurator({
           </section>
         </div>
 
+        {/* Rendering method (ADR-020): user picks the pathway/provider
+            explicitly — Remotion (free) or a named paid-but-cheap provider.
+            No agent decides this. */}
+        <section>
+          <SectionHeading
+            icon={Zap}
+            title="Rendering method"
+            hint="pick one — Remotion is always free"
+          />
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {RENDER_PROVIDERS.map((o, i) => (
+              <ProviderTile
+                key={o.id}
+                option={o}
+                index={i}
+                selected={config.renderProvider === o.id}
+                onClick={() => setRenderProvider(o.id)}
+              />
+            ))}
+          </div>
+          {selectedProvider && selectedProvider.cost === 'paid' && (
+            <p className="text-muted-foreground mt-2.5 text-xs">
+              {selectedProvider.label} costs a small real amount per
+              generation ({selectedProvider.costLabel}) — this isn't
+              production software, so you're choosing this deliberately.
+            </p>
+          )}
+        </section>
+
         {/* Custom tokens */}
         <section>
           <SectionHeading
@@ -434,10 +532,23 @@ export function StyleConfigurator({
       {/* Summary + generate CTA */}
       <div className="glow-border brand-shadow m-3 flex flex-col gap-4 rounded-2xl p-5 sm:m-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="min-w-0">
-          <div className="text-muted-foreground mb-2 flex items-center gap-1.5 text-xs font-medium">
-            <Sparkles className="size-3.5" />
-            {tokens.length} style {tokens.length === 1 ? 'token' : 'tokens'} ·
-            world_state.style_tokens
+          <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="size-3.5" />
+              {tokens.length} style {tokens.length === 1 ? 'token' : 'tokens'}
+            </span>
+            {selectedProvider && (
+              <span className="flex items-center gap-1.5">
+                <Zap className="size-3.5" />
+                Rendering via {selectedProvider.label}
+                <Badge
+                  variant={selectedProvider.cost === 'free' ? 'success' : 'warning'}
+                  className="text-[10px]"
+                >
+                  {selectedProvider.costLabel}
+                </Badge>
+              </span>
+            )}
           </div>
           <div className="flex flex-wrap gap-1.5">
             {tokens.length === 0 ? (

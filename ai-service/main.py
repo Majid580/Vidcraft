@@ -6,7 +6,6 @@ from clarification import build_brief, generate_questions
 from llm import GroqConfigError
 from orchestrator import (
     CinematographerOutputError,
-    ProducerOutputError,
     ScreenwriterOutputError,
     generate_storyboard,
 )
@@ -94,5 +93,5 @@ def storyboard_generate(request: StoryboardRequest):
         return generate_storyboard(request.clarified_prompt)
     except GroqConfigError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
-    except (ScreenwriterOutputError, CinematographerOutputError, ProducerOutputError) as exc:
+    except (ScreenwriterOutputError, CinematographerOutputError) as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc

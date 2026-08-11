@@ -2,9 +2,10 @@ import {
   Camera,
   Clapperboard,
   Clock,
-  Cloud,
   Film,
+  ImageIcon,
   Palette,
+  Sparkles,
   Users,
 } from 'lucide-react'
 
@@ -12,16 +13,24 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import type { Shot, StoryboardResponse } from '@/lib/types'
 
-function PathwayBadge({ pathway }: { pathway: Shot['pathway'] }) {
-  return pathway === 'external_api' ? (
-    <Badge variant="cyan">
-      <Cloud className="size-3" />
-      External API
-    </Badge>
-  ) : (
-    <Badge variant="violet">
-      <Film className="size-3" />
-      Remotion
+// ADR-020: shots carry the user's explicitly-chosen provider by name (no
+// agent decision), so the badge shows exactly which one rendered this shot.
+const PROVIDER_BADGE: Record<
+  Shot['provider'],
+  { label: string; icon: typeof Film; variant: 'violet' | 'cyan' | 'warning' }
+> = {
+  remotion: { label: 'Remotion', icon: Film, variant: 'violet' },
+  pollinations: { label: 'Pollinations', icon: ImageIcon, variant: 'cyan' },
+  cloudflare: { label: 'Cloudflare', icon: Sparkles, variant: 'cyan' },
+  huggingface: { label: 'Hugging Face', icon: Camera, variant: 'warning' },
+}
+
+function PathwayBadge({ provider }: { provider: Shot['provider'] }) {
+  const { label, icon: Icon, variant } = PROVIDER_BADGE[provider]
+  return (
+    <Badge variant={variant}>
+      <Icon className="size-3" />
+      {label}
     </Badge>
   )
 }
@@ -105,7 +114,7 @@ export function StoryboardView({ data }: { data: StoryboardResponse }) {
                   <span className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                     Shot {shot.shot_id}
                   </span>
-                  <PathwayBadge pathway={shot.pathway} />
+                  <PathwayBadge provider={shot.provider} />
                   <Badge variant="outline">
                     <Clock className="size-3" />
                     {shot.duration_s}s

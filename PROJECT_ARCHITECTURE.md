@@ -155,13 +155,13 @@ Each feature below is derived directly from the proposal's Scope (§5.2), Method
 |---|---|
 | Purpose | Decompose a clarified prompt into a 3–5 shot storyboard with per-shot cinematic parameters |
 | Inputs | Clarified prompt text (from FR-2, or directly from FR-1 if user skips clarification) |
-| Processing | LangGraph agent graph with three roles: **Screenwriter** (decomposes into shots), **Cinematographer** (assigns lighting/camera/colour/mood per shot, grounded via FR-4), **Producer/Router** (assigns each shot to Remotion or external-API pathway) |
-| Outputs | Storyboard JSON: `storyboard_id`, `world_state` (characters, setting, style_tokens), `shots[]` (each with description, camera, duration, pathway) — full example in proposal §6.3 |
+| Processing | LangGraph agent graph with two roles: **Screenwriter** (decomposes into shots), **Cinematographer** (assigns lighting/camera/colour/mood per shot, grounded via FR-4). Rendering pathway/provider is **not** an agent decision (see ADR-020) — it comes from the user's explicit selection (FR-6) and is stamped onto every shot by the backend after the agent graph completes. |
+| Outputs | Storyboard JSON: `storyboard_id`, `world_state` (characters, setting, style_tokens), `shots[]` (each with description, camera, duration; `pathway`/`provider` added by the backend post-agent, per the user's FR-6 selection) — full example in proposal §6.3 |
 | Dependencies | FR-1, FR-2 (optional), FR-4 (RAG grounding), primary + fallback LLM APIs |
 | User interaction | Storyboard is displayed for review in the frontend storyboard/shot timeline view |
 | Backend interaction | Orchestrated end-to-end by the AI microservice; backend relays job status |
 | DB interaction | Storyboard record persisted (`PROPOSED` collection: `storyboards`, see Section 10) |
-| AI/ML interaction | Multiple sequential LLM calls: 1 Screenwriter call + 1 Cinematographer call per shot + 1 Producer call per shot |
+| AI/ML interaction | Multiple sequential LLM calls: 1 Screenwriter call + 1 Cinematographer call per shot (no Producer/Router call — retired, ADR-020) |
 | External services | Groq (primary), fallback LLM API for harder decomposition cases |
 | Error cases | Storyboard fails a sentence-transformer intent-similarity check against the original prompt → sent back to Screenwriter for revision, bounded to the same retry limit as the critic loop (proposal §6.3) |
 | Validation | Similarity threshold check (specific numeric threshold: `TBD`, not specified in proposal) |
@@ -206,24 +206,25 @@ Each feature below is derived directly from the proposal's Scope (§5.2), Method
 | Security considerations | Rendering executes local code (React/Remotion) — no untrusted code execution risk since compositions are authored by the team, not generated dynamically from LLM output |
 | Completion criteria | Multi-shot storyboard renders end-to-end via Remotion with shared consistent parameters, no external API cost |
 
-#### FR-6: External API Video/Image Generation (tiered pathway)
+#### FR-6: External API Video/Image Generation (user-selected provider)
+
+**Design change (ADR-020, 2026-08-11):** originally specified as an automatic Tier 1 → Tier 2 → Tier 3 fallback strategy with the Producer/Router agent (AI-005) deciding per shot (ADR-013). Retired: this is a student FYP, not production software, and the team's actual goal is a transparent, user-controlled menu — Remotion as a permanent, explicit **free tier**, plus the real providers built in BACKEND-005 listed **by name** as paid-but-cheap alternatives the user opts into deliberately. No agent decides this anymore; no silent cross-provider fallback happens either (see below).
 
 | Field | Detail |
 |---|---|
-| Purpose | Photorealistic generation when Remotion's code-driven style is insufficient |
-| Inputs | Enhanced/grounded shot description; optionally a shared reference image from `world_state` |
-| Processing | Submitted to an external provider via an asynchronous job queue, following the Tier 1 (free) → Tier 2 (affordable paid) → Tier 3 (premium) strategy (proposal §9.2) |
-| Outputs | Generated video/image asset (format/duration dependent on provider) |
-| Dependencies | Bull.js job queue + Redis; at least one provider integration (`NOT_IMPLEMENTED` — **no specific provider has been selected yet**; the proposal deliberately abstracts this to a tiering *strategy*, not named vendors — see Section 12) |
-| User interaction | User sees a real-time progress indicator (30–120s generation window per proposal) |
-| Backend interaction | Job queue managed by Node.js/Express + Bull.js; status pushed via Socket.IO |
-| DB interaction | Job metadata, provider used, cost incurred (`PROPOSED` fields — not specified in proposal) |
-| AI/ML interaction | None directly (the enhanced prompt was already produced upstream) |
-| External services | Whichever concrete provider(s) are selected during Phase 7 — **TBD** |
-| Error cases | Free-tier quota exhausted → fall through to next tier; provider API failure/timeout; provider deprecation (see Risk table, Section 24) |
-| Validation | At least one real video generated end-to-end through a connected free-tier provider (proposal §5.2 acceptance criterion) |
+| Purpose | Let the user explicitly choose how their video is rendered — Remotion (free, code-driven, always works) or a named external provider (photorealistic, small real cost) — rather than have an agent or an automatic tier ladder decide silently |
+| Inputs | The user's single `renderProvider` choice (`remotion` \| `pollinations` \| `cloudflare` \| `huggingface`), made once per generation via the frontend Style Configurator, applied uniformly to every shot in that storyboard; the (grounded) shot description for whichever provider was chosen |
+| Outputs | Generated video/image asset per shot (format/duration dependent on the chosen provider) |
+| Dependencies | `backend/src/services/externalApiService.js` (BACKEND-005 — `IMPLEMENTED`, see Section 6.6) exposes one adapter per provider; Bull.js/Redis queue exists (BACKEND-003) but isn't yet wired to a real generation job (INTEG-001) |
+| User interaction | User picks the render option before generation (Style Configurator); sees a small cost/free indicator per option; on the paid path, a real-time progress indicator during generation (30–120s window per proposal) |
+| Backend interaction | `POST /api/storyboards` accepts `renderProvider` and stamps it onto every shot; actual per-shot generation calls happen via `externalApiService.generateByProvider()`, queued through Bull.js once INTEG-001 wires that in |
+| DB interaction | `Storyboard.render_provider` (storyboard-level) plus each shot's derived `pathway`/`provider` fields (Section 10) |
+| AI/ML interaction | None — this is a user selection, not an agent decision (Producer/Router retired, ADR-020) |
+| External services | **Concrete, named, live-validated (PROVIDER-001/ADR-019, BACKEND-005):** Pollinations.ai (image, free, no key), Cloudflare Workers AI (image, free-tier account), Hugging Face Inference Providers (video — the only video option; monthly free credits currently depleted, see PROJECT_PROGRESS.md) |
+| Error cases | The chosen provider fails (network/quota/timeout) → surfaced as an error to the user for that generation, **not** silently retried on a different named provider — once the user picked "Pollinations" by name, quietly substituting Cloudflare would violate their actual choice (ADR-020). Provider deprecation (see Risk table, Section 24). |
+| Validation | At least one real video generated end-to-end through a connected free-tier provider (proposal §5.2 acceptance criterion) — **image tier met** (Pollinations + Cloudflare both live-verified); **video tier not yet met** (Hugging Face code-complete, blocked on account credits) |
 | Security considerations | API keys must never be exposed to the frontend; all provider calls proxied through the backend |
-| Completion criteria | One real successful generation through a connected provider, continuity handled best-effort |
+| Completion criteria | One real successful generation through each offered provider, continuity handled best-effort; user sees exactly which provider they're choosing and that it isn't free before they pick it |
 
 #### FR-7: Continuity / World-State Management
 
@@ -337,15 +338,14 @@ Python FastAPI AI Microservice  [NOT_IMPLEMENTED]
   ├─ Conversational Clarification Agent (LLM)          — FR-2
   ├─ Multi-Agent Orchestrator (LangGraph)               — FR-3
   │    ├─ Screenwriter agent
-  │    ├─ Cinematographer agent ←── RAG retrieval ──┐   — FR-4
-  │    └─ Producer / Router agent                    │
+  │    └─ Cinematographer agent ←── RAG retrieval ──┐   — FR-4
   ├─ [RAG Style Knowledge Base: FAISS + MongoDB] ─────┘
   └─ Critic / Feedback Loop (vision-capable model)      — FR-8
-  ↓ per-shot routing decision
+  ↓ user's explicit render-provider choice, stamped onto every shot (ADR-020 — no agent decides this)
   ┌────────────────────────────┬─────────────────────────────────┐
   │  Remotion Engine (local)    │  External Video/Image APIs        │
-  │  [NOT_IMPLEMENTED]          │  (tiered: free → paid → premium)  │
-  │  guaranteed consistency     │  [NOT_IMPLEMENTED]                │
+  │  [free tier, default]       │  (named providers, small real cost)│
+  │  guaranteed consistency     │  [IN_PROGRESS — BACKEND-005]      │
   │  FR-5                       │  best-effort consistency — FR-6   │
   └────────────────────────────┴─────────────────────────────────┘
   ↓
@@ -390,10 +390,11 @@ flowchart TD
     AI --> ORCH[Multi-Agent Orchestrator - LangGraph]
     ORCH --> SW[Screenwriter Agent]
     ORCH --> CINE[Cinematographer Agent]
-    ORCH --> PROD[Producer / Router Agent]
     CINE <--> RAG[(RAG Style Knowledge Base - FAISS + MongoDB)]
-    PROD --> REM[Remotion Engine - local, guaranteed consistency]
-    PROD --> EXT[External Video/Image APIs - tiered, best-effort consistency]
+    SEL[User's render-provider choice - ADR-020, no agent]
+    ORCH --> SEL
+    SEL --> REM[Remotion Engine - local, free, guaranteed consistency]
+    SEL --> EXT[External Video/Image APIs - named providers, best-effort consistency]
     REM --> CRIT[Critic / Feedback Loop - bounded retries]
     EXT --> CRIT
     CRIT --> PP[FFmpeg Post-Processing]
@@ -452,8 +453,8 @@ flowchart TD
     RAGQ --> CINE
     CINE --> SIM{Sentence-similarity check vs original intent}
     SIM -->|fail, retries remain| SW
-    SIM -->|pass| PROD[Producer: route each shot]
-    PROD --> GEN[Generate shot - Remotion or External API]
+    SIM -->|pass| PICK[User's render-provider choice, made pre-generation - ADR-020]
+    PICK --> GEN[Generate shot - Remotion or the chosen named External API]
     GEN --> CRITIC{Critic: vision model pass/fail}
     CRITIC -->|fail, retries remain| CINE
     CRITIC -->|pass or retries exhausted| DONE[Finalize shot]
@@ -611,19 +612,19 @@ Each component below currently has **zero implementation**. "Current implementat
 
 ### 6.3 Multi-Agent Orchestrator (LangGraph)
 
-- **Purpose:** Coordinate the Screenwriter, Cinematographer, and Producer/Router agents as a single state graph.
-- **Responsibilities:** Own the storyboard decomposition process end-to-end, including the bounded retry loop on the intent-similarity check.
+- **Purpose:** Coordinate the Screenwriter and Cinematographer agents as a single state graph.
+- **Responsibilities:** Own the storyboard decomposition process end-to-end, including the bounded retry loop on the intent-similarity check. Does **not** own pathway/provider assignment — that's a user selection applied by the backend after the graph completes (FR-6, ADR-020).
 - **Inputs:** Clarified prompt.
-- **Outputs:** Storyboard JSON (see FR-3).
+- **Outputs:** Storyboard JSON (see FR-3) — shots carry no `pathway` field from this component; the backend adds it afterward from the user's FR-6 selection.
 - **Dependencies:** LangGraph, Groq API, fallback LLM API, sentence-transformers.
-- **Internal structure:** `ai-service/orchestrator/graph.py` (LangGraph `StateGraph` definition — `screenwriter` → `cinematographer` → `intent_check` → `producer` → END today, per ADR-001 + ADR-012's ordering + AI-008's SIM-check placement from Section 4.4), `ai-service/orchestrator/agents/screenwriter.py` (IMPLEMENTED — AI-004), `ai-service/orchestrator/agents/cinematographer.py` (IMPLEMENTED — AI-007), `ai-service/orchestrator/similarity.py` (IMPLEMENTED — AI-008), `ai-service/orchestrator/agents/producer.py` (IMPLEMENTED — AI-005), `ai-service/orchestrator/state.py` (shared `OrchestratorState` TypedDict, now including `attempt_count`/`similarity_score`).
-- **Communication:** Cinematographer agent communicates with the RAG module (Section 6.4); the intent-similarity check reuses the same RAG module's embedder (not a corpus/index query); Producer agent communicates with the tiered-routing logic (Section 6.5/6.6).
+- **Internal structure:** `ai-service/orchestrator/graph.py` (LangGraph `StateGraph` definition — `screenwriter` → `cinematographer` → `intent_check` → END, per ADR-001 + ADR-012's ordering + AI-008's SIM-check placement from Section 4.4; the `producer` node from ADR-013 is removed per ADR-020), `ai-service/orchestrator/agents/screenwriter.py` (IMPLEMENTED — AI-004, no longer emits a `pathway` placeholder), `ai-service/orchestrator/agents/cinematographer.py` (IMPLEMENTED — AI-007), `ai-service/orchestrator/similarity.py` (IMPLEMENTED — AI-008), `ai-service/orchestrator/state.py` (shared `OrchestratorState` TypedDict, including `attempt_count`/`similarity_score`). `ai-service/orchestrator/agents/producer.py` (AI-005) is retired and removed from the codebase — git history retains it if it's ever needed for reference.
+- **Communication:** Cinematographer agent communicates with the RAG module (Section 6.4); the intent-similarity check reuses the same RAG module's embedder (not a corpus/index query). Pathway/provider is no longer this component's concern at all — see Section 6.6.
 - **Failure modes:** Incoherent storyboard output (Risk table: Medium likelihood, Medium impact — mitigated by the now-implemented bounded retry + similarity check, AI-008); LLM API failure requiring fallback.
-- **Security considerations:** Same prompt-injection surface as 6.2, compounded across 3 LLM agent roles (the similarity check itself makes no LLM call).
-- **Performance considerations:** Multiple sequential LLM calls per generation (1 + N shots × 2, now possibly ×(1 + retries) on intent-check failure) — latency compounds, which is *why* Groq was selected as primary (Section 5).
+- **Security considerations:** Same prompt-injection surface as 6.2, compounded across 2 LLM agent roles (the similarity check itself makes no LLM call).
+- **Performance considerations:** Multiple sequential LLM calls per generation (1 + N shots, now possibly ×(1 + retries) on intent-check failure) — latency compounds, which is *why* Groq was selected as primary (Section 5). Removing the Producer/Router node (ADR-020) also removes one LLM call per generation.
 - **Testing requirements:** Unit tests with mocked LLM responses; integration test on real storyboard generation (proposal §6.11).
-- **Current implementation status:** `IN_PROGRESS`. Screenwriter (AI-004), Cinematographer (AI-007), the intent-similarity retry loop (AI-008), and Producer/Router (AI-005) are all implemented and verified: `POST /storyboard/generate` (ai-service) decomposes a clarified prompt into a 3-5 shot storyboard (`storyboard_id`, `world_state{characters, setting, style_tokens}`, `shots[]{shot_id, description, camera, duration_s, pathway}`), the Cinematographer grounds each shot's `camera` and `world_state.style_tokens` in passages retrieved from the RAG-003 persisted index, the intent-similarity check (AI-008) then embeds the clarified prompt and the joined shot descriptions with the same all-MiniLM-L6-v2 encoder and — below `STORYBOARD_SIMILARITY_THRESHOLD` (0.35, ADR-018) — routes back to the Screenwriter for up to `MAX_STORYBOARD_RETRIES` (2) bounded attempts, finalizing the last attempt on exhaustion rather than failing the request, and finally Producer/Router routes each shot's `pathway` per the ADR-013 photorealism heuristic. Cinematographer degrades gracefully to a pass-through if the index is empty or unbuilt. Live-verified in WSL2 against the real Groq API + real embedder: a normal prompt passed the intent check on the first attempt (real cosine similarity ~0.7); a forced impossible threshold (1.5) exercised the retry ceiling for real, confirming 3 total attempts then finalization, not a hang. Only remaining gap in this component: shots routed to `"external_api"` still cannot be rendered (BACKEND-005/PROVIDER-001 not implemented — see ADR-013 consequences); that is outside this component's scope.
-- **Future work:** None remaining for the LLM-orchestration vertical itself; the only forward dependency is the external-API pathway (PROVIDER-001 → BACKEND-005 → CRITIC-001).
+- **Current implementation status:** `IN_PROGRESS`. Screenwriter (AI-004), Cinematographer (AI-007), and the intent-similarity retry loop (AI-008) are implemented and verified: `POST /storyboard/generate` (ai-service) decomposes a clarified prompt into a 3-5 shot storyboard (`storyboard_id`, `world_state{characters, setting, style_tokens}`, `shots[]{shot_id, description, camera, duration_s}`), the Cinematographer grounds each shot's `camera` and `world_state.style_tokens` in passages retrieved from the RAG-003 persisted index, and the intent-similarity check (AI-008) then embeds the clarified prompt and the joined shot descriptions with the same all-MiniLM-L6-v2 encoder and — below `STORYBOARD_SIMILARITY_THRESHOLD` (0.35, ADR-018) — routes back to the Screenwriter for up to `MAX_STORYBOARD_RETRIES` (2) bounded attempts, finalizing the last attempt on exhaustion rather than failing the request. Cinematographer degrades gracefully to a pass-through if the index is empty or unbuilt. Live-verified in WSL2 against the real Groq API + real embedder: a normal prompt passed the intent check on the first attempt (real cosine similarity ~0.7); a forced impossible threshold (1.5) exercised the retry ceiling for real, confirming 3 total attempts then finalization, not a hang. **AI-005 (Producer/Router) is retired per ADR-020** — pathway is now assigned by the backend from the user's FR-6 selection, not by this component.
+- **Future work:** None remaining for the LLM-orchestration vertical itself; the forward dependency is now the backend's pathway-stamping logic (BACKEND-005 extension) and INTEG-001.
 
 ### 6.4 RAG Style Knowledge Base
 
@@ -652,12 +653,12 @@ Each component below currently has **zero implementation**. "Current implementat
 
 ### 6.6 External API Integration Layer
 
-- **Purpose:** Tiered access to third-party video/image generation providers.
-- **Responsibilities:** Provider selection logic (Tier 1 → 2 → 3 fallback), request/response translation per provider, job submission via Bull.js.
-- **Dependencies:** Bull.js, Redis. Tier 1 providers selected AND live-validated (PROVIDER-001, ADR-019): Pollinations.ai (image, no account/key at all) and Cloudflare Workers AI (image alternate, free account + API token, no credit card — real text-to-image catalog confirmed live). Hugging Face Inference Providers is the actual **video** Tier 1 provider (token live-validated) — Cloudflare has no video-generation model in its real catalog, so it could not serve that role despite initial research suggesting otherwise (corrected same day, see ADR-019). Tier 2/3 (fal.ai) selected but deliberately not wired up yet — team chose to stay free-only while testing (ADR-019).
-- **Internal structure (PROPOSED):** A provider-abstraction interface (`generateVideo(shotDescription, worldState) → jobHandle`) with one adapter module per concrete provider, so providers can be swapped without touching orchestration logic — this directly implements the Risk-table mitigation "abstraction layer isolates provider-specific code." BACKEND-005 must implement Tier 1 adapters (pollinations-image, cloudflare-image, huggingface-video) first, all against already-validated credentials; the fal.ai adapter (Tier 2/3) is a later, additive drop-in behind the same interface — enabling it should be one new adapter module + one env var, not a refactor.
-- **Current implementation status:** `NOT_IMPLEMENTED` (adapter code is BACKEND-005, not started). Provider **selection is DECIDED and credentials are live-validated** — see Section 12 and ADR-019.
-- **Future work:** Implement the adapter layer against this decision (BACKEND-005) — no further account setup blocks this; `backend/.env` already holds working Cloudflare and Hugging Face credentials.
+- **Purpose:** Give the user a named menu of rendering options — Remotion (free) plus real, working paid-but-cheap providers — and execute whichever one they explicitly picked (ADR-020; no longer a Tier 1→2→3 auto-fallback strategy, no longer an agent decision).
+- **Responsibilities:** Provider dispatch by explicit user selection, request/response translation per provider, job submission via Bull.js (once INTEG-001 wires that in).
+- **Dependencies:** Bull.js, Redis. Tier 1 providers selected AND live-validated (PROVIDER-001, ADR-019): Pollinations.ai (image, no account/key at all) and Cloudflare Workers AI (image alternate, free account + API token, no credit card — real text-to-image catalog confirmed live). Hugging Face Inference Providers is the **video** provider (token live-validated) — Cloudflare has no video-generation model in its real catalog, re-confirmed live 2026-08-11 with a freshly rotated Cloudflare token (61 models, 10 task categories, none video-related). Tier 2/3 (fal.ai) selected but deliberately not wired up yet — team chose to stay free-only while testing (ADR-019).
+- **Internal structure:** `backend/src/services/externalApiService.js` exposes an explicit **dispatcher**, `generateByProvider(providerId, prompt)` where `providerId` is exactly the value the user picked in the frontend (`'remotion'` is handled by the existing `remotionService.js` pathway, not this module) — `'pollinations'`, `'cloudflare'`, or `'huggingface'` route to one adapter module each under `backend/src/services/providers/` (`pollinationsImage.js`, `cloudflareImage.js`, `huggingfaceVideo.js`). **No automatic cross-provider fallback** (changed by ADR-020 from the earlier same-tier-fallback design): once the user has explicitly named a provider, silently substituting a different one on failure would contradict their choice, so a failure now surfaces as an error for that generation instead. Providers stay swappable without touching orchestration logic, per the Risk-table mitigation "abstraction layer isolates provider-specific code" — the fal.ai adapter, when added, is a later additive `case` in the same dispatcher + one env var, not a refactor.
+- **Current implementation status:** `IN_PROGRESS` (BACKEND-005 + ADR-020 restructure). Adapter code for all three Tier 1 providers is complete. **Image generation is live-verified end-to-end** for both providers: Pollinations returned a real JPEG (no account), Cloudflare's `flux-1-schnell` returned a real JPEG via its JSON/base64 response shape (`{success, result: {image: <base64>}}` — always JSON regardless of HTTP status, live-confirmed 2026-08-11, and re-confirmed after a Cloudflare token rotation the same day). **Video generation is code-complete but not yet live-verified**: `huggingfaceVideo.js` correctly authenticates and routes a real `textToVideo` call (via the official `@huggingface/inference` client, model `Wan-AI/Wan2.1-T2V-1.3B` on the `fal-ai` backend, chosen as the cheapest available text-to-video model to conserve credits) but the account's monthly Hugging Face Inference Providers free credits are already depleted (`InferenceClientProviderApiError`: "You have depleted your monthly included credits"), discovered live during this session — this was not visible from PROVIDER-001's `whoami` auth check, which only confirmed the token/scope, not remaining spend. This is an account/billing constraint, not a code defect; FR-6's "at least one real video generated" acceptance criterion is **not yet met** and must not be marked verified until it is. See the R-8 risk row for options.
+- **Future work:** Live-verify `generateByProvider('huggingface', ...)` once Hugging Face's monthly credits reset (`periodEnd` confirmed live via `whoami-v2`: 2026-09-01) or the team pre-pays a modest prepaid credit balance sized for the whole remaining project (a real-money decision for the team, not made here — see PROJECT_PROGRESS.md for the cost estimate). No further code changes are expected to be needed for that verification to succeed — the request path is already proven correct up to the billing rejection.
 
 ### 6.7 Critic / Feedback Loop
 
@@ -720,7 +721,7 @@ frontend/                          [PROPOSED — does not exist yet]
 | Page/Component | Purpose | API calls (proposed) | State | User actions |
 |---|---|---|---|---|
 | Prompt Studio | Prompt entry + clarification chat | `POST /api/prompts` (PROPOSED, Section 9) | Current prompt, clarification history | Type prompt, answer clarification questions |
-| Style Configurator | Choose genre/lighting/camera style tokens | Feeds into prompt submission payload | Selected style tokens | Select style options |
+| Style Configurator | Choose genre/lighting/camera style tokens, **and** the render provider (ADR-020: Remotion free / Pollinations / Cloudflare / Hugging Face, by name, cost badge per option) | Feeds into `POST /api/storyboards` as `styleTokens` + `renderProvider` | Selected style tokens, selected render provider | Select style options, select one render provider |
 | Storyboard Timeline | Review generated storyboard, per-shot status | `GET /api/storyboards/:id` (PROPOSED) | Storyboard JSON, per-shot pathway/status | Review shots, trigger generation |
 | Progress Tracker | Real-time generation progress | WebSocket events (PROPOSED event names, Section 9.3) | Job status, retry indicators | Passive (watch) |
 | Version/Prompt History | Browse past prompts and their enhancement diffs | `GET /api/prompts/:id/history` (PROPOSED) | History list | Browse past sessions |
@@ -746,7 +747,7 @@ backend/                           [PROPOSED — does not exist yet]
 │   ├── services/
 │   │   ├── aiServiceClient.js      [IMPLEMENTED — BACKEND-004, calls the Python FastAPI microservice]
 │   │   ├── remotionService.js
-│   │   ├── externalApiService.js   # tiered provider abstraction (Section 6.6)
+│   │   ├── externalApiService.js   [IMPLEMENTED — BACKEND-005, image tier live-verified, video tier code-complete but credit-blocked; see Section 6.6]
 │   │   └── ffmpegService.js
 │   ├── models/                     # Mongoose schemas (Section 10)
 │   ├── queues/
@@ -808,11 +809,11 @@ No authentication/authorization middleware is listed because **no auth system is
 | | |
 |---|---|
 | **Method / URL** | `POST /api/storyboards` |
-| **Status** | `IMPLEMENTED` (BACKEND-004), shape deviates from the original PROPOSED spec |
-| **Purpose** | Trigger multi-agent decomposition (FR-3) for a (clarified) prompt |
-| **Request body** | `{ "promptId": string }` |
-| **Response (201)** | `{ "storyboardId": string, "status": "completed", "worldState": object, "shots": object[] }` — **not** the originally PROPOSED `202 {storyboardId, status: "processing"}`; see ADR-014. The call is synchronous today because BACKEND-003's queue doesn't exist yet — revisit once it does. |
-| **Error responses** | `400` missing `promptId`; `404` unknown/malformed `promptId`; `502` ai-service unreachable/error |
+| **Status** | `IMPLEMENTED` (BACKEND-004), shape deviates from the original PROPOSED spec; extended for ADR-020 |
+| **Purpose** | Trigger multi-agent decomposition (FR-3) for a (clarified) prompt, then stamp the user's chosen render provider (FR-6, ADR-020) onto every resulting shot |
+| **Request body** | `{ "promptId": string, "renderProvider": "remotion" \| "pollinations" \| "cloudflare" \| "huggingface", "styleTokens"?: string[] }` — `renderProvider` required, validated against the known set; not the AI-005 agent decision (retired) |
+| **Response (201)** | `{ "storyboardId": string, "status": "completed", "worldState": object, "renderProvider": string, "shots": object[] }` — **not** the originally PROPOSED `202 {storyboardId, status: "processing"}`; see ADR-014. The call is synchronous today because BACKEND-003's queue doesn't exist yet — revisit once it does. |
+| **Error responses** | `400` missing `promptId`; `400` missing/unknown `renderProvider`; `404` unknown/malformed `promptId`; `502` ai-service unreachable/error |
 
 | | |
 |---|---|
@@ -864,7 +865,7 @@ No authentication/authorization middleware is listed because **no auth system is
 | Collection | Purpose | Created by | Modified by | Read by | Deleted when |
 |---|---|---|---|---|---|
 | `prompts` | Raw + clarified prompt text, FR-1 analysis result | Backend, on prompt submission | Clarification agent (adds clarified text) | Frontend (history view), Orchestrator | `TBD` — no retention policy specified |
-| `storyboards` | Full storyboard: `world_state`, `shots[]`, per-shot status/pathway | Orchestrator, after FR-3 completes | Generation services (update shot status), Critic loop (retry count) | Frontend (storyboard review), Post-processing | `TBD` |
+| `storyboards` | Full storyboard: `world_state`, `render_provider` (user's FR-6 choice, ADR-020), `shots[]`, per-shot status/pathway/provider | Orchestrator, after FR-3 completes; backend stamps `render_provider` onto every shot immediately after | Generation services (update shot status), Critic loop (retry count) | Frontend (storyboard review), Post-processing | `TBD` |
 | `embeddings` | Vector metadata for RAG corpus and/or prompt-similarity checks (paired with the FAISS index) | RAG corpus ingestion (offline), FR-3 similarity check | — | RAG retrieval, similarity check | `TBD` |
 | `jobs` | Generation job status, provider used, retry count, cost tracking (`PROPOSED` — not explicitly named in proposal, but implied by the job-queue design and by FR-12's need to log costs/retries) | Backend, on job enqueue | Bull.js worker, Critic loop | Frontend (progress), Evaluation study tooling | `TBD` |
 | `evaluation_runs` | FR-12 results: prompt, condition (baseline/multi-agent), scores | Evaluation study tooling | — | Final report generation | Not deleted — part of the deliverable |
@@ -891,6 +892,7 @@ erDiagram
         string _id
         string promptId
         object worldState
+        string renderProvider
         datetime createdAt
     }
     SHOTS {
@@ -900,6 +902,7 @@ erDiagram
         string camera
         int durationS
         string pathway
+        string provider
         string status
         int retryCount
     }
@@ -947,22 +950,24 @@ erDiagram
 | Expected latency | Not specified; should be low given no network call |
 | Limitations | English-only; a rule-based heuristic, not a learned quality model — the proposal is explicit that this is *not* claimed as a research contribution in itself (see proposal §4, "Programmatic and Code-Driven Video Generation": "applies standard NLP tooling to a video-specific scoring rubric") |
 
-### 11.2 LLM Agents (Screenwriter, Cinematographer, Producer, Clarification)
+### 11.2 LLM Agents (Screenwriter, Cinematographer, Clarification)
+
+*(Producer/Router retired 2026-08-11 — ADR-020; provider routing is now a user selection, not an LLM call.)*
 
 | | |
 |---|---|
 | Primary provider | Groq API, model `llama-3.3-70b-versatile` (confirmed 2026-08-10, ADR-011 — proposal itself only said "Groq-hosted open-weight models," e.g. Llama-family, without committing to a specific id) |
 | Fallback provider | DECIDED (ADR-015/016): a HOSTED cloud LLM API, never local. Default = a second Groq model (`llama-3.1-8b-instant`) on the same key; env-overridable to any OpenAI-compatible host |
-| Purpose | Storyboard decomposition, per-shot style assignment, provider routing, clarification-question generation |
+| Purpose | Storyboard decomposition, per-shot style assignment, clarification-question generation |
 | Input | Clarified prompt / shot description / RAG-retrieved context |
-| Output | Structured JSON (storyboard, shot parameters, routing decision, clarification questions) via structured-output mode |
+| Output | Structured JSON (storyboard, shot parameters, clarification questions) via structured-output mode |
 | Prompt/system instructions | Not specified in the proposal beyond role descriptions — actual system prompts for each agent are an implementation task, `NOT_IMPLEMENTED` |
 | Model parameters | `TBD` (temperature, max tokens, etc. not specified) |
 | Inference method | Remote API call |
 | API requirements | Groq API key; fallback provider API key |
 | Failure handling | Fallback to secondary LLM "where a step requires stronger reasoning than the primary model reliably provides" (proposal §6.3) |
 | Expected latency | Groq explicitly chosen to minimize this, since "the orchestrator issues several LLM calls per generation" |
-| Limitations | Multiple sequential calls per generation (1 Screenwriter + 2×N-shots for Cinematographer/Producer) — latency and cost compound with storyboard length |
+| Limitations | Multiple sequential calls per generation (1 Screenwriter + 1×N-shots for Cinematographer) — latency and cost compound with storyboard length |
 
 ### 11.3 Embedding Model
 
@@ -1002,9 +1007,9 @@ LangGraph Orchestrator
   ↓
   Sentence-similarity validation (embedding model) → retry loop if failed
   ↓
-  Producer/Router (LLM) → pathway assignment per shot
+User-selected render provider (chosen in frontend before generation, ADR-020) → stamped onto every shot
   ↓
-Generation (Remotion local render OR External API call)
+Generation (Remotion local render OR external API call to the chosen named provider)
   ↓
 Critic (vision model) → pass/fail → bounded retry loop if failed
   ↓
@@ -1025,7 +1030,7 @@ This mirrors the generic template in the user's documentation request, adapted t
 |---|---|
 | **Groq API** | `PLANNED` (primary LLM). Purpose: low-latency inference for the multi-agent orchestration layer. Auth: API key (`GROQ_API_KEY`, placeholder — see Section 13). Rate limits: `TBD`, not documented. Fallback behavior: falls through to the secondary LLM API on failure or insufficient quality. Cost: proposal budgets "Rs. 0 – 2,000" assuming free-tier usage during development. |
 | **Fallback LLM API** | `IMPLEMENTED` (AI-006). DECIDED (ADR-015/016): a HOSTED OpenAI-compatible endpoint, never local; default = second Groq model `llama-3.1-8b-instant` on the same `GROQ_API_KEY`. Purpose: absorb Groq primary unavailability. Auth: `FALLBACK_LLM_API_KEY` (blank → reuse `GROQ_API_KEY`). Cost: Rs. 0 on the Groq default; only a non-Groq override incurs the budgeted "Rs. 3,000 – 5,000." |
-| **External video/image generation providers (Tier 1/2/3)** | **DECIDED and CREDENTIALS LIVE-VALIDATED (PROVIDER-001, ADR-019, 2026-08-11).** Tier 1 (free, active now): **image** = Pollinations.ai — `https://image.pollinations.ai/prompt/{text}`, no signup/API key/account at all; live-verified via `curl` → 200 OK, real 512×512 JPEG — plus Cloudflare Workers AI as a validated alternate (real account + API token confirmed live against Cloudflare's own API: account-scoped calls succeed, real text-to-image catalog of 287 models including FLUX.1/FLUX.2, SDXL, Leonardo Phoenix). **video** = Hugging Face Inference Providers (free monthly router credits; token live-verified via `whoami` → 200 OK, correct `inference.serverless.write` scope). Research initially proposed Cloudflare Workers AI for video too (citing "FLUX 3 Video"/"HappyHorse 1.0" models), but once real credentials existed this was checked directly against Cloudflare's live model catalog (`/ai/models/search`, filtered by task, by name substring, and by enumerating all task categories across all 287 models) — **no video-generation model or task category exists there**; that research was wrong (likely sourced from inaccurate secondary/SEO content), corrected same-day before any code was built on it. Hugging Face's documented cold-start latency is therefore an accepted, known limitation of the only free video option available, not a preference. Tier 2/3 (paid, **not yet wired up** — explicit team decision to stay free-only during testing): fal.ai, a single pay-as-you-go gateway (no subscription, ~$10 signup credit, one API key covers many underlying models — LTX-Video/Wan ~$0.02–0.08 for Tier 2, Kling/Veo ~$0.05–0.70 for Tier 3), to be added later as one adapter behind the Section 6.6 abstraction interface. Comfortably within budget when enabled ("Rs. 8,000 – 12,000" video / "Rs. 2,000 – 4,000" image). All Tier 1 credentials now live in `backend/.env` (gitignored) — no further account setup blocks BACKEND-005. |
+| **External video/image generation providers (Tier 1/2/3)** | **DECIDED and CREDENTIALS LIVE-VALIDATED (PROVIDER-001, ADR-019, 2026-08-11).** Tier 1 (free, active now): **image** = Pollinations.ai — `https://image.pollinations.ai/prompt/{text}`, no signup/API key/account at all; live-verified via `curl` → 200 OK, real 512×512 JPEG — plus Cloudflare Workers AI as a validated alternate (real account + API token confirmed live against Cloudflare's own API: account-scoped calls succeed, real text-to-image catalog of 287 models including FLUX.1/FLUX.2, SDXL, Leonardo Phoenix). **video** = Hugging Face Inference Providers (free monthly router credits; token live-verified via `whoami` → 200 OK, correct `inference.serverless.write` scope). Research initially proposed Cloudflare Workers AI for video too (citing "FLUX 3 Video"/"HappyHorse 1.0" models), but once real credentials existed this was checked directly against Cloudflare's live model catalog (`/ai/models/search`, filtered by task, by name substring, and by enumerating all task categories across all 287 models) — **no video-generation model or task category exists there**; that research was wrong (likely sourced from inaccurate secondary/SEO content), corrected same-day before any code was built on it. Hugging Face's documented cold-start latency is therefore an accepted, known limitation of the only free video option available, not a preference. Tier 2/3 (paid, **not yet wired up** — explicit team decision to stay free-only during testing): fal.ai, a single pay-as-you-go gateway (no subscription, ~$10 signup credit, one API key covers many underlying models — LTX-Video/Wan ~$0.02–0.08 for Tier 2, Kling/Veo ~$0.05–0.70 for Tier 3), to be added later as one adapter behind the Section 6.6 abstraction interface. Comfortably within budget when enabled ("Rs. 8,000 – 12,000" video / "Rs. 2,000 – 4,000" image). All Tier 1 credentials now live in `backend/.env` (gitignored). **BACKEND-005 update (2026-08-11):** adapter code built for all three; image tier (Pollinations + Cloudflare) live-verified end-to-end. Video tier hit a new blocker on its first real generation call — the account's Hugging Face monthly free credits are already depleted (`InferenceClientProviderApiError`, "You have depleted your monthly included credits") — a spend/billing limit invisible to the earlier `whoami` auth check. Code is verified correct up to that rejection; a real video has not yet been generated. |
 | **Text-to-speech provider** | `PLANNED` (stretch-only), provider `TBD`. A single free-tier provider by explicit scope rule (proposal §5.2). Cost: budgeted "Rs. 0." |
 | **Cloud media hosting** | `PLANNED`, provider `TBD`. Purpose: serve final video/image assets on the API pathway. Not named in the proposal. |
 
@@ -1180,7 +1185,7 @@ User Input (raw prompt)
       → Screenwriter → shots[]
       → Cinematographer (+ RAG retrieval) → per-shot style
       → similarity check → (retry loop if needed)
-      → Producer/Router → pathway = "remotion" for all shots
+  → Backend: applies the user's pre-selected renderProvider="remotion" (ADR-020) to every shot
   → Backend: Remotion render service → MP4 per shot
   → Backend: Critic loop (optional on this pathway, can run every shot since regen is free)
   → Backend: FFmpeg post-processing → concatenated final MP4
@@ -1192,9 +1197,9 @@ User Input (raw prompt)
 ### 15.2 External API pathway (best-effort consistency, real cost)
 
 ```text
-[same as above through Producer/Router, pathway = "external_api" for some/all shots]
+[same as above, but the user pre-selected renderProvider="pollinations"|"cloudflare"|"huggingface" (ADR-020) — applied to every shot]
   → Backend: Bull.js job enqueued per shot
-  → Backend: tiered provider selection (Tier 1 → 2 → 3)
+  → Backend: externalApiService.generateByProvider() calls exactly the chosen provider — no auto-fallback to a different one (ADR-020)
   → External Provider API call (async, 30-120s)
   → Backend: Critic loop (bounded, max 2 retries — cost-capped on this pathway)
   → Backend: FFmpeg post-processing
@@ -1220,7 +1225,7 @@ sequenceDiagram
     participant GEN as Generation (Remotion/API)
     participant DB as MongoDB
 
-    User->>FE: Enter prompt, select style
+    User->>FE: Enter prompt, select style and render provider (ADR-020)
     FE->>BE: POST /api/prompts
     BE->>AI: analyze(prompt)
     AI-->>BE: score, dimensions, suggestions
@@ -1396,7 +1401,7 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 | AI-002 | spaCy prompt analyzer (FR-1) | AI-001 | `ai-service/analyzer/` | Returns structured score per proposal §6.1 schema, unit-tested | Medium |
 | AI-003 | Conversational clarification agent (FR-2) | AI-002 | `ai-service/clarification/` | ≤2 questions generated, brief object produced, capped correctly | Medium |
 | AI-004 | LangGraph orchestrator: Screenwriter agent | AI-003 | `ai-service/orchestrator/agents/screenwriter.py` | Decomposes a prompt into 3–5 shots | Done — see PROJECT_PROGRESS.md verification log |
-| AI-005 | LangGraph orchestrator: Producer/Router agent | AI-004 | `ai-service/orchestrator/agents/producer.py` | Assigns pathway per shot per tiering policy | Done — see PROJECT_PROGRESS.md verification log |
+| AI-005 | ~~LangGraph orchestrator: Producer/Router agent~~ **RETIRED 2026-08-11 (ADR-020)** | AI-004 | `ai-service/orchestrator/agents/producer.py` | Assigns pathway per shot per tiering policy | Superseded — pathway is now a user selection (FR-6), not an agent decision; see ADR-020 |
 | AI-006 | Groq + fallback LLM integration | AI-004 | `ai-service/llm/{completion,groq_client,http_llm_client}.py` | Fallback triggers correctly on primary failure | Done — hosted OpenAI-compatible fallback (ADR-015/016); see PROJECT_PROGRESS.md verification log |
 
 ### Phase 6 — RAG Knowledge Base & Style Grounding (September–November 2026)
@@ -1413,7 +1418,9 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 | Task ID | Name | Depends on | Files/components | Acceptance criteria | Complexity |
 |---|---|---|---|---|---|
 | PROVIDER-001 | Select concrete Tier 1/2/3 providers | — | Section 12 update | At least one Tier 1 (free) provider account working end-to-end | Medium (decision-heavy, not just code) |
-| BACKEND-005 | External API adapter layer (provider abstraction) | PROVIDER-001, BACKEND-003 | `backend/src/services/externalApiService.js` | Meets proposal's "at least one real video generated through a connected free-tier provider" (§5.2) | High |
+| BACKEND-005 | External API adapter layer (provider abstraction), restructured to an explicit `generateByProvider()` dispatcher per ADR-020 | PROVIDER-001, BACKEND-003 | `backend/src/services/externalApiService.js`, `backend/src/services/providers/` | Meets proposal's "at least one real video generated through a connected free-tier provider" (§5.2) — image tier verified, video tier code-complete pending HF credits | High |
+| BACKEND-006 | Wire user's `renderProvider` selection into `POST /api/storyboards`; stamp onto every shot | BACKEND-005, ADR-020 | `backend/src/routes/storyboards.js`, `backend/src/models/Storyboard.js` | A storyboard created with a given `renderProvider` has every shot carrying that pathway/provider, validated against the known set | Low |
+| FRONTEND-004 | Render-provider selector UI (Remotion free / Pollinations / Cloudflare / Hugging Face, by name, cost badge) | FRONTEND-003, BACKEND-006 | `frontend/src/components/StyleConfigurator/` | User can select one option; selection is included in the `POST /api/storyboards` payload as `renderProvider` | Low |
 | CRITIC-001 | Critic loop implementation (vision model, bounded retries) | BACKEND-005 or REMOTION-002 | `ai-service/critic/` | At least one demonstrated automatic retry cycle (Target Outcome, §3) | High |
 
 ### Phase 8 — Integration & Optimization (January 2027)
@@ -1590,7 +1597,8 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Why:** Matches the same "reasonable, documented default" precedent as ADR-010/REMOTION-003's fallback default — it lets AI-004's output already conform to the full FR-3 storyboard JSON shape and flow directly into the existing Remotion pathway (REMOTION-003) today, rather than sitting unusable until AI-005/AI-007 are built. AI-005 (Producer/Router) is expected to overwrite `pathway` per its tiering policy; AI-007 (Cinematographer) is expected to overwrite/refine `camera` and populate `style_tokens` (left as `[]` by the Screenwriter) using RAG-grounded retrieval — neither treats the Screenwriter's draft as final.
 - **Consequences:** Until AI-005/AI-007 exist, every generated storyboard routes 100% of shots through Remotion with camera framings that are a first-draft LLM guess, not retrieval-grounded. This is acceptable for the Minimum Viable criterion (Remotion-only end-to-end demo) but must not be read as Cinematographer/Producer logic already existing. **Update (2026-08-11):** both now exist and are VERIFIED — AI-005 (Producer/Router) and AI-007 (Cinematographer) overwrite/refine the Screenwriter's placeholders exactly as anticipated here; see Section 6.3's current implementation status.
 
-### ADR-013: Producer/Router pathway heuristic — photorealism signal maps to external_api, else remotion
+### ADR-013: ~~Producer/Router pathway heuristic — photorealism signal maps to external_api, else remotion~~ **SUPERSEDED 2026-08-11 by ADR-020**
+- **Superseded note:** The Producer/Router agent this ADR describes has been removed — pathway/provider is now an explicit user choice, not an LLM heuristic. Kept below for history only; do not treat as current behavior. See ADR-020.
 - **Date:** 2026-08-10
 - **Context:** The proposal (§6.6, "API-based generation") states external-API generation is for "photorealistic output," while Remotion is the stylized/animated pathway — but doesn't give the Producer/Router agent (AI-005) a precise, implementable decision rule, and concrete Tier 1/2/3 providers are still `TBD` (PROVIDER-001, open question R-8). AI-005 needed a real, testable routing decision now, not a decision deferred until providers are chosen.
 - **Options considered:** (a) Route every shot to `remotion` unconditionally until PROVIDER-001 resolves (defers the decision entirely); (b) An LLM classification per shot: does its description or the storyboard's `world_state.style_tokens` explicitly call for photorealistic/live-action output? If yes → `external_api`, else → `remotion`.
@@ -1617,6 +1625,14 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
   - **Tier 2/3 (paid, selected but deliberately NOT wired up yet):** fal.ai as the single pay-as-you-go gateway for whenever the team enables paid tiers — one API key, no subscription/minimum spend, covers cheap models (LTX-Video ~$0.02/clip, Wan ~$0.08/s) for Tier 2 and premium models (Kling ~$0.56–0.70/5s, Veo 3.1 Fast ~$0.05–0.10/s) for Tier 3 through the same client.
 - **Why:** Directly satisfies both team constraints: free-only now with documented live proof for every credential actually used (not just a claim), and a structure where enabling Tier 2/3 later is "one adapter + one env var" (`FAL_API_KEY`) rather than a redesign, because Section 6.6 already mandates a provider-abstraction interface — this decision populates that interface's Tier 1 adapters now and reserves a slot for Tier 2/3 rather than inventing new architecture. Verifying the video pick against Cloudflare's real, live catalog — rather than trusting secondary research once real credentials made that possible — caught a genuine error before it became architecture BACKEND-005 would have been built against.
 - **Consequences:** All three Tier 1 credentials (`CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `HUGGINGFACE_API_TOKEN`) are live in `backend/.env` (gitignored) and live-validated — no further account setup blocks BACKEND-005. `fal.ai`'s `FAL_API_KEY` env var exists in `.env.example` but is consumed by no code path yet, by design — do not wire it up without a further explicit team decision to move off free-only. Resolves R-8.
+
+### ADR-020: Rendering pathway/provider is a user choice, not an automated agent decision — Producer/Router (AI-005) retired
+- **Date:** 2026-08-11
+- **Context:** ADR-013 gave the Producer/Router agent (AI-005) an LLM-reasoned photorealism heuristic to auto-assign each shot's `pathway` (`remotion` vs `external_api`). Once BACKEND-005 made `external_api` a real, costed operation (Section 6.6/12) rather than a forward-looking stub, the team reconsidered: this is a student FYP, not production software, and an agent silently deciding to spend real (if small) money per shot is the wrong default. The team's actual goal is different from what ADR-013 assumed: Remotion should be offered as an explicit, permanent **free tier**, and the paid providers should be **named, user-selectable options** ("remotion for free and other models... will also be listed there so user can select whichever he wants but it will cost a little") — not a hidden agent decision the user has no visibility into or control over.
+- **Options considered:** (a) Keep AI-005, surface its decision as a pre-selected default the user can override per shot; (b) Remove AI-005 entirely — the user picks one rendering option for the whole video upfront, applied uniformly to every shot; (c) Keep AI-005 but only for a free/paid *classification*, still letting the user pick the specific provider within whichever class it lands in.
+- **Selected:** (b). The user picks exactly one option — `remotion`, `pollinations`, `cloudflare`, or `huggingface` — once, before generation, via a new Style Configurator section (FRONTEND-003 extension). That choice is stamped onto every shot in the storyboard uniformly; AI-005's per-shot LLM classification is removed from the LangGraph graph entirely (`screenwriter` → `cinematographer` → `intent_check` → END, no `producer` node).
+- **Why:** (a) and (c) both preserve an agent making a cost-affecting decision on the user's behalf, which is exactly what the team wants to stop doing — this is meant to be a visible, transparent choice ("this is not a production software"), not a smart default. (b) is also strictly simpler: one field on the storyboard-creation request instead of a per-shot LLM call, one fewer LLM round-trip per generation (latency and Groq-quota win, relevant given the free-tier rate limits noted in PROJECT_PROGRESS.md), and it removes the "what does the agent decide, and can I trust it" ambiguity a demo audience would otherwise have to have explained to them.
+- **Consequences:** ADR-013 is **superseded**, not deleted (kept for history — its content is no longer how the system behaves). `ai-service/orchestrator/agents/producer.py` is deleted from the codebase (git history retains it) and its graph node is removed; the Screenwriter's shot output no longer includes a `pathway` field at all (it never actually executed one — see AI-004's original note that it was a hardcoded placeholder) — pathway/provider is now assigned entirely by the backend from the user's request, not by any agent. `backend/src/services/externalApiService.js` changes from an automatic same-tier fallback abstraction (Pollinations → Cloudflare on failure) to an explicit `generateByProvider(providerId, prompt)` dispatcher — once a user has explicitly picked "Pollinations" by name, silently substituting a different provider on failure would violate their actual choice, so a failure is now surfaced as an error rather than papered over. FR-3 and FR-6 (Section 3/6.3/6.6 below) are updated accordingly. This does not touch Remotion's guaranteed-free framing (ADR-003) — if anything it makes that framing more literal, since "Remotion (free)" is now a real, explicit menu item rather than an implicit fallback.
 
 ---
 
@@ -1661,7 +1677,7 @@ Combines the proposal's own Risk table (§6.9) with additional gaps surfaced dur
 | R-5 | Critic loop cost/latency exceeds demo time budget | Low | — | Hard-capped retry limit; critic loop optional on API pathway | Medium | Open |
 | R-6 | Character consistency on API pathway is visibly weak | High (likelihood) | Explicitly scoped as best-effort | N/A — this is an accepted, documented limitation, not something to "fix" | Low (by design) | Accepted, not a bug |
 | R-7 | Team member availability conflicts with timeline | Low | — | Individual task ownership (Section 20); buffer weeks in later phases | Medium | Open |
-| R-8 | ~~**No provider selected within any of the three API tiers**~~ **RESOLVED 2026-08-11** | Was High — blocked FR-6, PROVIDER-001, BACKEND-005 | Tier 1 selected AND credentials live-validated (Pollinations + Cloudflare for image, Hugging Face for video); Tier 2/3 (fal.ai) selected but intentionally deferred | PROVIDER-001 (ADR-019) selected concrete providers per tier — see Section 12. Pollinations live-verified end-to-end (no account needed); Cloudflare and Hugging Face accounts created by the team and both credentials live-verified this session (Cloudflare: real account-scoped API access confirmed, and its catalog check is *why* video moved to Hugging Face instead — see ADR-019's correction note; Hugging Face: `whoami` returned 200 OK with the right scope) | Resolved (decision) + credentials validated — only BACKEND-005 adapter code remains | Resolved |
+| R-8 | ~~**No provider selected within any of the three API tiers**~~ **RESOLVED 2026-08-11 (decision); video verification blocked 2026-08-11** | Was High — blocked FR-6, PROVIDER-001, BACKEND-005 | Tier 1 selected AND credentials live-validated (Pollinations + Cloudflare for image, Hugging Face for video); Tier 2/3 (fal.ai) selected but intentionally deferred | PROVIDER-001 (ADR-019) selected concrete providers per tier — see Section 12. BACKEND-005 built the adapter layer and live-verified both image providers end-to-end (real JPEGs from Pollinations and Cloudflare). Hugging Face video is code-complete and auth/routing-verified but blocked by a **new finding**: the account's monthly Inference Providers free credits are already depleted (`whoami`'s 200 OK, checked in PROVIDER-001, only proves the token/scope — it doesn't prove remaining spend). No Tier 2/3 fallback exists yet (fal.ai not wired up), so a video shot cannot currently be rendered by any provider | Image tier: resolved + verified. Video tier: decision resolved, code complete, but **live generation blocked** until Hugging Face credits reset (unknown date) or the team chooses to pre-pay (financial decision, not made here) | Open (video verification only) |
 | R-9 | **No authentication/authorization model specified anywhere** | Medium — blocks any user-specific feature (history, saved storyboards) | None | Team must explicitly decide: single-tenant demo vs. accounts, before Phase 3 UI work depends on it | Medium | Open (newly surfaced by this doc) |
 | R-10 | **Codec/resolution mismatch risk when concatenating Remotion output with external-API output** | Medium — could break FR-9 for mixed-pathway storyboards | None | Standardize output resolution/codec at the generation-adapter boundary before FFmpeg concat | Medium | Open (newly surfaced by this doc) |
 | R-11 | ~~**Shot → Remotion composition mapping strategy undefined**~~ **RESOLVED 2026-08-10** | Was High — blocked REMOTION-003, and by extension the Minimum Viable success criterion | REMOTION-002 established the taxonomy (leading word of `shot.camera` → Wide/Medium/CloseUp). REMOTION-003 implemented `selectCompositionId()` in `remotion/render-shot.mjs`: matches `wide`/`medium`/`close-up`-prefixed camera values to their composition, and falls back to `MediumShot` (documented, chosen as the most visually neutral option) for anything else — verified with both a matching shot and a deliberately unrecognized `camera` value ("aerial drone, 360 orbit"), both rendered to valid MP4s without error. | N/A — resolved | N/A | Resolved |

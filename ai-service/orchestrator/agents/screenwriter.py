@@ -3,14 +3,13 @@
 
 Per proposal Section 6.3, the Screenwriter's role is narrative
 decomposition + world_state (characters/setting) -- not per-shot
-cinematography (Cinematographer, AI-007, RAG-grounded) or pathway
-routing (Producer/Router, AI-005). This agent fills each shot's "camera"
-with its own best-effort draft and "pathway" with DEFAULT_PATHWAY (see
-ADR-012) so the output already matches the FR-3 storyboard shape on its
-own; in the full graph (orchestrator/graph.py) the Cinematographer node
-runs next and refines "camera" + populates "style_tokens" via RAG
-retrieval, then the Producer/Router node overwrites "pathway" per its own
-routing decision (see ADR-013).
+cinematography (Cinematographer, AI-007, RAG-grounded). This agent fills
+each shot's "camera" with its own best-effort draft (see ADR-012); in the
+full graph (orchestrator/graph.py) the Cinematographer node runs next and
+refines "camera" + populates "style_tokens" via RAG retrieval. Rendering
+pathway/provider is not this agent's concern at all -- it's an explicit
+user choice the backend stamps onto every shot after the graph completes
+(FR-6, ADR-020; Producer/Router, AI-005, is retired).
 """
 
 import uuid
@@ -19,7 +18,6 @@ from llm import complete_json
 
 MIN_SHOTS = 3
 MAX_SHOTS = 5
-DEFAULT_PATHWAY = "remotion"
 
 SCREENWRITER_SYSTEM_PROMPT = f"""You are the Screenwriter agent in a video-generation pipeline.
 Given a clarified, single-paragraph video prompt, decompose it into a
@@ -92,7 +90,6 @@ def run_screenwriter(clarified_prompt: str) -> dict:
                 "description": description.strip(),
                 "camera": camera.strip(),
                 "duration_s": duration_s,
-                "pathway": DEFAULT_PATHWAY,
             }
         )
 

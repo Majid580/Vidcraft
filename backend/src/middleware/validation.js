@@ -14,4 +14,16 @@ function requireFields(fields) {
   };
 }
 
-module.exports = { requireFields };
+function requireOneOf(field, allowedValues) {
+  return (req, res, next) => {
+    const value = req.body[field];
+    if (!allowedValues.includes(value)) {
+      return next(
+        new ApiError(400, `Invalid ${field}: ${JSON.stringify(value)} (must be one of ${allowedValues.join(', ')})`),
+      );
+    }
+    next();
+  };
+}
+
+module.exports = { requireFields, requireOneOf };

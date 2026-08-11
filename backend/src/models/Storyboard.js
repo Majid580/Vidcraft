@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
 
+const { RENDER_PROVIDERS } = require('../constants/renderProviders');
+
 // Mirrors remotion/src/types.ts's WorldState/Shot shapes (which mirror
 // the proposal's Section 6.3 example JSON) plus the generation-tracking
 // fields (status, retry_count) from PROJECT_ARCHITECTURE.md Section
 // 10.2's SHOTS entity, which have no Remotion-side equivalent since
 // Remotion only ever renders a shot once it's already been decided.
+//
+// render_provider / pathway / provider are the user's explicit FR-6
+// choice (ADR-020), stamped onto the storyboard and every shot by the
+// route handler — not an agent decision (Producer/Router, AI-005, is
+// retired).
 
 const worldStateSchema = new mongoose.Schema(
   {
@@ -23,6 +30,7 @@ const shotSchema = new mongoose.Schema(
     camera: { type: String, required: true },
     duration_s: { type: Number, required: true },
     pathway: { type: String, enum: ['remotion', 'external_api'], required: true },
+    provider: { type: String, enum: RENDER_PROVIDERS, required: true },
     status: {
       type: String,
       enum: ['pending', 'processing', 'completed', 'failed'],
@@ -37,6 +45,7 @@ const storyboardSchema = new mongoose.Schema(
   {
     prompt_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Prompt', required: true },
     world_state: { type: worldStateSchema, required: true },
+    render_provider: { type: String, enum: RENDER_PROVIDERS, required: true },
     shots: { type: [shotSchema], default: [] },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },

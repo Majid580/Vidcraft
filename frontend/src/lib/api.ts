@@ -9,6 +9,7 @@
 import type {
   AnalyzeResponse,
   ClarifyResponse,
+  RenderProvider,
   StoryboardResponse,
 } from './types'
 import { demoAnalyze, demoClarify, demoStoryboard } from './demo'
@@ -85,13 +86,19 @@ export function clarifyPrompt(
 export function generateStoryboard(
   promptId: string,
   styleTokens: string[] = [],
+  renderProvider: RenderProvider = 'remotion',
   demo = false,
 ) {
   // styleTokens (FRONTEND-003) are sent in the payload so the ai-service can
   // seed world_state.style_tokens. The backend currently ignores the extra
   // field (see PROJECT_ARCHITECTURE.md §9 — full wiring is INTEG-001); demo
-  // mode reflects them locally.
+  // mode reflects them locally. renderProvider (ADR-020) IS consumed by the
+  // real backend (BACKEND-006) — stamped onto every shot.
   return demo
-    ? demoStoryboard(styleTokens)
-    : request<StoryboardResponse>('/storyboards', { promptId, styleTokens })
+    ? demoStoryboard(styleTokens, renderProvider)
+    : request<StoryboardResponse>('/storyboards', {
+        promptId,
+        styleTokens,
+        renderProvider,
+      })
 }
