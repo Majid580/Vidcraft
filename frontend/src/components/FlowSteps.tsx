@@ -4,22 +4,29 @@ import { cn } from '@/lib/utils'
 
 export type Stage = 'compose' | 'refine' | 'style' | 'storyboard'
 
-const STEPS: { id: Stage; label: string }[] = [
-  { id: 'compose', label: 'Compose' },
-  { id: 'refine', label: 'Refine' },
-  { id: 'style', label: 'Style' },
-  { id: 'storyboard', label: 'Storyboard' },
-]
-
 const ORDER: Stage[] = ['compose', 'refine', 'style', 'storyboard']
 
-export function FlowSteps({ current }: { current: Stage }) {
+// Last step's label reflects the chosen generation mode — "Image" for
+// single-image mode (no storyboard/shots involved), "Storyboard" otherwise.
+export function FlowSteps({
+  current,
+  resultLabel = 'Storyboard',
+}: {
+  current: Stage
+  resultLabel?: string
+}) {
   const currentIdx = ORDER.indexOf(current)
+  const steps = [
+    { id: 'compose' as const, label: 'Compose' },
+    { id: 'refine' as const, label: 'Refine' },
+    { id: 'style' as const, label: 'Style' },
+    { id: 'storyboard' as const, label: resultLabel },
+  ]
 
   return (
     <nav aria-label="Progress" className="mx-auto w-full max-w-md">
       <ol className="flex items-center">
-        {STEPS.map((step, i) => {
+        {steps.map((step, i) => {
           const state =
             i < currentIdx ? 'done' : i === currentIdx ? 'active' : 'todo'
           return (
@@ -49,7 +56,7 @@ export function FlowSteps({ current }: { current: Stage }) {
                   {step.label}
                 </span>
               </div>
-              {i < STEPS.length - 1 && (
+              {i < steps.length - 1 && (
                 <span
                   className={cn(
                     'mx-2 h-px flex-1 -translate-y-2.5 transition-colors',

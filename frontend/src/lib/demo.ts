@@ -6,7 +6,9 @@
 import type {
   AnalyzeResponse,
   ClarifyResponse,
+  ImageProvider,
   RenderProvider,
+  SingleImageResponse,
   StoryboardResponse,
   Dimensions,
 } from './types'
@@ -83,6 +85,41 @@ export async function demoClarify(answers: string[]): Promise<ClarifyResponse> {
     clarifiedPrompt:
       'A lone astronaut drifts weightlessly past a luminous violet nebula at deep dusk, ' +
       'slowly reaching toward a distant glowing blue planet, cinematic wide shot, volumetric light.',
+  }
+}
+
+// Single-image mode's sample response — a generated SVG placeholder (no
+// real network call, no real provider), same spirit as the rest of this
+// file's fabricated-but-labeled data.
+export async function demoSingleImage(
+  promptId: string,
+  provider: ImageProvider,
+  styleTokens: string[] = [],
+): Promise<SingleImageResponse> {
+  await delay(900)
+  const originalPrompt = 'A lone astronaut drifts past a glowing nebula.'
+  const chosen = styleTokens.filter((t) => !t.startsWith('aspect:'))
+  const enhancedPrompt = [
+    'A lone astronaut in a weathered EVA suit drifts weightlessly past a luminous violet ' +
+      'nebula at deep dusk, cinematic wide shot, volumetric light.',
+    ...chosen,
+  ].join(', ')
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="768" height="768">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient></defs>
+    <rect width="768" height="768" fill="url(#g)"/>
+    <text x="50%" y="48%" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif">Demo mode</text>
+    <text x="50%" y="56%" text-anchor="middle" fill="white" font-size="16" font-family="sans-serif">(${provider}, no real generation)</text>
+  </svg>`
+
+  return {
+    promptId,
+    provider,
+    originalPrompt,
+    enhancedPrompt,
+    imageUrl: `data:image/svg+xml,${encodeURIComponent(svg)}`,
   }
 }
 

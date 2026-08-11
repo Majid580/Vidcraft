@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const path = require('node:path');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -9,6 +10,7 @@ const { connectDB } = require('./config/db');
 const healthRoutes = require('./routes/health');
 const promptRoutes = require('./routes/prompts');
 const storyboardRoutes = require('./routes/storyboards');
+const imageRoutes = require('./routes/images');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -18,9 +20,15 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
+// Generated shot assets (BACKEND-005 real generation wiring) — a
+// disposable, gitignored directory, same pattern as remotion/out/ and
+// ai-service/rag/data/.
+app.use('/media', express.static(path.join(__dirname, '..', 'generated')));
+
 app.use('/api', healthRoutes);
 app.use('/api', promptRoutes);
 app.use('/api', storyboardRoutes);
+app.use('/api', imageRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

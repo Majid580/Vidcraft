@@ -21,6 +21,13 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
+      // Forward generated-asset requests (BACKEND-005 generationService.js
+      // writes under backend/generated/, served by app.js at /media) so
+      // <img src="/media/..."> resolves through the same dev-server origin.
+      '/media': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
     },
   },
 })

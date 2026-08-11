@@ -17,6 +17,7 @@ import {
   Film,
   Ghost,
   ImageIcon,
+  Images,
   Lightbulb,
   Moon,
   Boxes,
@@ -28,7 +29,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-import type { RenderProvider } from '@/lib/types'
+import type { GenerationMode, RenderProvider } from '@/lib/types'
 
 export interface StyleOption {
   /** The literal token pushed into style_tokens. */
@@ -128,6 +129,38 @@ export const PALETTES: PaletteOption[] = [
   },
 ]
 
+// ── Generation mode (single-select) ─────────────────────────────────────────
+// Single image skips the Screenwriter/storyboard shot decomposition
+// entirely and generates exactly one image from the enhanced prompt
+// (POST /api/images); storyboard is the existing multi-shot flow — stills
+// or video, depending on which RenderProvider is picked within it.
+export interface GenerationModeOption {
+  id: GenerationMode
+  label: string
+  hint: string
+  icon: LucideIcon
+}
+
+export const GENERATION_MODES: GenerationModeOption[] = [
+  {
+    id: 'single_image',
+    label: 'Single image',
+    hint: 'One enhanced-prompt image, no shots',
+    icon: ImageIcon,
+  },
+  {
+    id: 'storyboard',
+    label: 'Storyboard',
+    hint: 'Multi-shot — stills or video',
+    icon: Images,
+  },
+]
+
+// Providers valid for single-image mode — Remotion needs a shot to render
+// and Hugging Face is video-only, so neither applies (mirrors backend
+// constants/renderProviders.js's IMAGE_PROVIDERS).
+export const IMAGE_PROVIDER_IDS: RenderProvider[] = ['pollinations', 'cloudflare']
+
 // ── Rendering provider (single-select, ADR-020) ─────────────────────────────
 // The user's explicit choice of how the video is actually rendered — no
 // agent decides this (Producer/Router, AI-005, is retired). Remotion is the
@@ -186,6 +219,7 @@ export const ASPECTS: AspectOption[] = [
 ]
 
 export interface StyleConfig {
+  mode: GenerationMode
   visualStyle: string | null
   mood: string | null
   lighting: string[]
@@ -196,6 +230,7 @@ export interface StyleConfig {
 }
 
 export const DEFAULT_STYLE_CONFIG: StyleConfig = {
+  mode: 'storyboard',
   visualStyle: 'cinematic',
   mood: null,
   lighting: [],

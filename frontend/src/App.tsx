@@ -16,6 +16,7 @@ import { PromptComposer } from '@/components/PromptComposer'
 import { AnalysisPanel } from '@/components/AnalysisPanel'
 import { ClarificationChat } from '@/components/ClarificationChat'
 import { StoryboardView } from '@/components/StoryboardView'
+import { SingleImageView } from '@/components/SingleImageView'
 import { StyleConfigurator } from '@/components/StyleConfigurator'
 import {
   DEFAULT_STYLE_CONFIG,
@@ -31,6 +32,8 @@ import { ApiError } from '@/lib/api'
 import type {
   Analysis,
   ClarifyResponse,
+  ImageProvider,
+  SingleImageResponse,
   StoryboardResponse,
 } from '@/lib/types'
 
@@ -45,6 +48,7 @@ function App() {
   const [questions, setQuestions] = useState<string[] | null>(null)
   const [refined, setRefined] = useState<ClarifyResponse | null>(null)
   const [storyboard, setStoryboard] = useState<StoryboardResponse | null>(null)
+  const [singleImage, setSingleImage] = useState<SingleImageResponse | null>(null)
   const [styleConfig, setStyleConfig] = useState<StyleConfig>(
     DEFAULT_STYLE_CONFIG,
   )
@@ -53,10 +57,11 @@ function App() {
   const [offline, setOffline] = useState(false)
   const [demoMode, setDemoMode] = useState(false)
 
+  const result = storyboard ?? singleImage
   const readyToGenerate =
-    !!analysis && !storyboard && (questions == null || refined != null)
+    !!analysis && !result && (questions == null || refined != null)
 
-  const stage: Stage = storyboard
+  const stage: Stage = result
     ? 'storyboard'
     : readyToGenerate
       ? 'style'
@@ -71,6 +76,7 @@ function App() {
     setQuestions(null)
     setRefined(null)
     setStoryboard(null)
+    setSingleImage(null)
     setStyleConfig(DEFAULT_STYLE_CONFIG)
     setBusy(null)
     setError(null)
@@ -126,13 +132,28 @@ function App() {
     setBusy('generate')
     setError(null)
     try {
-      const res = await api.generateStoryboard(
-        promptId,
-        toStyleTokens(styleConfig),
-        styleConfig.renderProvider,
-        demoMode,
-      )
-      setStoryboard(res)
+      if (styleConfig.mode === 'single_image') {
+        // No shot decomposition — the aspect: token only makes sense as a
+        // storyboard-level hint, not literal text in an image prompt.
+        const tokens = toStyleTokens(styleConfig).filter(
+          (t) => !t.startsWith('aspect:'),
+        )
+        const res = await api.generateSingleImage(
+          promptId,
+          styleConfig.renderProvider as ImageProvider,
+          tokens,
+          demoMode,
+        )
+        setSingleImage(res)
+      } else {
+        const res = await api.generateStoryboard(
+          promptId,
+          toStyleTokens(styleConfig),
+          styleConfig.renderProvider,
+          demoMode,
+        )
+        setStoryboard(res)
+      }
     } catch (e) {
       handleError(e)
     } finally {
@@ -172,7 +193,10 @@ function App() {
         )}
 
         <div className="mb-8">
-          <FlowSteps current={stage} />
+          <FlowSteps
+            current={stage}
+            resultLabel={styleConfig.mode === 'single_image' ? 'Image' : 'Storyboard'}
+          />
         </div>
 
         {error && (
@@ -300,11 +324,15 @@ function App() {
             </Reveal>
           )}
 
-          {/* Storyboard result */}
-          {storyboard && (
+          {/* Result — storyboard (multi-shot) or single image */}
+          {result && (
             <>
               <Reveal>
-                <StoryboardView data={storyboard} />
+                {storyboard ? (
+                  <StoryboardView data={storyboard} />
+                ) : (
+                  <SingleImageView data={singleImage!} />
+                )}
               </Reveal>
               <div className="flex justify-center pt-2">
                 <Button variant="outline" onClick={reset} className="gap-2">

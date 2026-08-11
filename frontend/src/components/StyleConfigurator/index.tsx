@@ -5,6 +5,7 @@ import {
   Clapperboard,
   Droplets,
   Frame,
+  Layers,
   Lightbulb,
   Loader2,
   Palette,
@@ -21,8 +22,11 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useTilt } from '@/hooks/useTilt'
 import { cn } from '@/lib/utils'
+import type { GenerationMode } from '@/lib/types'
 import {
   ASPECTS,
+  GENERATION_MODES,
+  IMAGE_PROVIDER_IDS,
   LIGHTING,
   MOODS,
   PALETTES,
@@ -310,6 +314,21 @@ export function StyleConfigurator({
   const setAspect = (id: string) => onChange({ ...config, aspectRatio: id })
   const setRenderProvider = (id: RenderProviderOption['id']) =>
     onChange({ ...config, renderProvider: id })
+  const setMode = (id: GenerationMode) => {
+    // Single-image mode only supports the two image providers (Remotion
+    // needs a shot to render, Hugging Face is video-only) — snap the
+    // selection to a valid one rather than leaving a dead combination.
+    const renderProvider =
+      id === 'single_image' && !IMAGE_PROVIDER_IDS.includes(config.renderProvider)
+        ? 'pollinations'
+        : config.renderProvider
+    onChange({ ...config, mode: id, renderProvider })
+  }
+
+  const visibleProviders =
+    config.mode === 'single_image'
+      ? RENDER_PROVIDERS.filter((p) => IMAGE_PROVIDER_IDS.includes(p.id))
+      : RENDER_PROVIDERS
 
   const selectedProvider = RENDER_PROVIDERS.find(
     (p) => p.id === config.renderProvider,
@@ -350,6 +369,28 @@ export function StyleConfigurator({
       </div>
 
       <div className="flex flex-col gap-7 px-5 py-6 sm:px-6">
+        {/* Generation mode — single image (skips storyboard/shot
+            decomposition entirely) vs. the existing multi-shot storyboard
+            flow (stills or video, per the render-provider choice below). */}
+        <section>
+          <SectionHeading
+            icon={Layers}
+            title="What do you want to generate?"
+            hint="pick one"
+          />
+          <div className="grid grid-cols-2 gap-2.5">
+            {GENERATION_MODES.map((o, i) => (
+              <OptionTile
+                key={o.id}
+                option={o}
+                index={i}
+                selected={config.mode === o.id}
+                onClick={() => setMode(o.id)}
+              />
+            ))}
+          </div>
+        </section>
+
         {/* Visual style */}
         <section>
           <SectionHeading
@@ -449,10 +490,14 @@ export function StyleConfigurator({
           <SectionHeading
             icon={Zap}
             title="Rendering method"
-            hint="pick one — Remotion is always free"
+            hint={
+              config.mode === 'single_image'
+                ? 'pick one — image providers only'
+                : 'pick one — Remotion is always free'
+            }
           />
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {RENDER_PROVIDERS.map((o, i) => (
+            {visibleProviders.map((o, i) => (
               <ProviderTile
                 key={o.id}
                 option={o}
@@ -540,7 +585,8 @@ export function StyleConfigurator({
             {selectedProvider && (
               <span className="flex items-center gap-1.5">
                 <Zap className="size-3.5" />
-                Rendering via {selectedProvider.label}
+                {config.mode === 'single_image' ? 'Generating image via' : 'Rendering via'}{' '}
+                {selectedProvider.label}
                 <Badge
                   variant={selectedProvider.cost === 'free' ? 'success' : 'warning'}
                   className="text-[10px]"
@@ -578,7 +624,7 @@ export function StyleConfigurator({
           ) : (
             <>
               <Sparkles className="size-4" />
-              Generate storyboard
+              {config.mode === 'single_image' ? 'Generate image' : 'Generate storyboard'}
               <ArrowRight className="size-4" />
             </>
           )}

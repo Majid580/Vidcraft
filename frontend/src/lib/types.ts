@@ -41,6 +41,17 @@ export type Pathway = 'remotion' | 'external_api'
 // is retired).
 export type RenderProvider = 'remotion' | 'pollinations' | 'cloudflare' | 'huggingface'
 
+// The subset of RenderProvider that can generate a single still image on
+// demand (single-image mode, POST /api/images) — mirrors backend
+// constants/renderProviders.js's IMAGE_PROVIDERS.
+export type ImageProvider = 'pollinations' | 'cloudflare'
+
+// Single-image mode skips the Screenwriter/storyboard shot decomposition
+// entirely and generates exactly one image from the enhanced prompt;
+// storyboard mode is the existing multi-shot flow (stills or video,
+// depending on which RenderProvider is picked within it).
+export type GenerationMode = 'single_image' | 'storyboard'
+
 export interface Shot {
   shot_id: number
   description: string
@@ -64,6 +75,16 @@ export interface StoryboardResponse {
   status: string
   worldState: WorldState
   shots: Shot[]
+}
+
+// POST /api/images response (single-image mode) — no storyboard/shots,
+// just the prompt before/after enhancement and the one generated image.
+export interface SingleImageResponse {
+  promptId: string
+  provider: ImageProvider
+  originalPrompt: string
+  enhancedPrompt: string
+  imageUrl: string
 }
 
 export const DIMENSION_LABELS: Record<DimensionKey, string> = {

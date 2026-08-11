@@ -23,6 +23,9 @@ out/
 remotion/out/
 .remotion/
 
+# Generated shot assets (BACKEND-005) — real provider/Remotion output, disposable
+backend/generated/
+
 # RAG generated vector index (RAG-001) — rebuilt from the corpus, not committed
 ai-service/rag/data/
 *.faiss

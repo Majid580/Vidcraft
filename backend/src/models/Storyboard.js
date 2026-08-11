@@ -33,10 +33,16 @@ const shotSchema = new mongoose.Schema(
     provider: { type: String, enum: RENDER_PROVIDERS, required: true },
     status: {
       type: String,
-      enum: ['pending', 'processing', 'completed', 'failed'],
+      // 'on_hold' is distinct from 'failed': it means generation was
+      // deliberately not attempted (currently only the huggingface video
+      // provider, paused pending a paid API key with higher limits — see
+      // generationService.js) rather than attempted-and-errored.
+      enum: ['pending', 'processing', 'completed', 'failed', 'on_hold'],
       default: 'pending',
     },
     retry_count: { type: Number, default: 0 },
+    asset_url: { type: String },
+    error: { type: String },
   },
   { _id: false },
 );

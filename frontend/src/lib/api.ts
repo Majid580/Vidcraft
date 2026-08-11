@@ -9,10 +9,12 @@
 import type {
   AnalyzeResponse,
   ClarifyResponse,
+  ImageProvider,
   RenderProvider,
+  SingleImageResponse,
   StoryboardResponse,
 } from './types'
-import { demoAnalyze, demoClarify, demoStoryboard } from './demo'
+import { demoAnalyze, demoClarify, demoStoryboard, demoSingleImage } from './demo'
 
 const BASE = import.meta.env.VITE_API_URL ?? ''
 
@@ -101,4 +103,17 @@ export function generateStoryboard(
         styleTokens,
         renderProvider,
       })
+}
+
+// Single-image mode: skips the Screenwriter/storyboard decomposition
+// entirely (POST /api/images) — one enhanced-prompt-in, one image-out.
+export function generateSingleImage(
+  promptId: string,
+  provider: ImageProvider,
+  styleTokens: string[] = [],
+  demo = false,
+) {
+  return demo
+    ? demoSingleImage(promptId, provider, styleTokens)
+    : request<SingleImageResponse>('/images', { promptId, provider, styleTokens })
 }
