@@ -654,10 +654,10 @@ Each component below currently has **zero implementation**. "Current implementat
 
 - **Purpose:** Tiered access to third-party video/image generation providers.
 - **Responsibilities:** Provider selection logic (Tier 1 → 2 → 3 fallback), request/response translation per provider, job submission via Bull.js.
-- **Dependencies:** Bull.js, Redis, at least one concrete provider account/API key (none selected yet).
-- **Internal structure (PROPOSED):** A provider-abstraction interface (`generateVideo(shotDescription, worldState) → jobHandle`) with one adapter module per concrete provider, so providers can be swapped without touching orchestration logic — this directly implements the Risk-table mitigation "abstraction layer isolates provider-specific code."
-- **Current implementation status:** `NOT_IMPLEMENTED`. No provider selected (Section 12).
-- **Future work:** Select concrete Tier 1/2/3 providers (Phase 7, per roadmap).
+- **Dependencies:** Bull.js, Redis. Tier 1 providers selected AND live-validated (PROVIDER-001, ADR-019): Pollinations.ai (image, no account/key at all) and Cloudflare Workers AI (image alternate, free account + API token, no credit card — real text-to-image catalog confirmed live). Hugging Face Inference Providers is the actual **video** Tier 1 provider (token live-validated) — Cloudflare has no video-generation model in its real catalog, so it could not serve that role despite initial research suggesting otherwise (corrected same day, see ADR-019). Tier 2/3 (fal.ai) selected but deliberately not wired up yet — team chose to stay free-only while testing (ADR-019).
+- **Internal structure (PROPOSED):** A provider-abstraction interface (`generateVideo(shotDescription, worldState) → jobHandle`) with one adapter module per concrete provider, so providers can be swapped without touching orchestration logic — this directly implements the Risk-table mitigation "abstraction layer isolates provider-specific code." BACKEND-005 must implement Tier 1 adapters (pollinations-image, cloudflare-image, huggingface-video) first, all against already-validated credentials; the fal.ai adapter (Tier 2/3) is a later, additive drop-in behind the same interface — enabling it should be one new adapter module + one env var, not a refactor.
+- **Current implementation status:** `NOT_IMPLEMENTED` (adapter code is BACKEND-005, not started). Provider **selection is DECIDED and credentials are live-validated** — see Section 12 and ADR-019.
+- **Future work:** Implement the adapter layer against this decision (BACKEND-005) — no further account setup blocks this; `backend/.env` already holds working Cloudflare and Hugging Face credentials.
 
 ### 6.7 Critic / Feedback Loop
 
@@ -1025,7 +1025,7 @@ This mirrors the generic template in the user's documentation request, adapted t
 |---|---|
 | **Groq API** | `PLANNED` (primary LLM). Purpose: low-latency inference for the multi-agent orchestration layer. Auth: API key (`GROQ_API_KEY`, placeholder — see Section 13). Rate limits: `TBD`, not documented. Fallback behavior: falls through to the secondary LLM API on failure or insufficient quality. Cost: proposal budgets "Rs. 0 – 2,000" assuming free-tier usage during development. |
 | **Fallback LLM API** | `IMPLEMENTED` (AI-006). DECIDED (ADR-015/016): a HOSTED OpenAI-compatible endpoint, never local; default = second Groq model `llama-3.1-8b-instant` on the same `GROQ_API_KEY`. Purpose: absorb Groq primary unavailability. Auth: `FALLBACK_LLM_API_KEY` (blank → reuse `GROQ_API_KEY`). Cost: Rs. 0 on the Groq default; only a non-Groq override incurs the budgeted "Rs. 3,000 – 5,000." |
-| **External video/image generation providers (Tier 1/2/3)** | `PLANNED` strategy, **no specific vendor selected**. The proposal deliberately does not name vendors in its final version — it specifies only a tiering *policy* (free-tier first, then affordable paid, then premium). Selecting concrete providers is an explicit Phase 7 task. Cost: budgeted "Rs. 8,000 – 12,000" combined for video, "Rs. 2,000 – 4,000" for image. |
+| **External video/image generation providers (Tier 1/2/3)** | **DECIDED and CREDENTIALS LIVE-VALIDATED (PROVIDER-001, ADR-019, 2026-08-11).** Tier 1 (free, active now): **image** = Pollinations.ai — `https://image.pollinations.ai/prompt/{text}`, no signup/API key/account at all; live-verified via `curl` → 200 OK, real 512×512 JPEG — plus Cloudflare Workers AI as a validated alternate (real account + API token confirmed live against Cloudflare's own API: account-scoped calls succeed, real text-to-image catalog of 287 models including FLUX.1/FLUX.2, SDXL, Leonardo Phoenix). **video** = Hugging Face Inference Providers (free monthly router credits; token live-verified via `whoami` → 200 OK, correct `inference.serverless.write` scope). Research initially proposed Cloudflare Workers AI for video too (citing "FLUX 3 Video"/"HappyHorse 1.0" models), but once real credentials existed this was checked directly against Cloudflare's live model catalog (`/ai/models/search`, filtered by task, by name substring, and by enumerating all task categories across all 287 models) — **no video-generation model or task category exists there**; that research was wrong (likely sourced from inaccurate secondary/SEO content), corrected same-day before any code was built on it. Hugging Face's documented cold-start latency is therefore an accepted, known limitation of the only free video option available, not a preference. Tier 2/3 (paid, **not yet wired up** — explicit team decision to stay free-only during testing): fal.ai, a single pay-as-you-go gateway (no subscription, ~$10 signup credit, one API key covers many underlying models — LTX-Video/Wan ~$0.02–0.08 for Tier 2, Kling/Veo ~$0.05–0.70 for Tier 3), to be added later as one adapter behind the Section 6.6 abstraction interface. Comfortably within budget when enabled ("Rs. 8,000 – 12,000" video / "Rs. 2,000 – 4,000" image). All Tier 1 credentials now live in `backend/.env` (gitignored) — no further account setup blocks BACKEND-005. |
 | **Text-to-speech provider** | `PLANNED` (stretch-only), provider `TBD`. A single free-tier provider by explicit scope rule (proposal §5.2). Cost: budgeted "Rs. 0." |
 | **Cloud media hosting** | `PLANNED`, provider `TBD`. Purpose: serve final video/image assets on the API pathway. Not named in the proposal. |
 
@@ -1057,11 +1057,26 @@ FALLBACK_LLM_API_KEY=                              # blank -> reuse GROQ_API_KEY
 FALLBACK_LLM_MODEL=llama-3.1-8b-instant
 LLM_TIMEOUT_SECONDS=60
 
-# --- External video/image generation (providers TBD per tier) ---
-VIDEO_API_KEY_TIER1=<API_KEY>     # TBD provider
-VIDEO_API_KEY_TIER2=<API_KEY>     # TBD provider
-VIDEO_API_KEY_TIER3=<API_KEY>     # TBD provider
-IMAGE_API_KEY=<API_KEY>           # TBD provider
+# --- External video/image generation (PROVIDER-001, ADR-019) ---
+# Tier 1 (free, active, credentials live-validated 2026-08-11).
+# Image: Pollinations.ai needs NO key/account — it's a public URL API
+# (https://image.pollinations.ai/prompt/{text}) — nothing to set. Cloudflare
+# Workers AI is a validated alternate image provider (real text-to-image
+# catalog: FLUX.1/FLUX.2, SDXL, Leonardo Phoenix — confirmed live, no credit
+# card needed): https://dash.cloudflare.com
+CLOUDFLARE_ACCOUNT_ID=<ACCOUNT_ID>
+CLOUDFLARE_API_TOKEN=<API_TOKEN>
+# Video: Hugging Face Inference Providers — NOT a fallback, this is the actual
+# Tier 1 video provider. Cloudflare Workers AI has no video-generation model
+# in its real catalog (checked live, ADR-019 corrected this after initial
+# research suggested otherwise) — HF is the only free option that has one.
+# https://huggingface.co/settings/tokens
+HUGGINGFACE_API_TOKEN=<API_TOKEN>
+
+# Tier 2/3 (paid) — NOT wired up yet; team chose free-only while testing
+# (ADR-019). fal.ai is the selected single gateway for when these are
+# enabled (one key, many models: LTX/Wan for Tier2, Kling/Veo for Tier3).
+FAL_API_KEY=<API_KEY>             # not yet consumed by any code path
 
 # --- Optional TTS (stretch feature only) ---
 TTS_API_KEY=<API_KEY>             # TBD provider, optional
@@ -1080,7 +1095,7 @@ VECTOR_INDEX_PATH=rag/data/style_index   # RAG-001: base path; store writes {pat
 EMBEDDING_MODEL=all-MiniLM-L6-v2   # RAG-001/FR-4: corpus + query encoder (384-dim)
 RAG_TOP_K=3                    # RAG-001/FR-4: default k for style retrieval
 CRITIC_MAX_RETRIES=2           # confirmed default per proposal §6.7
-STORYBOARD_SIMILARITY_THRESHOLD=  # TBD numeric value, not specified in proposal
+STORYBOARD_SIMILARITY_THRESHOLD=0.35  # confirmed default per ADR-018 (max 2 retries)
 ANALYSIS_SCORE_THRESHOLD=60    # confirmed default per proposal §6.1 ("default: 60/100")
 ```
 
@@ -1091,11 +1106,13 @@ ANALYSIS_SCORE_THRESHOLD=60    # confirmed default per proposal §6.1 ("default:
 | `GROQ_API_KEY` | Required | Both | Never commit real value |
 | `GROQ_MODEL` | Required | Both | Default `llama-3.3-70b-versatile`, confirmed available on the Groq API as of 2026-08-10 (ADR-011) |
 | `FALLBACK_LLM_API_KEY` | Optional | ai-service | Blank → reuses `GROQ_API_KEY` (ADR-016 default: second Groq model, hosted) |
-| `VIDEO_API_KEY_TIER1/2/3` | Required for FR-6 | Both | Providers undecided — Phase 7 |
+| `CLOUDFLARE_ACCOUNT_ID`/`CLOUDFLARE_API_TOKEN` | Required for FR-6 image Tier 1 (alternate) | Both | Free account, no credit card; live-validated 2026-08-11 (ADR-019) — real text-to-image catalog, no video models |
+| `HUGGINGFACE_API_TOKEN` | Required for FR-6 video Tier 1 | Both | The actual video provider, not a fallback — Cloudflare has no video model (ADR-019); token live-validated 2026-08-11 |
+| `FAL_API_KEY` | Required for FR-6 Tier 2/3 | Both | Selected (ADR-019) but deliberately not wired up yet — free-only during testing |
 | `TTS_API_KEY` | Optional | Both | Stretch feature only |
 | `CRITIC_MAX_RETRIES` | Required | Both | Default confirmed: `2` |
 | `ANALYSIS_SCORE_THRESHOLD` | Required | Both | Default confirmed: `60` |
-| `STORYBOARD_SIMILARITY_THRESHOLD` | Required | Both | **Value TBD** — not specified anywhere in the proposal; must be decided during Phase 5 implementation |
+| `STORYBOARD_SIMILARITY_THRESHOLD` | Required | Both | Default confirmed: `0.35`, max 2 retries (ADR-018) |
 
 **No real secrets appear anywhere in this document or should ever appear in any file in this repository.**
 
@@ -1589,6 +1606,18 @@ The critical-path insight from this graph: **the Remotion pathway (REMOTION-001.
 - **Why:** Live verification (WSL2, real Groq API + real embedder) measured ~0.7 cosine similarity between a real clarified prompt and its real generated storyboard — a genuinely well-aligned pair. 0.35 sits comfortably below that, so well-formed storyboards pass on the first attempt without spurious retries, while still being a real gate rather than an unreachable one (forcing the threshold to an impossible 1.5 in the same session confirmed the retry path fires and correctly finalizes after exhausting `MAX_STORYBOARD_RETRIES`, rather than hanging).
 - **Consequences:** These are first-pass defaults, not a calibrated result — revisit once the curated 50-prompt evaluation set (EVAL-001) provides enough real (prompt, storyboard) pairs to check whether 0.35 is systematically too strict or too loose. This closes R-12's second half (the first half, the spaCy formula, was resolved by ADR-010).
 
+### ADR-019: Concrete Tier 1/2/3 external provider selection (PROVIDER-001)
+- **Date:** 2026-08-11
+- **Context:** R-8 left all three API tiers `TBD` — the proposal deliberately specifies only a tiering policy (free → affordable paid → premium, §9.2), not named vendors. FR-6's completion criterion requires "at least one Tier 1 (free) provider account working end-to-end." The team gave two explicit constraints this session: (1) wire up only the free tier for now, but keep the code swappable to paid tiers with minimal change later; (2) for video specifically, avoid Hugging Face if a comparably free but faster option exists, since HF felt slow in practice.
+- **Options considered — Tier 2/3 structure:** (a) a single gateway (fal.ai) fronting many underlying models with one API key/SDK; (b) distinct named vendors per tier (e.g. direct Replicate/Stability for Tier 2, direct Kling/Google Veo for Tier 3). (b) demonstrates broader vendor integration but multiplies auth/response-shape handling for a 4-person team; (a) collapses BACKEND-005's provider-abstraction work to effectively one paid adapter regardless of how many models are used across Tier 2 and Tier 3.
+- **Options considered — video Tier 1:** Hugging Face Inference Providers (free monthly router credits, but a well-documented serverless cold-start pattern — 503 "model loading" + retry-after — matching the team's own experience of it feeling slow); Cloudflare Workers AI, initially proposed based on secondary research describing "FLUX 3 Video"/"HappyHorse 1.0" text-to-video models as available there; skipping a free video tier entirely and starting the paid ladder at Tier 2.
+- **CORRECTION (same day, after credentials existed):** once the team supplied real Cloudflare credentials, the Cloudflare pick was checked directly against Cloudflare's own live API (`GET /accounts/{id}/ai/models/search`) rather than taken from secondary research — filtered by `task=text-to-video` (0 results), by name substring `video`/`motion`/`animate` (0 results each), and by enumerating every task category across all 287 models in the account's real catalog (Automatic Speech Recognition, Text Classification, Text Embeddings, Image-to-Text, Text-to-Speech, Image Classification, Text Generation, Text-to-Image, Translation — **no video category at all**). Cloudflare Workers AI does not offer text-to-video generation; the initial research was wrong, most likely sourced from inaccurate secondary/SEO "AI tool comparison" content rather than Cloudflare's own catalog. This was caught before any BACKEND-005 code was written against it.
+- **Selected:**
+  - **Tier 1 (free, wired up now, credentials live-validated):** **Image** = Pollinations.ai (`https://image.pollinations.ai/prompt/{text}`) — no signup, no API key, no account of any kind; live-verified via `curl` → `200 OK`, real 512×512 JPEG with valid EXIF. Cloudflare Workers AI kept as a validated **alternate image** provider instead of being discarded — its real catalog (confirmed live via an authenticated account-scoped call, `total_count: 287`) includes genuine text-to-image models (FLUX.1, FLUX.2, SDXL, Leonardo Phoenix, DreamShaper), and the team's account + token already exist and work (`CLOUDFLARE_ACCOUNT_ID`/`CLOUDFLARE_API_TOKEN` in `backend/.env`). **Video** = Hugging Face Inference Providers — not a fallback but the actual pick, since it's the only free option that has a video-generation capability at all; its cold-start latency is an accepted, documented limitation rather than a preference (consistent with ADR-003's pattern of honestly labeling best-effort tradeoffs). Token live-verified via `GET /api/whoami-v2` → `200 OK`, authenticated, scope includes `inference.serverless.write`.
+  - **Tier 2/3 (paid, selected but deliberately NOT wired up yet):** fal.ai as the single pay-as-you-go gateway for whenever the team enables paid tiers — one API key, no subscription/minimum spend, covers cheap models (LTX-Video ~$0.02/clip, Wan ~$0.08/s) for Tier 2 and premium models (Kling ~$0.56–0.70/5s, Veo 3.1 Fast ~$0.05–0.10/s) for Tier 3 through the same client.
+- **Why:** Directly satisfies both team constraints: free-only now with documented live proof for every credential actually used (not just a claim), and a structure where enabling Tier 2/3 later is "one adapter + one env var" (`FAL_API_KEY`) rather than a redesign, because Section 6.6 already mandates a provider-abstraction interface — this decision populates that interface's Tier 1 adapters now and reserves a slot for Tier 2/3 rather than inventing new architecture. Verifying the video pick against Cloudflare's real, live catalog — rather than trusting secondary research once real credentials made that possible — caught a genuine error before it became architecture BACKEND-005 would have been built against.
+- **Consequences:** All three Tier 1 credentials (`CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `HUGGINGFACE_API_TOKEN`) are live in `backend/.env` (gitignored) and live-validated — no further account setup blocks BACKEND-005. `fal.ai`'s `FAL_API_KEY` env var exists in `.env.example` but is consumed by no code path yet, by design — do not wire it up without a further explicit team decision to move off free-only. Resolves R-8.
+
 ---
 
 ## 23. Constraints and Rules — PROJECT RULES
@@ -1632,7 +1661,7 @@ Combines the proposal's own Risk table (§6.9) with additional gaps surfaced dur
 | R-5 | Critic loop cost/latency exceeds demo time budget | Low | — | Hard-capped retry limit; critic loop optional on API pathway | Medium | Open |
 | R-6 | Character consistency on API pathway is visibly weak | High (likelihood) | Explicitly scoped as best-effort | N/A — this is an accepted, documented limitation, not something to "fix" | Low (by design) | Accepted, not a bug |
 | R-7 | Team member availability conflicts with timeline | Low | — | Individual task ownership (Section 20); buffer weeks in later phases | Medium | Open |
-| R-8 | **No provider selected within any of the three API tiers** | High — blocks FR-6, PROVIDER-001, BACKEND-005 | None | Select concrete providers early enough in Phase 7 to leave integration/debugging time | High | Open (newly surfaced by this doc) |
+| R-8 | ~~**No provider selected within any of the three API tiers**~~ **RESOLVED 2026-08-11** | Was High — blocked FR-6, PROVIDER-001, BACKEND-005 | Tier 1 selected AND credentials live-validated (Pollinations + Cloudflare for image, Hugging Face for video); Tier 2/3 (fal.ai) selected but intentionally deferred | PROVIDER-001 (ADR-019) selected concrete providers per tier — see Section 12. Pollinations live-verified end-to-end (no account needed); Cloudflare and Hugging Face accounts created by the team and both credentials live-verified this session (Cloudflare: real account-scoped API access confirmed, and its catalog check is *why* video moved to Hugging Face instead — see ADR-019's correction note; Hugging Face: `whoami` returned 200 OK with the right scope) | Resolved (decision) + credentials validated — only BACKEND-005 adapter code remains | Resolved |
 | R-9 | **No authentication/authorization model specified anywhere** | Medium — blocks any user-specific feature (history, saved storyboards) | None | Team must explicitly decide: single-tenant demo vs. accounts, before Phase 3 UI work depends on it | Medium | Open (newly surfaced by this doc) |
 | R-10 | **Codec/resolution mismatch risk when concatenating Remotion output with external-API output** | Medium — could break FR-9 for mixed-pathway storyboards | None | Standardize output resolution/codec at the generation-adapter boundary before FFmpeg concat | Medium | Open (newly surfaced by this doc) |
 | R-11 | ~~**Shot → Remotion composition mapping strategy undefined**~~ **RESOLVED 2026-08-10** | Was High — blocked REMOTION-003, and by extension the Minimum Viable success criterion | REMOTION-002 established the taxonomy (leading word of `shot.camera` → Wide/Medium/CloseUp). REMOTION-003 implemented `selectCompositionId()` in `remotion/render-shot.mjs`: matches `wide`/`medium`/`close-up`-prefixed camera values to their composition, and falls back to `MediumShot` (documented, chosen as the most visually neutral option) for anything else — verified with both a matching shot and a deliberately unrecognized `camera` value ("aerial drone, 360 orbit"), both rendered to valid MP4s without error. | N/A — resolved | N/A | Resolved |
