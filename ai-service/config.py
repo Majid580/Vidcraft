@@ -44,3 +44,13 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "384"))
 VECTOR_INDEX_PATH = os.getenv("VECTOR_INDEX_PATH", "rag/data/style_index")
 RAG_TOP_K = int(os.getenv("RAG_TOP_K", "3"))
+
+# --- Storyboard intent-similarity retry loop (AI-008, FR-3, per ADR-018) ---
+# Cosine similarity (all-MiniLM-L6-v2, same encoder as RAG-001/FR-4) between
+# the clarified prompt and the generated shots' descriptions. Below this
+# threshold the storyboard is sent back to the Screenwriter for revision, up
+# to MAX_STORYBOARD_RETRIES times (ADR-005's bounded-retry default of 2),
+# after which the last attempt is finalized rather than failing the request
+# (mirrors FR-8's critic-loop behavior on retry exhaustion).
+STORYBOARD_SIMILARITY_THRESHOLD = float(os.getenv("STORYBOARD_SIMILARITY_THRESHOLD", "0.35"))
+MAX_STORYBOARD_RETRIES = int(os.getenv("MAX_STORYBOARD_RETRIES", "2"))

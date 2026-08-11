@@ -11,13 +11,13 @@
 
 | Field | Value |
 |---|---|
-| **Overall completion percentage** | **~65.7%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 23 / 35 |
-| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006) all complete; Phase 6 RAG vertical (RAG-001/002/003 + AI-007) complete; into Phase 2/3/6 (Backend/DB, Frontend Dev, AI-008 retry loop) |
+| **Overall completion percentage** | **~68.6%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = 24 / 35 |
+| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006) all complete; Phase 6 (RAG-001/002/003 + AI-007 + AI-008) fully complete; into Phase 2/3/7 (Backend/DB, Frontend Dev, external-API provider selection) |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | AI-008 (sentence-similarity intent check + retry loop) — the last task in Phase 6, now unblocked by AI-007 (VERIFIED 2026-08-11). Still gated on R-12 (the exact similarity threshold is undecided), so the first concrete step is picking that number. Alternatively PROVIDER-001 (select concrete Tier 1/2/3 external providers) has no code dependencies and can be picked up in parallel — it's decision-heavy (R-8), not implementation, and unblocks a second long critical-path chain (BACKEND-005 → CRITIC-001 → INTEG-001). |
-| **Overall status** | 🟢 **The full FR-3 orchestrator vertical (Screenwriter → Cinematographer → Producer/Router) is now real end-to-end, including genuine RAG grounding — not just scaffolding.** FR-1 (AI-002), FR-2 (AI-003), and FR-3 (AI-004/007/005) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `cinematographer` → `producer` → END) storyboard with RAG-grounded camera/style, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist; no similarity-check retry loop yet (AI-008). FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
+| **Current objective** | PROVIDER-001 (select concrete Tier 1/2/3 external providers) — the only remaining unblocked task. Phase 6 is now fully VERIFIED end-to-end (RAG-001..003, AI-007, AI-008), so the entire remaining critical path runs through the external-API pathway: PROVIDER-001 → BACKEND-005 → CRITIC-001 → INTEG-001. Decision-heavy (R-8), not implementation — needs a concrete free-tier video/image generation vendor picked before BACKEND-005 has anything real to adapt to. |
+| **Overall status** | 🟢 **The full FR-3/FR-4 orchestrator vertical (Screenwriter → Cinematographer → intent-similarity check → Producer/Router) is now real end-to-end, including genuine RAG grounding and a working bounded-retry loop — not just scaffolding.** FR-1 (AI-002), FR-2 (AI-003), and FR-3 (AI-004/007/008/005) are implemented and verified end-to-end, and as of BACKEND-004 that whole chain round-trips through real REST routes (`POST /api/prompts`, `POST /api/prompts/:id/clarify`, `POST /api/storyboards`, `GET /api/storyboards/:id`) backed by MongoDB persistence and a real HTTP call to ai-service (`aiServiceClient.js`): a vague prompt (35/100, 3 flags) → 2 real Groq-generated clarifying questions → answers merged into a clarified prompt → a real LangGraph `StateGraph` (`screenwriter` → `cinematographer` → `intent_check` → `producer` → END) storyboard with RAG-grounded camera/style and an intent-similarity gate, persisted and fetchable. Error paths (400 validation, 404 unknown/malformed id, 502 ai-service failure) also verified. The remotion-routed shot pathway separately chains into REMOTION-003's `remotionService.renderShot()` (not yet wired into the storyboard routes themselves — that's INTEG-001). Still open: no queue (BACKEND-003) means `POST /api/storyboards` is synchronous rather than the originally proposed async 202/processing shape (ADR-014); shots routed to `external_api` can't actually be rendered yet since BACKEND-005/PROVIDER-001 don't exist. FR-6..FR-12 remain unimplemented. Note: the project's Groq API key is free-tier (30 req/min, 1,000 req/day) — keep this in mind for any future live-LLM testing or the eventual evaluation study. |
 | **Last updated** | 2026-08-11 |
-| **Last updated by** | Claude (Opus 4.8) — completed AI-007 (Cinematographer agent, RAG-grounded): `ai-service/orchestrator/agents/cinematographer.py` adds a third LangGraph node (`screenwriter → cinematographer → producer → END`) that queries the RAG-003 persisted index per shot and grounds `camera` + `world_state.style_tokens` in retrieved passages, replacing the Screenwriter's ADR-012 placeholder. 7 new offline tests → 66/66 total pass. Live-verified end-to-end against the real Groq API + real persisted index: a film-noir prompt produced camera/style output built from exact corpus technique vocabulary (Dutch angle, Low-key lighting, Handheld shot, Extreme close-up), confirming genuine retrieval grounding. Branch `rag-002-corpus`. Prior: RAG-003 (index build). |
+| **Last updated by** | Claude (Sonnet 5) — completed AI-008 (sentence-similarity intent check + retry loop): `ai-service/orchestrator/similarity.py`'s `compute_similarity()` adds a 4th LangGraph node (`screenwriter → cinematographer → intent_check → producer → END`) that embeds the clarified prompt and the storyboard's joined shot descriptions with the existing RAG-001 `all-MiniLM-L6-v2` encoder and compares them via cosine similarity; below `STORYBOARD_SIMILARITY_THRESHOLD` (0.35, ADR-018) the graph routes back to the Screenwriter, bounded by `MAX_STORYBOARD_RETRIES` (2) attempts tracked via a new `attempt_count` state field, finalizing the last attempt on exhaustion rather than failing the request. 5 new offline tests → 71/71 total pass. Live-verified end-to-end in WSL2 against the real Groq API + real embedder: a normal run passed on the first attempt (real similarity ~0.7, well above 0.35); a forced impossible threshold (1.5) exercised the retry ceiling for real, logging attempt 1/3 → retry, 2/3 → retry, 3/3 → finalize, confirming the bounded loop actually terminates. Fixed an off-by-one in the retry accounting during development (caught by a test asserting 3 total Screenwriter calls that initially got 2) by moving the attempt counter into the Screenwriter node itself rather than re-deriving it inside the router. Branch `rag-002-corpus`. Prior: AI-007 (Cinematographer agent). |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -27,6 +27,7 @@
 
 | ID | Feature | Status | Implementation | Verification | Date |
 |---|---|---|---|---|---|
+| AI-008 | Sentence-similarity intent check + retry loop | VERIFIED | `ai-service/orchestrator/similarity.py` (`compute_similarity(clarified_prompt, shots, embed_fn=embed)` — reuses RAG-001's `all-MiniLM-L6-v2` encoder, no second embedding pathway; joins shot descriptions into one storyboard-level string and returns its cosine similarity against the clarified prompt), `ai-service/orchestrator/graph.py` (4th node `intent_check`, placed between Cinematographer and Producer per the Section 4.4 diagram; conditional edge `_route_after_intent_check` routes back to `screenwriter` below `STORYBOARD_SIMILARITY_THRESHOLD` while `attempt_count < 1 + MAX_STORYBOARD_RETRIES`, else forward to `producer`), `ai-service/orchestrator/state.py` (+`attempt_count`, `similarity_score`), `ai-service/config.py` (+`STORYBOARD_SIMILARITY_THRESHOLD=0.35`, `MAX_STORYBOARD_RETRIES=2`, per **ADR-018**). `attempt_count` is incremented by the Screenwriter node itself (not re-derived in the router) — an earlier design that incremented-and-read a `retry_count` within the same `intent_check` node had an off-by-one (finalized after only 1 retry instead of 2), caught by a test asserting 3 total Screenwriter calls. On retry exhaustion the last attempt is finalized rather than failing the request, mirroring FR-8's critic-loop behavior. | 5 new offline pytest pass (`tests/test_orchestrator.py`: `compute_similarity` empty-shots + matching-vs-drifted-text with a deterministic 2-axis fake embedder; 3 full-graph tests — pass on first try, retry once then pass, exhaust all retries then finalize — using a canned similarity-score queue + a call-counting Screenwriter wrapper) → **71/71 total**. Live end-to-end in WSL2 against the real Groq API + real `all-MiniLM-L6-v2`: (1) default threshold (0.35) on a real prompt passed on the first attempt, real similarity ~0.7, 4-shot storyboard fully routed; (2) `STORYBOARD_SIMILARITY_THRESHOLD` forced to an impossible 1.5 — logs confirm attempt 1/3 (score 0.743) → retry, 2/3 (0.707) → retry, 3/3 (0.699) → finalizes with the last attempt, proving the bounded loop actually terminates. Temp verification scripts cleaned up, not committed. | 2026-08-11 |
 | AI-007 | Cinematographer agent (RAG-grounded) | VERIFIED | `ai-service/orchestrator/agents/cinematographer.py` — `refine_cinematography(shots, world_state, index=None)` is the third LangGraph node (`screenwriter → cinematographer → producer → END`, per ADR-012's documented ordering — placed BEFORE Producer so routing can see grounded style_tokens). Per shot: builds a retrieval query from description+camera+setting, searches the RAG-003 index (defaults to lazily-loaded `VectorIndex.load()` via an injectable `_load_production_index` indirection point, mirroring the rest of `rag/`'s testability pattern), feeds retrieved `{id, technique, text}` passages to the LLM as grounding-only context, and applies the refined `camera` + 2-4 style keywords merged into `world_state.style_tokens` (case-insensitive deduped, order-preserving, existing tokens preserved). `CinematographerOutputError` on malformed output; graceful pass-through (zero LLM calls) when the index is empty/unbuilt or there are no shots. No new fields added to the shot shape — `remotion/src/types.ts`, `frontend/src/lib/types.ts`, `backend/src/models/Storyboard.js` all stay compatible untouched. `CinematographerOutputError` exported from `orchestrator/__init__.py`, mapped to 502 in `main.py` alongside the other agent errors. | 7/7 new offline pytest pass (`tests/test_orchestrator.py`, deterministic 2-axis injected embedder + mocked LLM: empty-shots no-op, empty-index pass-through with zero LLM calls, camera grounding + token collection across two shots, existing-token merge/dedup, malformed-camera rejection, malformed-style_tokens rejection, plus two full-graph tests) → **66/66 total**. Live end-to-end in WSL2 against the real Groq API and the real persisted RAG-003 index: a film-noir detective prompt (*"...rain-soaked, neon-lit alley at night, tense...moody film-noir style"*) produced 4 shots with camera directions like *"extreme close-up...slow dolly-in...low-key lighting with hard contrast and deep shadows"* and `world_state.style_tokens` = `["low-key","wide","static","high-contrast","extreme close-up","dutch-angle","handheld","medium","wet","slow-tilt-up","wet-streets"]` — cross-checked against `rag/corpus/cinematography.json`'s 75 technique names (Dutch angle, Low-key lighting, Handheld shot, Extreme close-up are exact matches), confirming genuine retrieval grounding rather than LLM hallucination. | 2026-08-11 |
 | RAG-003 | Embed corpus, populate vector index | VERIFIED | `ai-service/rag/build_index.py` — `build_index(path, embed_fn=None, files=None, dim)` loads the RAG-002 corpus (`load_corpus()`), embeds every passage with the real `all-MiniLM-L6-v2` encoder (RAG-001), and persists the populated FAISS index + JSON metadata sidecar to `VECTOR_INDEX_PATH` (`rag/data/style_index.{faiss,meta.json}`); a `python -m rag.build_index` CLI prints a per-category summary. **Idempotent** — a run rebuilds the whole index from the committed corpus (the single source of truth), so the generated index is a **gitignored, disposable derived artifact** (confirmed via `git check-ignore`). `embed_fn` injectable so tests build a real persisted index offline. `rag/__init__.py` re-exports `build_index`. AI-007 consumes this via `VectorIndex.load()`. **Scope:** MongoDB `embeddings`-collection sync (Section 10.1) DEFERRED per **ADR-017** — sole consumer AI-007 reads FAISS directly, the Python service has no Mongo client, and the JSON sidecar is the ADR-004 canonical store; an unread Mongo write wasn't added. | 6/6 new offline pytest pass (`tests/test_build_index.py`, injected deterministic embedder, ingest→embed→persist→reload run against the REAL corpus so a corpus regression fails) → **59/59 total**. Live end-to-end in WSL2 with the real model: `python -m rag.build_index` embedded all **75** passages → 384-dim FAISS index (framing 11 / lighting 14 / movement 11 / mood 9 / lens 8 / color 8 / composition 8 / angle 6), persisted the two files; a fresh `VectorIndex.load()` reloaded 75 vectors and ranked three real semantic queries sensibly (*tense/dark/threatening* → Silhouette 0.533 / Horror 0.530; *epic aerial vista* → Epic look 0.639 / Aerial-drone 0.615; *intimate face* → Close-up 0.594 / Medium close-up 0.570). | 2026-08-11 |
 | RAG-002 | Curate cinematography reference corpus | VERIFIED | `ai-service/rag/corpus/` — `cinematography.json` (**75** curated `{text, metadata}` passages), `loader.py` (`load_corpus()` reads + strictly validates into the exact `VectorIndex.add()` item shape; dedups `metadata.id`; raises `CorpusError` on missing/malformed/duplicate input), `__init__.py`, `README.md`. Coverage across 8 categories: framing 11 / angle 6 / movement 11 / lens 8 / lighting 14 / color 8 / composition 8 / mood 9. Every passage is an **original summary of common-knowledge film-technique craft** written for this project (license-clean per the FR-4 security note — nothing copied), phrased with mood vocabulary (*tense/romantic/epic/eerie*…) so shot-description queries retrieve well. Corpus curation only — embedding + populating a persisted index is RAG-003; no Cinematographer consumer yet (AI-007). | Offline validation via the loader on Windows Python (no torch/faiss): 75 items load; all 8 categories present, none thin (min 6 each); all `metadata.id` unique; every item is `{text, metadata}` with non-empty text and ≥3 tags; `load_corpus()` raises `CorpusError` on a missing file. Mirrors `ai-service/tests/test_corpus.py` (7 offline, dependency-light tests → pass under WSL2 pytest too). | 2026-08-10 |
@@ -92,9 +93,10 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 
 ### MEDIUM (Target-tier outcomes)
 
+*(AI-008 moved to Section 2 — Verified.)*
+
 | Task ID | Name | Depends on |
 |---|---|---|
-| AI-008 | Sentence-similarity intent check + retry loop | AI-007 (done) — now fully unblocked, still gated on R-12 (threshold TBD) |
 | PROVIDER-001 | Select concrete Tier 1/2/3 providers | — |
 | BACKEND-005 | External API adapter layer | PROVIDER-001, BACKEND-003 |
 | CRITIC-001 | Critic loop implementation | BACKEND-005 or REMOTION-002 |
@@ -112,7 +114,7 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 | — | Optional: TTS narration (FR-10, stretch outcome only) | INTEG-002 |
 | — | Optional: tool-augmented reference-image retrieval (stretch outcome only) | AI-007 |
 
-**Also not started — genuinely undecided, not just unbuilt** (see `PROJECT_ARCHITECTURE.md` Section 24 for full detail): concrete provider selection for every API tier (R-8); an authentication/authorization decision (R-9); the shot→composition mapping strategy (R-11); several numeric thresholds (R-12); fail-closed error-handling policy for total-failure cases (R-13).
+**Also not started — genuinely undecided, not just unbuilt** (see `PROJECT_ARCHITECTURE.md` Section 24 for full detail): concrete provider selection for every API tier (R-8); an authentication/authorization decision (R-9); fail-closed error-handling policy for total-failure cases (R-13). (R-11 and R-12 are now resolved — see ADR log.)
 
 ---
 
@@ -630,7 +632,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] WebSocket connection between frontend and backend established
 - [x] Prompt analyzer (FR-1) returns a structured score for a real prompt — 2026-08-10 (AI-002, ai-service only — not yet reachable via the Node backend)
 - [x] Clarification agent (FR-2) generates and processes at least one Q&A round — 2026-08-10 (AI-003, real Groq API, ai-service only — not yet reachable via the Node backend or a frontend chat UI)
-- [~] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt — 2026-08-11: Screenwriter + Cinematographer + Producer/Router nodes (AI-004/AI-007/AI-005) all do this against a real prompt, including RAG-grounded camera/style (AI-007) and real per-shot pathway routing (ADR-013); partial only because external_api-routed shots still can't be rendered yet (BACKEND-005/PROVIDER-001 missing) and the similarity-check retry loop (AI-008) doesn't exist yet
+- [x] Orchestrator (FR-3) produces a valid storyboard JSON for at least one prompt — 2026-08-11: Screenwriter + Cinematographer + intent-similarity check + Producer/Router nodes (AI-004/AI-007/AI-008/AI-005) all do this against a real prompt, including RAG-grounded camera/style (AI-007) and a live-verified bounded retry loop (AI-008); the only remaining FR-3-adjacent gap is that external_api-routed shots still can't be rendered (BACKEND-005/PROVIDER-001 missing), which is FR-6 territory, not FR-3
 - [x] RAG retrieval (FR-4) returns non-empty, relevant results for at least one query — 2026-08-11 (RAG-001/002/003 + AI-007): the full retrieval stack is real end-to-end AND consumed by a real agent — the curated 75-passage corpus is embedded into a production FAISS index (`rag/data/style_index`, 384-dim), and the Cinematographer (AI-007) queries it live inside `/storyboard/generate`, producing camera/style output built from real corpus technique vocabulary (Dutch angle, Low-key lighting, Handheld shot); empty index still returns [] gracefully
 - [~] Remotion pathway (FR-5) renders at least one MP4 from a shot — 2026-08-10: fully wired end-to-end (REMOTION-001..003) including automatic composition selection + fallback; still partial only because the `shot`/`worldState` data used is hand-written sample data, not real output from an orchestrator (AI-004/005 don't exist yet) or a real REST request (not wired into a route — that's INTEG-001/BACKEND-004).
 - [ ] External API pathway (FR-6) successfully generates at least one real video via a connected provider
@@ -638,7 +640,7 @@ Run through this before claiming *any* progress. Every line is currently `[ ]` b
 - [ ] FFmpeg post-processing (FR-9) produces one concatenated, playable final MP4
 - [ ] Frontend displays a delivered video end-to-end from a real prompt submission
 - [x] Unit tests exist and pass for the prompt analyzer — 2026-08-10 (9/9, `ai-service/tests/test_analyzer.py`)
-- [x] Unit/integration tests exist and pass for the orchestrator — 2026-08-11: 16/16 pass for the Screenwriter + Cinematographer + Producer/Router nodes (`ai-service/tests/test_orchestrator.py`), including two full-graph tests
+- [x] Unit/integration tests exist and pass for the orchestrator — 2026-08-11: 21/21 pass for the Screenwriter + Cinematographer + intent-similarity check + Producer/Router nodes (`ai-service/tests/test_orchestrator.py`), including full-graph tests covering pass-on-first-try, retry-then-pass, and retry-exhaustion behavior
 - [ ] Production/demo build succeeds (frontend build, backend start in production mode)
 - [ ] Evaluation study (FR-12) has been run and produced a comparison table
 
@@ -1283,37 +1285,42 @@ camera/style output using exact corpus technique vocabulary (Dutch angle,
 Low-key lighting, Handheld shot), confirming genuine grounding. The full
 RAG-001..003 + AI-007 vertical is now VERIFIED end-to-end.
 
-NEXT 1 (now fully unblocked — dep VERIFIED, but see the gate below):
-Task ID: AI-008
-Sentence-similarity intent check + retry loop
+DONE (was NEXT 1): AI-008 — sentence-similarity intent check + retry loop.
+VERIFIED 2026-08-11; see Section 2. ai-service/orchestrator/similarity.py's
+compute_similarity() adds a 4th LangGraph node (screenwriter ->
+cinematographer -> intent_check -> producer -> END) that embeds the
+clarified prompt and the joined shot descriptions with the same RAG-001
+all-MiniLM-L6-v2 encoder and, below STORYBOARD_SIMILARITY_THRESHOLD (0.35,
+ADR-018), routes back to the Screenwriter for up to MAX_STORYBOARD_RETRIES
+(2) bounded attempts before finalizing the last one. Live-verified against
+the real Groq API + real embedder: a normal run passed on the first attempt
+(similarity ~0.7); a forced impossible threshold proved the retry ceiling
+actually fires and terminates (3 attempts, then finalize). R-12 fully
+resolved. The full RAG-001..003 + AI-007 + AI-008 orchestrator vertical
+(FR-3/FR-4) is now VERIFIED end-to-end.
+
+NEXT 1 (the only remaining unblocked task):
+Task ID: PROVIDER-001
+Select concrete Tier 1/2/3 external providers
 Why:
-AI-007 (Cinematographer) is done, so AI-008 is the last remaining task in
-Phase 6. It closes the FR-3 loop: after the full storyboard is generated,
-re-embed each shot's description and compare against the clarified prompt's
-intent via sentence-similarity; if drift exceeds a threshold, retry
-(bounded, per ADR-005: max 2) — likely by looping back into the
-screenwriter/cinematographer nodes for the drifted shot(s).
+Phase 6 is now fully complete. Every remaining critical-path task runs
+through the external-API pathway: PROVIDER-001 -> BACKEND-005 ->
+CRITIC-001 -> INTEG-001. This is the only task with no code dependency
+left unstarted.
 Gate:
-R-12 (storyboard similarity threshold) is still undecided — the proposal
-does not specify a numeric value. The first concrete step is choosing one
-(e.g. empirically, by computing cosine similarity on a few known-good vs.
-known-bad shot/prompt pairs and picking a threshold that separates them),
-then documenting it as a new ADR (following the ADR-010 precedent for
-undocumented numeric defaults).
+R-8 (which concrete providers) — decision-heavy, not implementation. Needs
+research into free-tier video/image generation APIs (rate limits, output
+quality, licensing) before a Tier 1 pick can be made.
 Dependencies:
-AI-007 (done)
+None — unblocked since project start.
 Acceptance criteria:
-A deliberately drifted storyboard (e.g. mock a shot description unrelated
-to the prompt) triggers at least one retry, and the retry is bounded (never
-loops more than the documented max); a well-aligned storyboard passes
-through with zero retries.
+At least one Tier 1 (free) provider account working end-to-end (per
+proposal §5.2's acceptance criterion for FR-6).
 ```
 
-Alternative in parallel — **PROVIDER-001** (select concrete Tier 1/2/3 external providers) has no code dependencies and is unblocked since project start; it's decision-heavy (R-8) rather than implementation, and unblocks a second long critical-path chain independent of AI-008: BACKEND-005 -> CRITIC-001 -> INTEG-001.
+BACKEND-003/004 and AI-006 are VERIFIED — see Section 2. With AI-006/AI-007/AI-008 done, all Phase 5 HIGH tasks and the entire RAG/orchestrator vertical are complete.
 
-BACKEND-003/004 and AI-006 are VERIFIED — see Section 2. With AI-006/AI-007 done, all Phase 5 HIGH tasks and the RAG vertical are complete.
-
-**Deferred follow-up (ADR-015, performance-contingent):** RAG-001's embedder runs local `sentence-transformers`+`torch`, and both RAG-003's build and AI-007's query-time retrieval ran on it locally without issue. ADR-015 (all inference via hosted APIs) is firm for the LLM path, but the user **deferred** the embeddings migration (2026-08-10): keep local embeddings for now and shift to a hosted embeddings API only *if it measurably slows the machine* — revisit only if performance degrades. (Groq has no embeddings endpoint, so a hosted move would need a separate embeddings provider.) The same local-embed note applies to AI-008's similarity check.
+**Deferred follow-up (ADR-015, performance-contingent):** RAG-001's embedder runs local `sentence-transformers`+`torch`, and RAG-003's build, AI-007's query-time retrieval, and AI-008's similarity check all ran on it locally without issue. ADR-015 (all inference via hosted APIs) is firm for the LLM path, but the user **deferred** the embeddings migration (2026-08-10): keep local embeddings for now and shift to a hosted embeddings API only *if it measurably slows the machine* — revisit only if performance degrades. (Groq has no embeddings endpoint, so a hosted move would need a separate embeddings provider.)
 
 ---
 

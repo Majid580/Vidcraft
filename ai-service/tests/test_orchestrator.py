@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from orchestrator import generate_storyboard
+from orchestrator import generate_storyboard, graph
 from orchestrator.agents import cinematographer, producer, screenwriter
 from orchestrator.agents.cinematographer import (
     CinematographerOutputError,
@@ -9,6 +9,7 @@ from orchestrator.agents.cinematographer import (
 )
 from orchestrator.agents.producer import ProducerOutputError, assign_pathways
 from orchestrator.agents.screenwriter import ScreenwriterOutputError, run_screenwriter
+from orchestrator.similarity import compute_similarity
 from rag import VectorIndex
 
 VALID_LLM_RESPONSE = {
@@ -294,3 +295,84 @@ def test_generate_storyboard_grounds_camera_via_cinematographer(monkeypatch):
 
     assert all(shot["camera"] == "grounded camera direction" for shot in result["shots"])
     assert result["world_state"]["style_tokens"] == ["low-key", "dolly-in"]
+
+
+# --- Intent-similarity check + retry loop (AI-008) ---
+
+def fake_similarity_embed(texts) -> np.ndarray:
+    """Deterministic embedder: 'aligned' text pairs share an axis, others don't."""
+    rows = []
+    for t in texts:
+        low = t.lower()
+        rows.append([float("aligned" in low), float("drift" in low)])
+    matrix = np.asarray(rows, dtype="float32") + 0.01
+    return matrix / np.linalg.norm(matrix, axis=1, keepdims=True)
+
+
+def test_compute_similarity_empty_shots_returns_zero():
+    assert compute_similarity("a prompt", [], embed_fn=fake_similarity_embed) == 0.0
+
+
+def test_compute_similarity_scores_matching_text_higher():
+    shots_aligned = [{"description": "an aligned shot"}]
+    shots_drifted = [{"description": "a completely drifted shot"}]
+    aligned_score = compute_similarity("aligned prompt", shots_aligned, embed_fn=fake_similarity_embed)
+    drifted_score = compute_similarity("aligned prompt", shots_drifted, embed_fn=fake_similarity_embed)
+    assert aligned_score > drifted_score
+
+
+def _patch_full_graph(monkeypatch, similarity_scores):
+    """Wire a fully-mocked graph run: fixed screenwriter/cinematographer/producer
+    output, empty RAG index (no LLM call), and a queue of canned similarity
+    scores (one per intent_check invocation) so retry behavior is deterministic
+    without a real embedder or LLM.
+    """
+    monkeypatch.setattr(
+        screenwriter, "complete_json",
+        lambda system, user, temperature=0.3: VALID_LLM_RESPONSE,
+    )
+    monkeypatch.setattr(
+        cinematographer, "_load_production_index",
+        lambda: VectorIndex(dim=2, embed_fn=fake_embed),
+    )
+    monkeypatch.setattr(
+        producer, "complete_json",
+        lambda system, user, temperature=0.3: {
+            "pathways": {"1": "remotion", "2": "remotion", "3": "remotion"}
+        },
+    )
+    scores = iter(similarity_scores)
+    calls = {"screenwriter": 0}
+    original_screenwriter = screenwriter.run_screenwriter
+
+    def counting_screenwriter(clarified_prompt):
+        calls["screenwriter"] += 1
+        return original_screenwriter(clarified_prompt)
+
+    monkeypatch.setattr(graph, "run_screenwriter", counting_screenwriter)
+    monkeypatch.setattr(graph, "compute_similarity", lambda prompt, shots: next(scores))
+    return calls
+
+
+def test_generate_storyboard_passes_on_first_try_above_threshold(monkeypatch):
+    calls = _patch_full_graph(monkeypatch, [0.9])
+    result = generate_storyboard("a prompt")
+    assert calls["screenwriter"] == 1
+    assert len(result["shots"]) == 3
+
+
+def test_generate_storyboard_retries_screenwriter_on_low_similarity(monkeypatch):
+    calls = _patch_full_graph(monkeypatch, [0.1, 0.9])
+    result = generate_storyboard("a prompt")
+    assert calls["screenwriter"] == 2
+    assert len(result["shots"]) == 3
+
+
+def test_generate_storyboard_finalizes_after_max_retries(monkeypatch):
+    # MAX_STORYBOARD_RETRIES defaults to 2 -> 1 initial attempt + 2 retries = 3
+    # screenwriter calls total, then finalizes with the last attempt rather
+    # than looping forever, matching FR-8's retry-exhaustion behavior.
+    calls = _patch_full_graph(monkeypatch, [0.1, 0.1, 0.1])
+    result = generate_storyboard("a prompt")
+    assert calls["screenwriter"] == 3
+    assert len(result["shots"]) == 3
