@@ -4,6 +4,7 @@ import { ArrowRight, Bot, Loader2, MessageSquareText, Sparkles } from 'lucide-re
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { DictationMic } from '@/components/DictationMic'
 
 export function ClarificationChat({
   questions,
@@ -17,6 +18,14 @@ export function ClarificationChat({
   const [answers, setAnswers] = useState<string[]>(() =>
     questions.map(() => ''),
   )
+
+  const setAnswer = (i: number, val: string) => {
+    setAnswers((prev) => {
+      const next = [...prev]
+      next[i] = val
+      return next
+    })
+  }
 
   const answered = answers.filter((a) => a.trim().length > 0).length
   const canSubmit = answered > 0 && !loading
@@ -44,18 +53,22 @@ export function ClarificationChat({
               <div className="surface-1 rounded-2xl rounded-tl-sm border border-border px-4 py-2.5 text-sm">
                 {q}
               </div>
-              <Textarea
-                rows={2}
-                placeholder="Your answer…"
-                value={answers[i]}
-                disabled={loading}
-                onChange={(e) => {
-                  const next = [...answers]
-                  next[i] = e.target.value
-                  setAnswers(next)
-                }}
-                className="min-h-0 text-sm"
-              />
+              <div className="flex items-end gap-2">
+                <Textarea
+                  rows={2}
+                  placeholder="Your answer… or hold the mic to speak"
+                  value={answers[i]}
+                  disabled={loading}
+                  onChange={(e) => setAnswer(i, e.target.value)}
+                  className="min-h-0 flex-1 text-sm"
+                />
+                <DictationMic
+                  value={answers[i]}
+                  disabled={loading}
+                  onValueChange={(v) => setAnswer(i, v)}
+                  className="mb-0.5"
+                />
+              </div>
             </div>
           </div>
         ))}

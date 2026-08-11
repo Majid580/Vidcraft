@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { Loader2, Sparkles, Wand2 } from 'lucide-react'
+import { Loader2, Mic, Sparkles, Wand2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useTilt } from '@/hooks/useTilt'
+import { useDictation } from '@/hooks/useDictation'
+import { cn } from '@/lib/utils'
 
 const EXAMPLES = [
   'A lone astronaut drifts past a glowing nebula, reaching toward a distant blue planet.',
@@ -20,6 +22,11 @@ export function PromptComposer({
 }) {
   const [value, setValue] = useState('')
   const tilt = useTilt(3)
+  const dictation = useDictation({
+    value,
+    onChange: setValue,
+    disabled: loading,
+  })
   const trimmed = value.trim()
   const canSubmit = trimmed.length >= 8 && !loading
 
@@ -38,20 +45,56 @@ export function PromptComposer({
         Describe your scene
       </label>
 
-      <Textarea
-        id="prompt"
-        rows={4}
-        placeholder="e.g. A lone astronaut drifts past a glowing nebula toward a distant blue planet…"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSubmit) {
-            onAnalyze(trimmed)
-          }
-        }}
-        disabled={loading}
-        className="min-h-28 text-base"
-      />
+      <div className="relative">
+        <Textarea
+          id="prompt"
+          rows={4}
+          placeholder="e.g. A lone astronaut drifts past a glowing nebula toward a distant blue planet…"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSubmit) {
+              onAnalyze(trimmed)
+            }
+          }}
+          disabled={loading}
+          className={cn('min-h-28 text-base', dictation.supported && 'pr-14')}
+        />
+
+        {dictation.supported && (
+          <button
+            type="button"
+            disabled={loading}
+            aria-pressed={dictation.listening}
+            aria-label={
+              dictation.listening ? 'Release to stop dictation' : 'Hold to dictate'
+            }
+            title={dictation.listening ? 'Release to stop' : 'Hold to talk'}
+            {...dictation.handlers}
+            className={cn(
+              'absolute right-3 bottom-3 grid size-9 touch-none place-items-center rounded-full border transition-all select-none disabled:pointer-events-none disabled:opacity-40',
+              dictation.listening
+                ? 'animate-pulse border-red-500/40 bg-red-500/15 text-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.12)]'
+                : 'border-border bg-card/60 text-muted-foreground hover:border-primary/50 hover:text-foreground',
+            )}
+          >
+            <Mic className="size-4" />
+          </button>
+        )}
+      </div>
+
+      {(dictation.listening || dictation.errorMessage) && (
+        <div className="mt-2 text-xs" aria-live="polite">
+          {dictation.listening ? (
+            <span className="inline-flex items-center gap-1.5 font-medium text-red-500">
+              <span className="inline-block size-2 animate-pulse rounded-full bg-red-500" />
+              Listening… keep holding, release the mic to stop
+            </span>
+          ) : (
+            <span className="text-destructive">{dictation.errorMessage}</span>
+          )}
+        </div>
+      )}
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <span className="text-muted-foreground mr-1 text-xs">Try:</span>
