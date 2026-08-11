@@ -1,9 +1,15 @@
+import numpy as np
 import pytest
 
 from orchestrator import generate_storyboard
-from orchestrator.agents import producer, screenwriter
+from orchestrator.agents import cinematographer, producer, screenwriter
+from orchestrator.agents.cinematographer import (
+    CinematographerOutputError,
+    refine_cinematography,
+)
 from orchestrator.agents.producer import ProducerOutputError, assign_pathways
 from orchestrator.agents.screenwriter import ScreenwriterOutputError, run_screenwriter
+from rag import VectorIndex
 
 VALID_LLM_RESPONSE = {
     "world_state": {
@@ -126,10 +132,129 @@ def test_assign_pathways_rejects_malformed_response(monkeypatch):
         assign_pathways(SAMPLE_SHOTS, SAMPLE_WORLD_STATE)
 
 
+# --- Cinematographer (AI-007) ---
+# A deterministic 2-axis embedder (mirrors tests/test_rag.py's fake_embed
+# pattern) so RAG retrieval is exercised without loading the real
+# all-MiniLM-L6-v2 model.
+
+def fake_embed(texts) -> np.ndarray:
+    rows = []
+    for t in texts:
+        low = t.lower()
+        rows.append(
+            [
+                float("close" in low or "dolly" in low),
+                float("wide" in low or "landscape" in low),
+            ]
+        )
+    matrix = np.asarray(rows, dtype="float32") + 0.01
+    return matrix / np.linalg.norm(matrix, axis=1, keepdims=True)
+
+
+CINE_CORPUS = [
+    {
+        "text": "close-up dolly-in for emotional intimacy",
+        "metadata": {"id": "close-dolly", "technique": "Close-up dolly"},
+    },
+    {
+        "text": "wide landscape establishing shot",
+        "metadata": {"id": "wide-landscape", "technique": "Wide shot"},
+    },
+]
+
+
+def make_cine_index() -> VectorIndex:
+    idx = VectorIndex(dim=2, embed_fn=fake_embed)
+    idx.add(CINE_CORPUS)
+    return idx
+
+
+SHOT_A = {
+    "shot_id": 1,
+    "description": "An intimate conversation between two characters",
+    "camera": "medium, static",
+    "duration_s": 3,
+    "pathway": "remotion",
+}
+SHOT_B = {
+    "shot_id": 2,
+    "description": "A sweeping vista of the landscape",
+    "camera": "wide, static",
+    "duration_s": 4,
+    "pathway": "remotion",
+}
+CINE_WORLD_STATE = {"characters": ["a chef"], "setting": "a kitchen", "style_tokens": []}
+
+
+def test_refine_cinematography_empty_shots_is_noop():
+    assert refine_cinematography([], CINE_WORLD_STATE) == ([], [])
+
+
+def test_refine_cinematography_empty_index_passes_through_unchanged():
+    empty_index = VectorIndex(dim=2, embed_fn=fake_embed)
+    shots, tokens = refine_cinematography([SHOT_A, SHOT_B], CINE_WORLD_STATE, index=empty_index)
+    assert shots == [SHOT_A, SHOT_B]
+    assert tokens == []
+
+
+def test_refine_cinematography_grounds_camera_and_collects_tokens(monkeypatch):
+    calls = []
+
+    def fake_complete_json(system, user, temperature=0.3):
+        calls.append(user)
+        if "conversation" in user.lower():
+            return {"camera": "close-up, slow dolly-in", "style_tokens": ["intimate", "dolly-in"]}
+        return {"camera": "wide, static, establishing", "style_tokens": ["wide", "establishing"]}
+
+    monkeypatch.setattr(cinematographer, "complete_json", fake_complete_json)
+    shots, tokens = refine_cinematography([SHOT_A, SHOT_B], CINE_WORLD_STATE, index=make_cine_index())
+
+    assert shots[0]["camera"] == "close-up, slow dolly-in"
+    assert shots[1]["camera"] == "wide, static, establishing"
+    assert shots[0]["shot_id"] == 1  # other fields untouched
+    assert tokens == ["intimate", "dolly-in", "wide", "establishing"]
+    assert len(calls) == 2
+
+
+def test_refine_cinematography_merges_and_dedupes_existing_style_tokens(monkeypatch):
+    monkeypatch.setattr(
+        cinematographer, "complete_json",
+        lambda system, user, temperature=0.3: {"camera": "close-up", "style_tokens": ["Intimate", "wide"]},
+    )
+    world_state = {**CINE_WORLD_STATE, "style_tokens": ["intimate", "cinematic"]}
+    _, tokens = refine_cinematography([SHOT_A], world_state, index=make_cine_index())
+    assert tokens == ["intimate", "cinematic", "wide"]  # case-insensitive dedup, first-seen casing wins
+
+
+def test_refine_cinematography_rejects_missing_camera(monkeypatch):
+    monkeypatch.setattr(
+        cinematographer, "complete_json",
+        lambda system, user, temperature=0.3: {"style_tokens": ["intimate"]},
+    )
+    with pytest.raises(CinematographerOutputError):
+        refine_cinematography([SHOT_A], CINE_WORLD_STATE, index=make_cine_index())
+
+
+def test_refine_cinematography_rejects_malformed_style_tokens(monkeypatch):
+    monkeypatch.setattr(
+        cinematographer, "complete_json",
+        lambda system, user, temperature=0.3: {"camera": "close-up", "style_tokens": "not a list"},
+    )
+    with pytest.raises(CinematographerOutputError):
+        refine_cinematography([SHOT_A], CINE_WORLD_STATE, index=make_cine_index())
+
+
 def test_generate_storyboard_runs_the_graph_end_to_end(monkeypatch):
     monkeypatch.setattr(
         screenwriter, "complete_json",
         lambda system, user, temperature=0.3: VALID_LLM_RESPONSE,
+    )
+    # Empty index -> Cinematographer passes shots through unchanged (no LLM
+    # call, no real model load); dedicated grounding behavior is covered by
+    # the refine_cinematography unit tests and the grounding test below.
+    monkeypatch.setattr(
+        cinematographer, "_load_production_index",
+        lambda: VectorIndex(dim=2, embed_fn=fake_embed),
     )
     monkeypatch.setattr(
         producer, "complete_json",
@@ -144,3 +269,28 @@ def test_generate_storyboard_runs_the_graph_end_to_end(monkeypatch):
     assert result["world_state"]["characters"] == ["astronaut in a worn white EVA suit"]
     assert result["shots"][0]["pathway"] == "remotion"
     assert result["shots"][1]["pathway"] == "external_api"
+
+
+def test_generate_storyboard_grounds_camera_via_cinematographer(monkeypatch):
+    monkeypatch.setattr(
+        screenwriter, "complete_json",
+        lambda system, user, temperature=0.3: VALID_LLM_RESPONSE,
+    )
+    monkeypatch.setattr(cinematographer, "_load_production_index", make_cine_index)
+    monkeypatch.setattr(
+        cinematographer, "complete_json",
+        lambda system, user, temperature=0.3: {
+            "camera": "grounded camera direction",
+            "style_tokens": ["low-key", "dolly-in"],
+        },
+    )
+    monkeypatch.setattr(
+        producer, "complete_json",
+        lambda system, user, temperature=0.3: {
+            "pathways": {"1": "remotion", "2": "remotion", "3": "remotion"}
+        },
+    )
+    result = generate_storyboard("An astronaut repairs a broken antenna on Mars before nightfall.")
+
+    assert all(shot["camera"] == "grounded camera direction" for shot in result["shots"])
+    assert result["world_state"]["style_tokens"] == ["low-key", "dolly-in"]

@@ -4,7 +4,12 @@ from pydantic import BaseModel, Field
 from analyzer import EmptyPromptError, score_prompt
 from clarification import build_brief, generate_questions
 from llm import GroqConfigError
-from orchestrator import ProducerOutputError, ScreenwriterOutputError, generate_storyboard
+from orchestrator import (
+    CinematographerOutputError,
+    ProducerOutputError,
+    ScreenwriterOutputError,
+    generate_storyboard,
+)
 
 app = FastAPI(title="VidCraft AI Microservice")
 
@@ -89,5 +94,5 @@ def storyboard_generate(request: StoryboardRequest):
         return generate_storyboard(request.clarified_prompt)
     except GroqConfigError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
-    except (ScreenwriterOutputError, ProducerOutputError) as exc:
+    except (ScreenwriterOutputError, CinematographerOutputError, ProducerOutputError) as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc

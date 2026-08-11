@@ -7,10 +7,10 @@ cinematography (Cinematographer, AI-007, RAG-grounded) or pathway
 routing (Producer/Router, AI-005). This agent fills each shot's "camera"
 with its own best-effort draft and "pathway" with DEFAULT_PATHWAY (see
 ADR-012) so the output already matches the FR-3 storyboard shape on its
-own; in the full graph (orchestrator/graph.py) the Producer/Router node
-runs next and overwrites "pathway" per its own routing decision (see
-ADR-013). Cinematographer (AI-007) is expected to similarly refine
-"camera" and populate "style_tokens" once it exists.
+own; in the full graph (orchestrator/graph.py) the Cinematographer node
+runs next and refines "camera" + populates "style_tokens" via RAG
+retrieval, then the Producer/Router node overwrites "pathway" per its own
+routing decision (see ADR-013).
 """
 
 import uuid
