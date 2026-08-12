@@ -131,21 +131,54 @@ function FinalVideo({ job }: { job: JobStatus }) {
             <Film className="size-4 text-primary" />
             Final video
           </h3>
-          <a
-            href={job.videoUrl}
-            download
-            className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
-          >
-            Download
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href={job.videoUrl}
+              download
+              className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
+            >
+              Download
+            </a>
+            {/* The hardsubbed copy is offered separately rather than replacing
+                the master: burned-in text can't be turned off, and the clean
+                render is what the evaluation study scores. */}
+            {job.subtitledVideoUrl && (
+              <a
+                href={job.subtitledVideoUrl}
+                download
+                className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
+              >
+                With captions
+              </a>
+            )}
+          </div>
         </div>
         <video
           src={job.videoUrl}
+          poster={job.thumbnailUrl}
           controls
           playsInline
           preload="metadata"
           className="w-full rounded-lg border"
-        />
+        >
+          {/* FR-9 subtitles. WebVTT is the only format <track> can display, so
+              the same file the backend burns into the download also drives the
+              browser's own caption toggle here — nothing to keep in sync. */}
+          {job.subtitlesUrl && (
+            <track
+              kind="captions"
+              src={job.subtitlesUrl}
+              srcLang="en"
+              label="Shot descriptions"
+              default
+            />
+          )}
+        </video>
+        {job.postprocessError && (
+          <p className="text-muted-foreground text-xs">
+            Video is ready; some extras couldn&apos;t be produced: {job.postprocessError}
+          </p>
+        )}
       </CardContent>
     </Card>
   )

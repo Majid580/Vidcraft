@@ -77,6 +77,17 @@ const storyboardSchema = new mongoose.Schema(
     // there, still usable).
     video_url: { type: String },
     video_error: { type: String },
+    // FR-9 post-processing (INTEG-002, ffmpegService): artifacts derived
+    // from video_url after assembly. All optional and all additive — the
+    // assembled master at video_url is never modified, so a run whose
+    // post-processing failed still has its full deliverable. thumbnail_url
+    // is the poster frame, subtitles_url a WebVTT track the browser's
+    // <video><track> can display, subtitled_video_url a hardsubbed copy for
+    // download/playback outside a captioning player.
+    thumbnail_url: { type: String },
+    subtitles_url: { type: String },
+    subtitled_video_url: { type: String },
+    postprocess_error: { type: String },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },
 );

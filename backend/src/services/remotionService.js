@@ -79,23 +79,35 @@ function renderShot(shot, worldState, outputPath) {
 }
 
 /**
+ * Which of a storyboard's shots actually make it into the assembled video,
+ * in timeline order: those that produced an asset. Shots without an
+ * asset_url (failed, on-hold, or never generated) are dropped rather than
+ * rendered as gaps — a partial storyboard should still yield a watchable
+ * video of the shots that did succeed.
+ *
+ * Exported because the FR-9 subtitle track (ffmpegService) has to describe
+ * exactly the shots that ended up on the timeline, at exactly their
+ * offsets. Two independent copies of this filter would silently desync
+ * captions from picture the first time a single shot failed.
+ */
+function assembledShots(shots) {
+  return shots.filter((shot) => Boolean(shot.asset_url));
+}
+
+/**
  * FR-9 — concatenates a storyboard's generated stills into one continuous
  * MP4 (remotion/src/compositions/StoryboardVideo.tsx). Each shot is held for
  * its own duration_s and gets the camera movement its framing implies, so
  * the result is a sequence of moving shots rather than a slideshow.
  *
- * Shots without an asset_url (failed, on-hold, or never generated) are
- * dropped rather than rendered as gaps — a partial storyboard should still
- * yield a watchable video of the shots that did succeed. Throws if that
- * leaves nothing to render.
+ * Only assembledShots() are rendered; throws if that leaves nothing.
  *
  * @param {object[]} shots  storyboard shots, each with asset_url
  * @param {object} worldState
  * @param {string} outputPath
  */
 function renderStoryboard(shots, worldState, outputPath) {
-  const renderable = shots
-    .filter((shot) => Boolean(shot.asset_url))
+  const renderable = assembledShots(shots)
     .map((shot) => {
       // Only image assets become an <Img> layer. A remotion-pathway shot's
       // asset_url is already an .mp4 of that shot, which <Img> cannot
@@ -131,4 +143,4 @@ function renderStoryboard(shots, worldState, outputPath) {
   );
 }
 
-module.exports = { renderShot, renderStoryboard, MEDIA_BASE_URL };
+module.exports = { renderShot, renderStoryboard, assembledShots, MEDIA_BASE_URL };

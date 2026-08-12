@@ -34,6 +34,15 @@ router.get('/jobs/:id', async (req, res, next) => {
       // fine but the stitch isn't rather than implying the whole run failed.
       videoUrl: (doc && doc.video_url) || undefined,
       videoError: (doc && doc.video_error) || undefined,
+      // FR-9 post-processing artifacts (INTEG-002). Each is independently
+      // optional: post-processing is best-effort per artifact, so a run can
+      // legitimately return a video with captions but no thumbnail.
+      // postprocessError describes only what did NOT get made — the video
+      // above it is unaffected either way.
+      thumbnailUrl: (doc && doc.thumbnail_url) || undefined,
+      subtitlesUrl: (doc && doc.subtitles_url) || undefined,
+      subtitledVideoUrl: (doc && doc.subtitled_video_url) || undefined,
+      postprocessError: (doc && doc.postprocess_error) || undefined,
     });
   } catch (err) {
     next(err);

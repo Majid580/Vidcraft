@@ -116,6 +116,17 @@ export interface JobStatus {
   // much less bad) outcome than the generation failing.
   videoUrl?: string
   videoError?: string
+  // FR-9 post-processing (INTEG-002). Independently optional — post-processing
+  // is best-effort per artifact and never touches the video above, so a run can
+  // legitimately have a video with captions but no poster frame.
+  // `thumbnailUrl` is the poster; `subtitlesUrl` is a WebVTT track the <video>
+  // element can display natively; `subtitledVideoUrl` is a hardsubbed copy for
+  // downloading (captions survive outside a captioning player).
+  // `postprocessError` describes only what wasn't produced.
+  thumbnailUrl?: string
+  subtitlesUrl?: string
+  subtitledVideoUrl?: string
+  postprocessError?: string
 }
 
 // POST /api/images response (single-image mode) — no storyboard/shots,

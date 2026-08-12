@@ -4,6 +4,7 @@ const Queue = require('bull');
 const Storyboard = require('../models/Storyboard');
 const generationService = require('../services/generationService');
 const remotionService = require('../services/remotionService');
+const ffmpegService = require('../services/ffmpegService');
 const criticService = require('../services/criticService');
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
@@ -96,20 +97,49 @@ async function processGeneration(job) {
   // the storyboard and the run still returns its per-shot results.
   doc.video_url = undefined;
   doc.video_error = undefined;
+  doc.thumbnail_url = undefined;
+  doc.subtitles_url = undefined;
+  doc.subtitled_video_url = undefined;
+  doc.postprocess_error = undefined;
   try {
     const filename = 'storyboard.mp4';
-    await remotionService.renderStoryboard(
+    const mediaDir = path.join(generationService.GENERATED_DIR, doc.id);
+    const videoPath = path.join(mediaDir, filename);
+    const render = await remotionService.renderStoryboard(
       doc.shots,
       doc.world_state,
-      path.join(generationService.GENERATED_DIR, doc.id, filename),
+      videoPath,
     );
     doc.video_url = `/media/${doc.id}/${filename}`;
+
+    // INTEG-002 (FR-9) — thumbnail + subtitles, the FFmpeg half of
+    // post-processing. Runs only on a successful assembly (it operates on
+    // the assembled file) and is non-fatal for the same reason assembly
+    // itself is: the video and the per-shot assets are already saved, and a
+    // missing poster frame is not a reason to report the run as broken.
+    const post = await ffmpegService.postProcess({
+      videoPath,
+      mediaDir,
+      mediaUrlBase: `/media/${doc.id}`,
+      shots: doc.shots,
+      renderedDurationInFrames: render && render.durationInFrames,
+    });
+    doc.thumbnail_url = post.thumbnail_url;
+    doc.subtitles_url = post.subtitles_url;
+    doc.subtitled_video_url = post.subtitled_video_url;
+    doc.postprocess_error = post.error;
   } catch (assemblyErr) {
     doc.video_error = assemblyErr.message;
   }
   await doc.save();
 
-  return { storyboardId: doc.id, shots: summary, videoUrl: doc.video_url || null };
+  return {
+    storyboardId: doc.id,
+    shots: summary,
+    videoUrl: doc.video_url || null,
+    thumbnailUrl: doc.thumbnail_url || null,
+    subtitlesUrl: doc.subtitles_url || null,
+  };
 }
 
 generationQueue.process(processGeneration);
