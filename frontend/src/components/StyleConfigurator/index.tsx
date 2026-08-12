@@ -84,7 +84,7 @@ function OptionTile({
       className={cn(
         'tile-in card-3d-pop group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left',
         selected
-          ? 'glow-border brand-shadow border-transparent'
+          ? 'border-primary/55 bg-primary/10'
           : 'border-border bg-card/40 hover:border-primary/40',
       )}
     >
@@ -92,7 +92,7 @@ function OptionTile({
         className={cn(
           'grid size-9 place-items-center rounded-lg transition-all duration-300',
           selected
-            ? 'brand-gradient text-white shadow-lg'
+            ? 'bg-primary text-primary-foreground'
             : 'surface-2 text-muted-foreground group-hover:text-primary',
         )}
       >
@@ -105,7 +105,7 @@ function OptionTile({
         </span>
       </span>
       {selected && (
-        <span className="brand-gradient animate-pop absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full text-white shadow-md">
+        <span className="bg-primary animate-pop absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full text-primary-foreground shadow-md">
           <Check className="size-3" strokeWidth={3} />
         </span>
       )}
@@ -136,7 +136,7 @@ function ProviderTile({
       className={cn(
         'tile-in card-3d-pop group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left',
         selected
-          ? 'glow-border brand-shadow border-transparent'
+          ? 'border-primary/55 bg-primary/10'
           : 'border-border bg-card/40 hover:border-primary/40',
       )}
     >
@@ -145,7 +145,7 @@ function ProviderTile({
           className={cn(
             'grid size-9 place-items-center rounded-lg transition-all duration-300',
             selected
-              ? 'brand-gradient text-white shadow-lg'
+              ? 'bg-primary text-primary-foreground'
               : 'surface-2 text-muted-foreground group-hover:text-primary',
           )}
         >
@@ -165,7 +165,7 @@ function ProviderTile({
         </span>
       </span>
       {selected && (
-        <span className="brand-gradient animate-pop absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full text-white shadow-md">
+        <span className="bg-primary animate-pop absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full text-primary-foreground shadow-md">
           <Check className="size-3" strokeWidth={3} />
         </span>
       )}
@@ -199,7 +199,7 @@ function PaletteOrb({
       className={cn(
         'tile-in card-3d-pop flex shrink-0 flex-col items-center gap-2 rounded-xl border p-3 transition-all',
         selected
-          ? 'glow-border brand-shadow border-transparent'
+          ? 'border-primary/55 bg-primary/10'
           : 'border-border bg-card/40 hover:border-primary/40',
       )}
     >
@@ -254,7 +254,7 @@ function AspectFrame({
       className={cn(
         'tile-in card-3d-pop flex flex-1 flex-col items-center gap-2 rounded-xl border p-3 transition-all',
         selected
-          ? 'glow-border brand-shadow border-transparent'
+          ? 'border-primary/55 bg-primary/10'
           : 'border-border bg-card/40 hover:border-primary/40',
       )}
     >
@@ -263,7 +263,7 @@ function AspectFrame({
           className={cn(
             'rounded-[3px] border-2 transition-all duration-300',
             selected
-              ? 'brand-gradient border-transparent shadow-md'
+              ? 'bg-primary border-transparent'
               : 'border-muted-foreground/50 group-hover:border-primary',
           )}
           style={{ width: w, height: h }}
@@ -349,12 +349,12 @@ export function StyleConfigurator({
       ref={tilt.ref}
       onPointerMove={tilt.onPointerMove}
       onPointerLeave={tilt.onPointerLeave}
-      className="glass tilt-3d overflow-hidden rounded-2xl"
+      className="plate tilt-3d overflow-hidden rounded-2xl"
     >
       {/* Header */}
       <div className="border-border/60 relative border-b px-5 py-5 sm:px-6">
         <div className="flex items-center gap-3">
-          <span className="brand-gradient animate-float grid size-11 shrink-0 place-items-center rounded-2xl text-white shadow-lg">
+          <span className="bg-primary animate-float grid size-11 shrink-0 place-items-center rounded-lg text-primary-foreground shadow-lg">
             <Wand2 className="size-5" />
           </span>
           <div className="min-w-0">
@@ -575,7 +575,7 @@ export function StyleConfigurator({
       </div>
 
       {/* Summary + generate CTA */}
-      <div className="glow-border brand-shadow m-3 flex flex-col gap-4 rounded-2xl p-5 sm:m-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="plate plate-ruled m-3 flex flex-col gap-4 rounded-xl p-5 sm:m-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="min-w-0">
           <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium">
             <span className="flex items-center gap-1.5">
@@ -603,7 +603,7 @@ export function StyleConfigurator({
               </span>
             ) : (
               tokens.map((t) => (
-                <Badge key={t} variant="violet" className="capitalize">
+                <Badge key={t} variant="amber" className="capitalize">
                   {t}
                 </Badge>
               ))
@@ -614,7 +614,7 @@ export function StyleConfigurator({
           size="lg"
           disabled={loading}
           onClick={onGenerate}
-          className="brand-gradient h-11 shrink-0 gap-2 px-6 font-semibold text-white hover:opacity-90 disabled:opacity-50"
+          className="bg-primary h-11 shrink-0 gap-2 px-6 font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
         >
           {loading ? (
             <>

@@ -46,7 +46,7 @@ export function ClarificationChat({
       <CardContent className="flex flex-col gap-5">
         {questions.map((q, i) => (
           <div key={i} className="flex gap-3">
-            <div className="brand-gradient grid size-8 shrink-0 place-items-center rounded-full">
+            <div className="bg-primary grid size-8 shrink-0 place-items-center rounded-full">
               <Bot className="size-4 text-white" />
             </div>
             <div className="min-w-0 flex-1 space-y-2">
@@ -81,7 +81,7 @@ export function ClarificationChat({
             size="lg"
             disabled={!canSubmit}
             onClick={() => onSubmit(answers)}
-            className="brand-gradient h-11 gap-2 px-6 font-semibold text-white hover:opacity-90 disabled:opacity-40"
+            className="bg-primary h-11 gap-2 px-6 font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-40"
           >
             {loading ? (
               <>

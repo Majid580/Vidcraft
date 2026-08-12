@@ -30,12 +30,26 @@ export function PromptComposer({
   const trimmed = value.trim()
   const canSubmit = trimmed.length >= 8 && !loading
 
+  // The composer is the primary object on the page, so it gets both the tilt
+  // and the spotlight. They share one ref and one pointer handler rather than
+  // each running their own — writing the position straight to the element
+  // because this fires on every pointermove and re-rendering to move a
+  // gradient sixty times a second would be absurd.
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    tilt.onPointerMove(e)
+    const el = tilt.ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    el.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
   return (
     <div
       ref={tilt.ref}
-      onPointerMove={tilt.onPointerMove}
+      onPointerMove={onPointerMove}
       onPointerLeave={tilt.onPointerLeave}
-      className="glow-border brand-shadow tilt-3d animate-in-up rounded-2xl p-5 sm:p-6"
+      className="plate plate-ruled spotlight tilt-3d animate-in-up rounded-xl p-5 sm:p-6"
     >
       <label
         htmlFor="prompt"
@@ -125,7 +139,7 @@ export function PromptComposer({
           size="lg"
           disabled={!canSubmit}
           onClick={() => onAnalyze(trimmed)}
-          className="brand-gradient h-11 gap-2 px-6 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+          className="bg-primary h-11 gap-2 px-6 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-40"
         >
           {loading ? (
             <>

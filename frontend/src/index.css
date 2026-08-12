@@ -1,90 +1,121 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+
+/* Body — kept from the previous system; it is a good neutral text face. */
 @import "@fontsource-variable/geist";
+/* Display — condensed grotesque. Slates, title cards and camera reports are
+   all set in condensed type because the information is dense and the space is
+   narrow; this is the page's voice. */
+@import "@fontsource/barlow-condensed/400.css";
+@import "@fontsource/barlow-condensed/500.css";
+@import "@fontsource/barlow-condensed/600.css";
+@import "@fontsource/barlow-condensed/700.css";
+/* Utility — every number in a camera department is monospaced: timecode,
+   focal length, T-stop, roll and shot IDs. Data uses this face, never the
+   body face. */
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
 
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   VidCraft — "creative studio" theme (light + dark)
-   Palette direction (ui-ux-pro-max rows 126/129): violet + cyan.
-   Brand gradient: violet -> indigo -> cyan.
+   VidCraft — "grading suite" theme
+   ------------------------------------------------------------
+   The palette is taken from the subject rather than from a brand
+   deck. Colour grading has a warm/cool axis — tungsten against
+   daylight, safelight against the print — and that axis is the
+   whole palette: AMBER is the warm side, CYAN the cool side, and
+   everything else is the room they are viewed in.
+
+   Dark theme  = the grading suite. The room is dark so the image
+                 reads true; surfaces are near-black and the type is
+                 warm film-base off-white, not pure white.
+   Light theme = the light table. A cool lab white, deliberately NOT
+                 a warm cream — this is a bench, not stationery.
+
+   Replaces the previous violet->cyan aurora/glass system (ADR-029).
    ============================================================ */
 
 :root {
-  /* Brand ramp (shared) */
-  --brand-violet: #7c3aed;
-  --brand-indigo: #6366f1;
-  --brand-cyan: #22d3ee;
-  --brand-pink: #ec4899;
+  /* ---- Grade axis (shared across themes) ---- */
+  --amber: #e8a33d;
+  --amber-deep: #b4741b;
+  --cyan: #3fb8c4;
+  --cyan-deep: #1e7c88;
+  --film-base: #e9e4da;
+  --grade-room: #14181d;
 
-  --grad-brand: linear-gradient(135deg, #a855f7 0%, #6366f1 45%, #22d3ee 100%);
-  --grad-brand-vivid: linear-gradient(
-    120deg,
-    #d946ef 0%,
-    #8b5cf6 30%,
-    #6366f1 60%,
-    #22d3ee 100%
-  );
+  /* The one gradient in the system: the warm/cool grade axis itself.
+     Used sparingly — progress, active states, the wordmark rule. */
+  --grad-grade: linear-gradient(100deg, var(--amber) 0%, var(--cyan) 100%);
 
-  /* ---- LIGHT THEME (default) ---- */
-  --background: oklch(0.985 0.006 290);
-  --foreground: oklch(0.22 0.03 278);
+  /* ---- LIGHT THEME — the light table ---- */
+  --background: #e9ebee;
+  --foreground: #14181d;
 
-  --card: oklch(0.995 0.004 290);
-  --card-foreground: oklch(0.22 0.03 278);
+  --card: #f4f6f8;
+  --card-foreground: #14181d;
 
-  --popover: oklch(0.995 0.004 290);
-  --popover-foreground: oklch(0.22 0.03 278);
+  --popover: #f4f6f8;
+  --popover-foreground: #14181d;
 
-  --primary: oklch(0.54 0.24 292);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: #b4741b;
+  --primary-foreground: #fbf8f3;
 
-  --secondary: oklch(0.95 0.012 290);
-  --secondary-foreground: oklch(0.28 0.03 278);
+  --secondary: #dee1e6;
+  --secondary-foreground: #14181d;
 
-  --muted: oklch(0.95 0.01 290);
-  --muted-foreground: oklch(0.5 0.03 278);
+  --muted: #dee1e6;
+  --muted-foreground: #5a626b;
 
-  --accent: oklch(0.55 0.14 218);
-  --accent-foreground: oklch(0.99 0 0);
+  --accent: #1e7c88;
+  --accent-foreground: #fbf8f3;
 
-  --destructive: oklch(0.58 0.22 22);
-  --destructive-foreground: oklch(0.99 0 0);
+  --destructive: #b4342a;
+  --destructive-foreground: #fbf8f3;
 
-  --info: oklch(0.54 0.14 220);
-  --success: oklch(0.54 0.15 155);
-  --warning: oklch(0.58 0.15 62);
+  --info: #1e7c88;
+  --success: #2f7d52;
+  --warning: #a8701a;
 
-  --border: oklch(0.9 0.012 290);
-  --input: oklch(0.9 0.012 290);
-  --ring: oklch(0.54 0.24 292);
+  --border: rgba(20, 24, 29, 0.13);
+  --input: rgba(20, 24, 29, 0.18);
+  --ring: #b4741b;
 
-  /* Subtle elevated surface tint (flips with theme via --elevate) */
-  --elevate: 0 0% 0%; /* rgb triplet base for foreground-tinted fills */
+  /* Surface tint base — flips with theme so .plate reads correctly in both */
+  --tint: 20, 24, 29;
+  /* Grain is heavier on the light table (paper/film base is textured) */
+  --grain-opacity: 0.045;
+  --vignette-strength: 0.06;
 
-  --chart-1: oklch(0.58 0.22 292);
-  --chart-2: oklch(0.6 0.16 250);
-  --chart-3: oklch(0.62 0.14 210);
-  --chart-4: oklch(0.62 0.19 330);
-  --chart-5: oklch(0.6 0.15 155);
+  --chart-1: #b4741b;
+  --chart-2: #1e7c88;
+  --chart-3: #6b6152;
+  --chart-4: #8a5a2b;
+  --chart-5: #2f7d52;
 
-  --radius: 0.85rem;
+  --radius: 0.6rem;
 
-  --sidebar: oklch(0.98 0.008 290);
-  --sidebar-foreground: oklch(0.22 0.03 278);
-  --sidebar-primary: oklch(0.54 0.24 292);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.95 0.012 290);
-  --sidebar-accent-foreground: oklch(0.28 0.03 278);
-  --sidebar-border: oklch(0.9 0.012 290);
-  --sidebar-ring: oklch(0.54 0.24 292);
+  --sidebar: #f4f6f8;
+  --sidebar-foreground: #14181d;
+  --sidebar-primary: #b4741b;
+  --sidebar-primary-foreground: #fbf8f3;
+  --sidebar-accent: #dee1e6;
+  --sidebar-accent-foreground: #14181d;
+  --sidebar-border: rgba(20, 24, 29, 0.13);
+  --sidebar-ring: #b4741b;
 
+  --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
   --sans: 'Geist Variable', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
 
-  /* Aurora orb opacities (theme-tuned) */
-  --orb-opacity: 0.5;
+  /* ---- Motion scale (one set of curves for the whole product) ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur-base: 300ms;
+  --dur-slow: 620ms;
 
   color-scheme: light;
   font-synthesis: none;
@@ -94,61 +125,64 @@
 }
 
 .dark {
-  /* ---- DARK THEME ---- */
-  --background: oklch(0.16 0.02 275);
-  --foreground: oklch(0.97 0.01 285);
+  /* ---- DARK THEME — the grading suite ---- */
+  --background: #14181d;
+  --foreground: #e9e4da;
 
-  --card: oklch(0.205 0.025 275);
-  --card-foreground: oklch(0.97 0.01 285);
+  --card: #1a1f26;
+  --card-foreground: #e9e4da;
 
-  --popover: oklch(0.2 0.025 275);
-  --popover-foreground: oklch(0.97 0.01 285);
+  --popover: #1a1f26;
+  --popover-foreground: #e9e4da;
 
-  --primary: oklch(0.7 0.19 292);
-  --primary-foreground: oklch(0.14 0.02 275);
+  --primary: #e8a33d;
+  --primary-foreground: #14181d;
 
-  --secondary: oklch(0.26 0.03 275);
-  --secondary-foreground: oklch(0.97 0.01 285);
+  --secondary: #222831;
+  --secondary-foreground: #e9e4da;
 
-  --muted: oklch(0.26 0.02 275);
-  --muted-foreground: oklch(0.74 0.03 285);
+  --muted: #222831;
+  --muted-foreground: #98a0a9;
 
-  --accent: oklch(0.72 0.14 205);
-  --accent-foreground: oklch(0.16 0.02 275);
+  --accent: #3fb8c4;
+  --accent-foreground: #14181d;
 
-  --destructive: oklch(0.68 0.2 22);
-  --destructive-foreground: oklch(0.99 0 0);
+  --destructive: #e5695c;
+  --destructive-foreground: #14181d;
 
-  --info: oklch(0.76 0.13 208);
-  --success: oklch(0.78 0.15 160);
-  --warning: oklch(0.82 0.14 88);
+  --info: #3fb8c4;
+  --success: #5cbd8a;
+  --warning: #e8a33d;
 
-  --border: oklch(1 0 0 / 11%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.7 0.19 292);
+  --border: rgba(233, 228, 218, 0.11);
+  --input: rgba(233, 228, 218, 0.16);
+  --ring: #e8a33d;
 
-  --chart-1: oklch(0.7 0.19 292);
-  --chart-2: oklch(0.72 0.15 250);
-  --chart-3: oklch(0.76 0.13 205);
-  --chart-4: oklch(0.74 0.17 330);
-  --chart-5: oklch(0.78 0.15 160);
+  --tint: 233, 228, 218;
+  --grain-opacity: 0.055;
+  --vignette-strength: 0.5;
 
-  --sidebar: oklch(0.18 0.02 275);
-  --sidebar-foreground: oklch(0.97 0.01 285);
-  --sidebar-primary: oklch(0.7 0.19 292);
-  --sidebar-primary-foreground: oklch(0.14 0.02 275);
-  --sidebar-accent: oklch(0.26 0.03 275);
-  --sidebar-accent-foreground: oklch(0.97 0.01 285);
-  --sidebar-border: oklch(1 0 0 / 11%);
-  --sidebar-ring: oklch(0.7 0.19 292);
+  --chart-1: #e8a33d;
+  --chart-2: #3fb8c4;
+  --chart-3: #c7bfb2;
+  --chart-4: #d98b5a;
+  --chart-5: #5cbd8a;
 
-  --orb-opacity: 0.85;
+  --sidebar: #1a1f26;
+  --sidebar-foreground: #e9e4da;
+  --sidebar-primary: #e8a33d;
+  --sidebar-primary-foreground: #14181d;
+  --sidebar-accent: #222831;
+  --sidebar-accent-foreground: #e9e4da;
+  --sidebar-border: rgba(233, 228, 218, 0.11);
+  --sidebar-ring: #e8a33d;
+
   color-scheme: dark;
 }
 
 @theme inline {
   --font-sans: 'Geist Variable', system-ui, sans-serif;
-  --font-heading: 'Geist Variable', system-ui, sans-serif;
+  --font-display: var(--display);
   --font-mono: var(--mono);
 
   --color-background: var(--background);
@@ -187,17 +221,19 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --radius-sm: calc(var(--radius) * 0.55);
+  /* Tighter radii than the previous system. A grading suite is full of
+     rectangles — frames, gates, monitors — so the geometry is squarer. */
+  --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.35);
-  --radius-2xl: calc(var(--radius) * 1.7);
-  --radius-3xl: calc(var(--radius) * 2.3);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.4);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
 
   html {
@@ -211,7 +247,7 @@
     min-height: 100svh;
     position: relative;
     overflow-x: hidden;
-    transition: background-color 0.4s ease, color 0.3s ease;
+    transition: background-color var(--dur-base) ease, color var(--dur-fast) ease;
   }
 
   #root {
@@ -224,260 +260,354 @@
   h1,
   h2,
   h3 {
-    font-family: var(--font-heading);
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: -0.005em;
     color: var(--foreground);
     text-wrap: balance;
   }
 
+  /* Keyboard focus is a first-class state, not an afterthought. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
   ::selection {
-    background: color-mix(in oklch, var(--primary) 40%, transparent);
+    background: color-mix(in srgb, var(--primary) 35%, transparent);
   }
 
   ::-webkit-scrollbar {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklch, var(--primary) 45%, transparent);
+    background: color-mix(in srgb, var(--foreground) 22%, transparent);
     border-radius: 999px;
     border: 3px solid transparent;
     background-clip: content-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in oklch, var(--primary) 70%, transparent);
+    background: color-mix(in srgb, var(--primary) 70%, transparent);
     background-clip: content-box;
   }
 }
 
-/* ============================================================
-   Brand utilities
-   ============================================================ */
 @layer utilities {
-  .brand-gradient {
-    background-image: var(--grad-brand);
-  }
-  .brand-gradient-vivid {
-    background-image: var(--grad-brand-vivid);
+  /* ============================================================
+     Type roles
+     ============================================================ */
+  .font-display {
+    font-family: var(--display);
   }
 
-  .gradient-text {
-    background-image: var(--grad-brand-vivid);
+  /* Slate field label: how every field on a clapperboard or camera
+     report is set — small, monospaced, uppercase, widely tracked. */
+  .slate-label {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    line-height: 1.1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  /* Numeric data: timecode, durations, shot IDs, scores. */
+  .data {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  .grade-text {
+    background-image: var(--grad-grade);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
-  /* Animated gradient text (slow hue drift) */
-  .gradient-text-anim {
-    background-image: linear-gradient(
-      100deg,
-      #d946ef,
-      #8b5cf6,
-      #6366f1,
-      #22d3ee,
-      #8b5cf6,
-      #d946ef
-    );
-    background-size: 250% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: hue-pan 8s linear infinite;
+  .grade-fill {
+    background-image: var(--grad-grade);
   }
 
-  .glass {
-    background: color-mix(in oklch, var(--card) 72%, transparent);
-    backdrop-filter: blur(16px) saturate(1.3);
-    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  /* ============================================================
+     Surfaces — "plates" (as in a printing/contact plate)
+     Flat, bordered, with a hairline rule. No glassmorphism.
+     ============================================================ */
+  .plate {
+    background: var(--card);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  /* A single hairline of the grade axis across the top edge — the only
+     decoration a plate gets. */
+  .plate-ruled::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--grad-grade);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .plate-inset {
+    background: color-mix(in srgb, rgb(var(--tint)) 4%, transparent);
     border: 1px solid var(--border);
   }
 
-  /* Gradient (glowing) border card */
-  .glow-border {
-    position: relative;
-    border: 1px solid transparent;
-    background:
-      linear-gradient(var(--card), var(--card)) padding-box,
-      var(--grad-brand) border-box;
-  }
-
-  .brand-shadow {
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
-      0 22px 48px -22px color-mix(in oklch, var(--primary) 60%, transparent);
-  }
-
-  /* Subtle foreground-tinted fill that flips with theme */
   .surface-1 {
-    background: color-mix(in oklch, var(--foreground) 4%, transparent);
+    background: color-mix(in srgb, rgb(var(--tint)) 4%, transparent);
   }
   .surface-2 {
-    background: color-mix(in oklch, var(--foreground) 7%, transparent);
+    background: color-mix(in srgb, rgb(var(--tint)) 7%, transparent);
   }
 
-  /* ---- Hover / interaction ---- */
+  /* Letterbox rules — the 2.39:1 bars, used to frame the hero. */
+  .letterbox-rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--foreground) 22%, transparent) 18%,
+      color-mix(in srgb, var(--foreground) 22%, transparent) 82%,
+      transparent
+    );
+  }
+
+  /* ============================================================
+     Interaction
+     ============================================================ */
   .hover-lift {
     transition:
-      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-      box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-      border-color 0.35s ease;
+      transform var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) ease;
     will-change: transform;
   }
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 26px 50px -26px
-      color-mix(in oklch, var(--primary) 55%, transparent);
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Light "spills" from the pointer across the plate — a grading monitor
+     catching a highlight. Driven by --mx/--my from useSpotlight. */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--dur-base) ease;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--primary) 14%, transparent),
+      transparent 62%
+    );
+    z-index: -1;
+  }
+  .spotlight:hover::after {
+    opacity: 1;
   }
 
   .hover-glow {
-    transition: box-shadow 0.35s ease, transform 0.35s ease;
+    transition: box-shadow var(--dur-base) ease, border-color var(--dur-base) ease;
   }
   .hover-glow:hover {
-    box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 45%, transparent),
-      0 0 34px -6px color-mix(in oklch, var(--primary) 60%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+    box-shadow: 0 0 26px -8px color-mix(in srgb, var(--primary) 55%, transparent);
   }
 
-  /* ---- 3D scroll reveal (used by <Reveal/>) ---- */
+  .card-3d-pop {
+    transition:
+      transform var(--dur-base) var(--ease-spring),
+      box-shadow var(--dur-base) ease,
+      border-color var(--dur-base) ease;
+    will-change: transform;
+  }
+  .card-3d-pop:hover {
+    transform: translateY(-3px);
+  }
+  .card-3d-pop:active {
+    transform: translateY(-1px) scale(0.985);
+  }
+
+  /* ---- 3D scroll reveal (used by <Reveal/>) ----
+     Softer than the previous 10deg rotateX: this reads as a plate being
+     laid down on the bench rather than a card flying in. */
   .reveal-3d {
     opacity: 0;
-    transform: perspective(1200px) rotateX(10deg) translateY(48px)
-      translateZ(-60px);
+    transform: perspective(1400px) rotateX(6deg) translateY(26px);
     transform-origin: 50% 100%;
     transition:
-      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
     will-change: opacity, transform;
   }
   .reveal-3d.is-visible {
     opacity: 1;
-    transform: perspective(1200px) rotateX(0) translateY(0) translateZ(0);
+    transform: perspective(1400px) rotateX(0) translateY(0);
   }
 
-  /* ---- 3D tilt (driven by useTilt hook via CSS vars) ---- */
+  /* ---- 3D tilt (driven by useTilt via CSS vars) ---- */
   .tilt-3d {
     transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
       rotateY(var(--tilt-y, 0deg)) translateZ(0);
-    transition: transform 0.2s ease-out;
+    transition: transform var(--dur-fast) ease-out;
     transform-style: preserve-3d;
   }
 
+  /* ---- Entrances ---- */
   .animate-in-up {
-    animation: in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: in-up var(--dur-slow) var(--ease-out) both;
   }
-
-  /* ---- Style-configurator interactions (FRONTEND-003) ---- */
-  /* Staggered entrance with a gentle overshoot (motion DB: back.out(1.4)). */
   .tile-in {
-    animation: tile-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: tile-in 0.42s var(--ease-spring) both;
   }
-  /* Selection pop — springy scale on a state change. */
   .animate-pop {
-    animation: pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  /* Hover micro-interaction: lift + spring (motion DB: y:-4, power2.out). */
-  .card-3d-pop {
-    transition:
-      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      box-shadow 0.3s ease,
-      border-color 0.3s ease;
-    will-change: transform;
-  }
-  .card-3d-pop:hover {
-    transform: translateY(-4px);
-  }
-  .card-3d-pop:active {
-    transform: translateY(-1px) scale(0.98);
+    animation: pop 0.3s var(--ease-spring);
   }
   .animate-shimmer {
     background-size: 200% 100%;
-    animation: shimmer 1.4s linear infinite;
+    animation: shimmer 1.5s linear infinite;
   }
   .animate-float {
     animation: float 7s ease-in-out infinite;
   }
+
+  /* Page-load sequence: elements share one curve and stagger by index,
+     so the first paint reads as one orchestrated move. */
+  .stage-in {
+    animation: in-up 0.7s var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  /* Active pipeline stage — a slow breath, not a blink. */
+  .pulse-active {
+    animation: pulse-active 2s ease-in-out infinite;
+  }
+
+  /* Running film: the connector between pipeline stages fills downward. */
+  .rail-fill {
+    animation: rail-fill 1.6s var(--ease-out) infinite;
+  }
 }
 
 /* ============================================================
-   Aurora background (floating animated orbs)
+   Room ambience — replaces the aurora orbs.
+   Film grain + vignette. Both are properties of the medium itself:
+   grain is the emulsion, vignette is the lens.
    ============================================================ */
-.aurora {
+.room {
   position: fixed;
   inset: 0;
   z-index: 0;
-  overflow: hidden;
   pointer-events: none;
-}
-.aurora__orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: var(--orb-opacity);
-  mix-blend-mode: normal;
-}
-.dark .aurora__orb {
-  mix-blend-mode: screen;
-}
-.aurora__orb--1 {
-  width: 42rem;
-  height: 42rem;
-  top: -14rem;
-  left: -10rem;
-  background: radial-gradient(circle at 30% 30%, #a855f7, transparent 62%);
-  animation: drift-1 20s ease-in-out infinite;
-}
-.aurora__orb--2 {
-  width: 38rem;
-  height: 38rem;
-  top: -8rem;
-  right: -12rem;
-  background: radial-gradient(circle at 60% 40%, #22d3ee, transparent 62%);
-  animation: drift-2 24s ease-in-out infinite;
-}
-.aurora__orb--3 {
-  width: 40rem;
-  height: 40rem;
-  bottom: -18rem;
-  left: 30%;
-  background: radial-gradient(circle at 50% 50%, #6366f1, transparent 62%);
-  animation: drift-3 28s ease-in-out infinite;
+  overflow: hidden;
 }
 
-@keyframes drift-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(6rem, 4rem) scale(1.12); }
+.room__grain {
+  position: absolute;
+  inset: -50%;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 900ms steps(3) infinite;
 }
-@keyframes drift-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-5rem, 5rem) scale(1.08); }
+
+.room__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 50% 42%,
+    transparent 45%,
+    rgba(0, 0, 0, var(--vignette-strength)) 100%
+  );
 }
-@keyframes drift-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-4rem, -5rem) scale(1.15); }
+
+/* A single warm key light in the upper corner and a cool fill opposite it —
+   three-point lighting, reduced to two, applied to the room instead of a
+   subject. Very low opacity: this should register as depth, not as colour. */
+.room__key {
+  position: absolute;
+  width: 46rem;
+  height: 46rem;
+  top: -18rem;
+  right: -14rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--amber), transparent 66%);
+  opacity: 0.1;
+  filter: blur(40px);
+  animation: breathe 26s ease-in-out infinite;
 }
-@keyframes hue-pan {
-  from { background-position: 0% 0; }
-  to { background-position: 250% 0; }
+.room__fill {
+  position: absolute;
+  width: 40rem;
+  height: 40rem;
+  bottom: -16rem;
+  left: -12rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cyan), transparent 66%);
+  opacity: 0.09;
+  filter: blur(40px);
+  animation: breathe 32s ease-in-out infinite reverse;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, 1%); }
+  50% { transform: translate(1%, -2%); }
+  75% { transform: translate(-1%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes breathe {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-3rem, 2rem) scale(1.12); }
 }
 @keyframes in-up {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 @keyframes shimmer {
   from { background-position: 200% 0; }
   to { background-position: -200% 0; }
 }
 @keyframes tile-in {
-  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes pop {
-  0% { transform: scale(0.7); }
-  60% { transform: scale(1.08); }
+  0% { transform: scale(0.75); }
+  60% { transform: scale(1.06); }
   100% { transform: scale(1); }
+}
+@keyframes pulse-active {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 42%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+}
+@keyframes rail-fill {
+  0% { transform: scaleY(0); transform-origin: top; }
+  60% { transform: scaleY(1); transform-origin: top; }
+  61% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -492,5 +622,8 @@
   .reveal-3d {
     opacity: 1;
     transform: none;
+  }
+  .room__grain {
+    animation: none;
   }
 }

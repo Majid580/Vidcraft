@@ -74,6 +74,13 @@ export interface Shot {
   // rendered/generated asset, and any per-shot error/hold message.
   asset_url?: string
   error?: string
+  // CRITIC-001 (FR-8): the vision model's verdict on this shot's most recent
+  // asset. `null` until the critic has actually run — a shot that failed or
+  // was held never reaches it, and Remotion-pathway shots are skipped by
+  // design (ADR-026). `retry_count` above doubles as the critic's retry
+  // counter, bounded by CRITIC_MAX_RETRIES.
+  critic_passed?: boolean | null
+  critic_reason?: string
 }
 
 export interface WorldState {

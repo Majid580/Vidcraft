@@ -47,7 +47,7 @@ export function SingleImageView({ data }: { data: SingleImageResponse }) {
         </CardContent>
       </Card>
 
-      <Card className="glow-border overflow-hidden p-0">
+      <Card className="border-primary/30 overflow-hidden p-0">
         <img
           src={data.imageUrl}
           alt={data.enhancedPrompt}

@@ -21,9 +21,9 @@ import type { JobStatus, Shot, ShotStatus, StoryboardResponse } from '@/lib/type
 // agent decision), so the badge shows exactly which one rendered this shot.
 const PROVIDER_BADGE: Record<
   Shot['provider'],
-  { label: string; icon: typeof Film; variant: 'violet' | 'cyan' | 'warning' }
+  { label: string; icon: typeof Film; variant: 'amber' | 'cyan' | 'warning' }
 > = {
-  remotion: { label: 'Remotion', icon: Film, variant: 'violet' },
+  remotion: { label: 'Remotion', icon: Film, variant: 'amber' },
   pollinations: { label: 'Pollinations', icon: ImageIcon, variant: 'cyan' },
   cloudflare: { label: 'Cloudflare', icon: Sparkles, variant: 'cyan' },
   huggingface: { label: 'Hugging Face', icon: Camera, variant: 'warning' },
@@ -184,47 +184,6 @@ function FinalVideo({ job }: { job: JobStatus }) {
   )
 }
 
-function GenerationBar({ job }: { job: JobStatus }) {
-  const done = job.state === 'completed'
-  const failed = job.state === 'failed'
-  return (
-    <Card>
-      <CardContent className="flex flex-col gap-2.5 py-4">
-        <div className="flex items-center justify-between gap-3 text-sm">
-          <span className="flex items-center gap-2 font-medium">
-            {done ? (
-              <>
-                <CheckCircle2 className="size-4 text-emerald-500" />
-                Generation complete
-              </>
-            ) : failed ? (
-              <>
-                <XCircle className="size-4 text-destructive" />
-                Generation failed
-              </>
-            ) : (
-              <>
-                <Loader2 className="size-4 animate-spin text-primary" />
-                Generating assets…
-              </>
-            )}
-          </span>
-          <span className="text-muted-foreground tabular-nums">{job.progress}%</span>
-        </div>
-        <div className="bg-muted h-2 overflow-hidden rounded-full">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${failed ? 'bg-destructive' : 'brand-gradient'}`}
-            style={{ width: `${job.progress}%` }}
-          />
-        </div>
-        {failed && job.failedReason && (
-          <p className="text-destructive text-xs">{job.failedReason}</p>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
 export function StoryboardView({
   data,
   job,
@@ -282,7 +241,6 @@ export function StoryboardView({
       </Card>
 
       {/* Generation progress (INTEG-001) */}
-      {job && <GenerationBar job={job} />}
 
       {/* Assembled final video (FR-9 / INTEG-002) */}
       {job && <FinalVideo job={job} />}
@@ -294,9 +252,9 @@ export function StoryboardView({
           const merged: Shot = { ...shot, ...live }
           const status = merged.status ?? 'pending'
           return (
-            <Card key={shot.shot_id} className="glow-border hover-lift">
+            <Card key={shot.shot_id} className="border-primary/30 hover-lift">
               <CardContent className="flex gap-4">
-                <div className="brand-gradient grid size-11 shrink-0 place-items-center rounded-xl text-sm font-bold text-white">
+                <div className="bg-primary grid size-11 shrink-0 place-items-center rounded-xl text-sm font-bold text-primary-foreground">
                   {shot.shot_id}
                 </div>
                 <div className="min-w-0 flex-1">

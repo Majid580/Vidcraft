@@ -6,12 +6,12 @@ import {
   Pencil,
   RefreshCw,
   RotateCcw,
-  Sparkles,
 } from 'lucide-react'
 
 import { AppHeader } from '@/components/AppHeader'
-import { AuroraBackground } from '@/components/AuroraBackground'
+import { RoomAmbience } from '@/components/RoomAmbience'
 import { Reveal } from '@/components/Reveal'
+import { PipelineRail } from '@/components/PipelineRail'
 import { FlowSteps, type Stage } from '@/components/FlowSteps'
 import { PromptComposer } from '@/components/PromptComposer'
 import { AnalysisPanel } from '@/components/AnalysisPanel'
@@ -26,7 +26,6 @@ import {
 } from '@/components/StyleConfigurator/styleOptions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { useTheme } from '@/hooks/useTheme'
 import * as api from '@/lib/api'
 import { ApiError } from '@/lib/api'
@@ -228,27 +227,42 @@ function App() {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <AuroraBackground />
+      <RoomAmbience />
       <AppHeader theme={theme} onToggleTheme={toggle} demoMode={demoMode} />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-8 sm:py-12">
         {/* Hero — only before analysis */}
         {!analysis && (
-          <div className="animate-in-up mb-10 text-center">
-            <Badge variant="violet" className="mb-4">
-              <Sparkles className="size-3" />
-              FR-1 · FR-2 · FR-3 pipeline
-            </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              Turn a sentence into a
-              <br />
-              <span className="gradient-text-anim">cinematic storyboard</span>
-            </h1>
-            <p className="text-muted-foreground mx-auto mt-4 max-w-xl text-base">
-              Describe any scene. VidCraft analyzes it, asks smart follow-ups,
-              and decomposes it into a shot-by-shot storyboard — powered by a
-              multi-agent, retrieval-augmented pipeline.
-            </p>
+          /* The hero is a title card: letterbox rules top and bottom, the
+             slate line above, the title set large in condensed display type.
+             It is the first frame of the thing the tool makes. */
+          <div className="mb-10">
+            <div className="letterbox-rule stage-in" style={{ '--i': 0 } as React.CSSProperties} />
+            <div className="py-8 text-center sm:py-10">
+              <div
+                className="slate-label stage-in mb-5"
+                style={{ '--i': 1 } as React.CSSProperties}
+              >
+                Scene 01 · Take 01 · 2.39:1
+              </div>
+              <h1
+                className="stage-in font-display text-5xl leading-[0.95] font-semibold tracking-tight sm:text-6xl"
+                style={{ '--i': 2 } as React.CSSProperties}
+              >
+                One sentence in.
+                <br />
+                <span className="text-primary">A shot list out.</span>
+              </h1>
+              <p
+                className="text-muted-foreground stage-in mx-auto mt-5 max-w-md text-[15px] leading-relaxed"
+                style={{ '--i': 3 } as React.CSSProperties}
+              >
+                Describe a scene. Four agents read it, ground the camera work in
+                a corpus of real cinematography, and cut it into shots — then
+                render and assemble the film.
+              </p>
+            </div>
+            <div className="letterbox-rule stage-in" style={{ '--i': 4 } as React.CSSProperties} />
           </div>
         )}
 
@@ -270,7 +284,7 @@ function App() {
                 <Button
                   size="sm"
                   onClick={enterDemoAndRetry}
-                  className="brand-gradient gap-1.5 text-white hover:opacity-90"
+                  className="bg-primary gap-1.5 text-primary-foreground hover:opacity-90"
                 >
                   <FlaskConical className="size-3.5" />
                   Explore in demo mode
@@ -380,6 +394,22 @@ function App() {
                 onChange={setStyleConfig}
                 onGenerate={handleGenerate}
                 loading={busy === 'generate'}
+              />
+            </Reveal>
+          )}
+
+          {/* Pipeline (signature): the ~2 minutes between clicking Generate
+              and getting a film is where every interesting part of this
+              system runs. Shown from the moment the orchestrator starts and
+              kept afterwards as a record of what happened — including which
+              shots the critic sent back. Single-image mode skips the
+              storyboard pipeline entirely, so it has no rail. */}
+          {styleConfig.mode !== 'single_image' && (busy === 'generate' || job) && (
+            <Reveal delay={40}>
+              <PipelineRail
+                composing={busy === 'generate'}
+                storyboard={storyboard}
+                job={job}
               />
             </Reveal>
           )}
