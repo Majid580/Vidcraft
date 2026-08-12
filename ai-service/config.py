@@ -54,3 +54,20 @@ RAG_TOP_K = int(os.getenv("RAG_TOP_K", "3"))
 # (mirrors FR-8's critic-loop behavior on retry exhaustion).
 STORYBOARD_SIMILARITY_THRESHOLD = float(os.getenv("STORYBOARD_SIMILARITY_THRESHOLD", "0.35"))
 MAX_STORYBOARD_RETRIES = int(os.getenv("MAX_STORYBOARD_RETRIES", "2"))
+
+# --- Critic / quality-feedback loop (CRITIC-001, FR-8, per ADR-026) ---
+# The proposal left the vision-capable provider TBD ("likely the fallback
+# LLM if it offers multimodal capability") — Groq's live model catalog was
+# checked and has zero vision-capable models today, so that assumption
+# doesn't hold (same kind of research-vs-reality gap PROVIDER-001 hit for
+# Cloudflare's video catalog, ADR-019). Cloudflare Workers AI already has
+# live-validated credentials (PROVIDER-001) and its llama-4-scout model
+# accepts an OpenAI-style image_url content part and returns clean,
+# correctly-grounded structured verdicts — live-verified against both a
+# genuinely matching and a genuinely mismatching image before this was
+# written. ai-service holds its own copy of the Cloudflare credentials
+# (same real values as backend/.env) since it's a separate process, mirroring
+# GROQ_API_KEY.
+CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
+CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
+CRITIC_VISION_MODEL = os.getenv("CRITIC_VISION_MODEL", "@cf/meta/llama-4-scout-17b-16e-instruct")

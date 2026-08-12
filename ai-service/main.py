@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 
 from analyzer import EmptyPromptError, score_prompt
 from clarification import build_brief, generate_questions
+from critic import CriticConfigError, CriticEvaluationError, evaluate_frame
 from llm import GroqConfigError
 from orchestrator import (
     CinematographerOutputError,
@@ -94,4 +95,24 @@ def storyboard_generate(request: StoryboardRequest):
     except GroqConfigError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except (ScreenwriterOutputError, CinematographerOutputError) as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+
+class CriticEvaluateRequest(BaseModel):
+    image_base64: str = Field(..., min_length=1)
+    description: str = Field(..., min_length=1)
+
+
+class CriticEvaluateResponse(BaseModel):
+    passed: bool
+    reason: str
+
+
+@app.post("/critic/evaluate", response_model=CriticEvaluateResponse)
+def critic_evaluate(request: CriticEvaluateRequest):
+    try:
+        return evaluate_frame(request.image_base64, request.description)
+    except CriticConfigError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except CriticEvaluationError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc

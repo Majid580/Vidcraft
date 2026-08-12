@@ -48,9 +48,14 @@ function generateStoryboard(clarifiedPrompt) {
   return post('/storyboard/generate', { clarified_prompt: clarifiedPrompt });
 }
 
+function criticEvaluate(imageBase64, description) {
+  return post('/critic/evaluate', { image_base64: imageBase64, description });
+}
+
 module.exports = {
   analyzePrompt,
   getClarificationQuestions,
   resolveClarification,
   generateStoryboard,
+  criticEvaluate,
 };
