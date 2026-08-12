@@ -1,7 +1,10 @@
+const path = require('node:path');
 const Queue = require('bull');
 
 const Storyboard = require('../models/Storyboard');
 const generationService = require('../services/generationService');
+const remotionService = require('../services/remotionService');
+const criticService = require('../services/criticService');
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -47,6 +50,31 @@ async function processGeneration(job) {
       );
       shot.status = 'completed';
       shot.error = undefined;
+
+      // FR-7: the first frame this storyboard successfully generates becomes
+      // its visual anchor — every later shot is conditioned on it (img2img,
+      // where the provider supports it) so the subject and environment carry
+      // across the sequence instead of being re-invented per shot. Written
+      // once and then left alone: re-anchoring mid-run to a later shot would
+      // let the look drift shot by shot, which is the exact failure this is
+      // here to prevent. Remotion shots render deterministically from
+      // world_state and need no anchor, so they never claim the slot.
+      if (shot.pathway !== 'remotion' && !doc.world_state.reference_image_url) {
+        doc.world_state.reference_image_url = shot.asset_url;
+        doc.markModified('world_state');
+      }
+
+      // CRITIC-001 (FR-8): vision-model quality gate + bounded retry loop.
+      // A critic-loop failure (ai-service unreachable, ffmpeg missing, …) is
+      // an infrastructure hiccup, not evidence the generation itself was
+      // bad — the shot stays 'completed' with its last known-good asset,
+      // just unverified, rather than dragging a successful render down to
+      // 'failed'.
+      try {
+        await criticService.runCriticLoop(doc.id, shot, doc.world_state);
+      } catch (criticErr) {
+        shot.critic_reason = `critic evaluation unavailable: ${criticErr.message}`;
+      }
     } catch (err) {
       shot.status = err.onHold ? 'on_hold' : 'failed';
       shot.error = err.message;
@@ -59,7 +87,29 @@ async function processGeneration(job) {
     summary.push({ shot_id: shot.shot_id, status: shot.status });
   }
 
-  return { storyboardId: doc.id, shots: summary };
+  // FR-9 — assemble the finished video from whatever generated successfully.
+  // Deliberately last, and deliberately non-fatal: the per-shot assets are
+  // the expensive, quota-consuming part of a run, and they are already
+  // persisted by this point. A failed assembly (Remotion/Chromium missing,
+  // render timeout, backend not serving /media) must not discard them or
+  // mark an otherwise-successful generation as failed — it is recorded on
+  // the storyboard and the run still returns its per-shot results.
+  doc.video_url = undefined;
+  doc.video_error = undefined;
+  try {
+    const filename = 'storyboard.mp4';
+    await remotionService.renderStoryboard(
+      doc.shots,
+      doc.world_state,
+      path.join(generationService.GENERATED_DIR, doc.id, filename),
+    );
+    doc.video_url = `/media/${doc.id}/${filename}`;
+  } catch (assemblyErr) {
+    doc.video_error = assemblyErr.message;
+  }
+  await doc.save();
+
+  return { storyboardId: doc.id, shots: summary, videoUrl: doc.video_url || null };
 }
 
 generationQueue.process(processGeneration);

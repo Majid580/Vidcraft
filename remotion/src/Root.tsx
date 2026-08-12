@@ -4,7 +4,13 @@ import { TitleCard } from './TitleCard';
 import { WideShot } from './compositions/WideShot';
 import { MediumShot } from './compositions/MediumShot';
 import { CloseUpShot } from './compositions/CloseUpShot';
-import type { Shot, ShotCompositionProps, WorldState } from './types';
+import { StoryboardVideo, totalDurationInFrames } from './compositions/StoryboardVideo';
+import type {
+  Shot,
+  ShotCompositionProps,
+  StoryboardCompositionProps,
+  WorldState,
+} from './types';
 
 const FPS = 30;
 
@@ -54,6 +60,16 @@ const calculateShotMetadata = ({ props }: { props: ShotCompositionProps }) => ({
   height: 1080,
 });
 
+// FR-9: the finished video runs exactly as long as the storyboard says —
+// the sum of every shot's duration_s, resolved at render time from the real
+// shot list rather than fixed here.
+const calculateStoryboardMetadata = ({ props }: { props: StoryboardCompositionProps }) => ({
+  durationInFrames: totalDurationInFrames(props.shots),
+  fps: FPS,
+  width: 1920,
+  height: 1080,
+});
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
@@ -98,6 +114,19 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
         defaultProps={{ shot: sampleShots.closeup, worldState: sampleWorldState }}
         calculateMetadata={calculateShotMetadata}
+      />
+      <Composition
+        id="StoryboardVideo"
+        component={StoryboardVideo}
+        durationInFrames={totalDurationInFrames(Object.values(sampleShots))}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          shots: Object.values(sampleShots),
+          worldState: sampleWorldState,
+        }}
+        calculateMetadata={calculateStoryboardMetadata}
       />
     </>
   );

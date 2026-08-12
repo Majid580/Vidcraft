@@ -26,19 +26,30 @@ class ExternalApiError extends Error {
 // 'remotion' is intentionally not a case here — that pathway is handled
 // entirely by remotionService.js, never by this dispatcher.
 const ADAPTERS = {
-  pollinations: (prompt) => pollinationsImage.generateImage(prompt),
-  cloudflare: (prompt) => cloudflareImage.generateImage(prompt),
+  pollinations: (prompt, options) => pollinationsImage.generateImage(prompt, options),
+  cloudflare: (prompt, options) => cloudflareImage.generateImage(prompt, options),
+  // Video generation takes no continuity options — the pathway is held
+  // (see generationService.js's HELD_PROVIDERS) and never reached today.
   huggingface: (prompt) => huggingfaceVideo.generateVideo(prompt),
 };
 
-async function generateByProvider(providerId, prompt) {
+/**
+ * @param {string} providerId
+ * @param {string} prompt  fully-built prompt (FR-7 world_state already
+ *                         injected by services/continuityPrompt.js — adapters
+ *                         never see a bare shot.description)
+ * @param {object} [options] continuity hints: seed, negativePrompt,
+ *                           referenceImageB64, strength. Adapters ignore any
+ *                           option their provider doesn't support.
+ */
+async function generateByProvider(providerId, prompt, options = {}) {
   const adapter = ADAPTERS[providerId];
   if (!adapter) {
     throw new ExternalApiError(`Unknown or unsupported external provider: ${providerId}`, providerId);
   }
 
   try {
-    return await adapter(prompt);
+    return await adapter(prompt, options);
   } catch (err) {
     throw new ExternalApiError(`Provider '${providerId}' failed: ${err.message}`, providerId);
   }

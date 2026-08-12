@@ -7,7 +7,12 @@
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    // src/shotTaxonomy.mjs is plain JS on purpose — it is the one module
+    // shared by the Node render entry points and the browser bundle, and
+    // Node cannot import a .ts file. allowJs lets the .tsx compositions
+    // import it without a hand-written declaration file.
+    "allowJs": true
   },
   "include": ["src"]
 }

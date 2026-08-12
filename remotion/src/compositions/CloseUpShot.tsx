@@ -1,19 +1,41 @@
 import React from 'react';
-import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { ShotLayer } from '../components/ShotLayer';
 import { themeFromStyleTokens } from '../theme';
 import type { ShotCompositionProps } from '../types';
 
-// Close-up/detail shot: tight vignette that punches in fast, for a single
-// detail beat (e.g. "close-up, static" on hands/an object). Deliberately
-// the most kinetic of the three — close-ups read as urgent/intimate.
+// Close-up/detail shot: punches in fast, for a single detail beat (e.g.
+// "close-up, static" on hands/an object). Deliberately the most kinetic of
+// the three — close-ups read as urgent/intimate.
+//
+// With a generated still: a hard punch-in that settles, cropping well past
+// the frame edge so the still reads as a genuine close framing rather than
+// the same wide image shown again. Without one: the original vignette card.
 export const CloseUpShot: React.FC<ShotCompositionProps> = ({ shot, worldState }) => {
   const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
   const theme = themeFromStyleTokens(worldState.style_tokens);
 
   const punchIn = interpolate(frame, [0, 12], [1.3, 1], {
     extrapolateRight: 'clamp',
   });
   const opacity = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: 'clamp' });
+
+  if (shot.imageSrc) {
+    // Settles at 1.35 rather than 1.0: the provider returns a full scene for
+    // every shot, so the "close-up" has to be manufactured by cropping in.
+    const scale = interpolate(frame, [0, 14, durationInFrames], [1.6, 1.4, 1.35], {
+      extrapolateRight: 'clamp',
+    });
+    return (
+      <ShotLayer
+        imageSrc={shot.imageSrc}
+        theme={theme}
+        transform={`scale(${scale})`}
+        fadeInFrames={5}
+      />
+    );
+  }
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#000' }}>

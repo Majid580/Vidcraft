@@ -11,33 +11,15 @@ import { bundle } from '@remotion/bundler';
 import { renderMedia, selectComposition as resolveComposition } from '@remotion/renderer';
 import path from 'node:path';
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// --- Shot -> composition taxonomy (REMOTION-003, resolves open question R-11) ---
-// Keyed on the leading word of shot.camera, matching the composition
-// library built in REMOTION-002 (WideShot / MediumShot / CloseUpShot).
-// Any shot.camera that doesn't match a recognized shot-type word falls
-// back to MediumShot — a documented default, never a thrown error, per
-// REMOTION-003's acceptance criteria ("arbitrary shot JSON maps to a
-// valid composition or documented default").
-export function selectCompositionId(shot) {
-  const camera = (shot.camera ?? '').trim().toLowerCase();
-  if (camera.startsWith('wide')) return 'WideShot';
-  if (camera.startsWith('medium')) return 'MediumShot';
-  if (
-    camera.startsWith('close-up') ||
-    camera.startsWith('close up') ||
-    camera.startsWith('closeup')
-  ) {
-    return 'CloseUpShot';
-  }
-  return 'MediumShot'; // documented fallback default: the most visually
-  // neutral of the three (frames a subject without committing to an
-  // establishing wide or an intimate close-up), and reuses an existing
-  // composition rather than a purpose-built "unknown shot" template.
-}
+// The taxonomy moved to src/shotTaxonomy.mjs so the StoryboardVideo
+// composition can apply the same mapping inside the bundle. Re-exported here
+// because REMOTION-003's tests and callers import it from this module.
+export { selectCompositionId } from './src/shotTaxonomy.mjs';
+import { selectCompositionId } from './src/shotTaxonomy.mjs';
 
 async function main() {
   const [, , propsPath, outputPath] = process.argv;
@@ -73,7 +55,13 @@ async function main() {
   console.log(JSON.stringify({ compositionId, outputPath }));
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+// Only run when invoked as a script. Without this guard, importing the module
+// for `selectCompositionId` also fires a render and exits the process on
+// missing argv — which made the export above unusable from anywhere but the
+// CLI.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

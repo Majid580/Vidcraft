@@ -88,21 +88,63 @@ router.post('/storyboards/:id/generate', async (req, res, next) => {
       }
     }
 
-    // Fresh run: reset every shot to pending, then enqueue one job for the
-    // whole storyboard.
-    doc.shots.forEach((shot) => {
-      shot.status = 'pending';
-      shot.asset_url = undefined;
-      shot.error = undefined;
-    });
+    // Fresh run: enqueue one job for the whole storyboard, then atomically
+    // claim it on the storyboard doc via a compare-and-swap on job_id. R-14:
+    // two genuinely concurrent requests can both pass the in-flight check
+    // above (both see no active job) and both reach this point — with a
+    // Mongoose `doc.save()`, the second one used to throw a raw 500
+    // (VersionError). We go through the native MongoDB collection instead of
+    // Mongoose's `findOneAndUpdate`/`save()`, because Mongoose adds its own
+    // implicit version-key guard on top of any update that touches an array
+    // via positional operators, which fights with a hand-rolled CAS instead
+    // of composing with it. The native driver gives exactly the atomicity we
+    // want: only the request whose query still matches the job_id it read,
+    // at the moment MongoDB actually executes the write, wins the claim.
     const job = await generationQueue.add({ storyboardId: doc.id });
-    doc.job_id = String(job.id);
-    doc.markModified('shots');
-    await doc.save();
+    const jobIdMatch = doc.job_id ? doc.job_id : { $exists: false };
+    const claimResult = await Storyboard.collection.findOneAndUpdate(
+      { _id: doc._id, job_id: jobIdMatch },
+      {
+        $set: {
+          job_id: String(job.id),
+          'shots.$[].status': 'pending',
+          'shots.$[].asset_url': null,
+          'shots.$[].error': null,
+          // A fresh run re-anchors from scratch (FR-7): the continuity
+          // reference is the first frame *this* run generates, not a
+          // leftover from the previous one, whose asset_url we just cleared.
+          'world_state.reference_image_url': null,
+          // Likewise the assembled video (FR-9) — it describes the old run.
+          video_url: null,
+          video_error: null,
+        },
+      },
+      { returnDocument: 'after' },
+    );
+    const claimed = claimResult && claimResult.value !== undefined ? claimResult.value : claimResult;
+
+    if (!claimed) {
+      // Lost the race: another concurrent request already claimed a new run
+      // between our read and our write. Discard our now-redundant job and
+      // hand back the winner's, so the caller still gets a valid in-flight
+      // job instead of an error.
+      try {
+        const orphan = await generationQueue.getJob(job.id);
+        if (orphan) await orphan.remove();
+      } catch {
+        // Best-effort cleanup only; the orphaned job is harmless if this fails.
+      }
+      const winner = await Storyboard.findById(req.params.id);
+      return res.status(202).json({
+        jobId: winner.job_id,
+        storyboardId: winner.id,
+        status: 'queued',
+      });
+    }
 
     res.status(202).json({
       jobId: String(job.id),
-      storyboardId: doc.id,
+      storyboardId: String(claimed._id),
       status: 'queued',
     });
   } catch (err) {

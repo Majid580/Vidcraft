@@ -40,9 +40,19 @@ const shotSchema = new mongoose.Schema(
       enum: ['pending', 'processing', 'completed', 'failed', 'on_hold'],
       default: 'pending',
     },
+    // retry_count now doubles as the CRITIC-001 (FR-8) retry counter: how
+    // many times the vision-model quality gate has sent this shot back for
+    // regeneration, bounded by CRITIC_MAX_RETRIES (default 2).
     retry_count: { type: Number, default: 0 },
     asset_url: { type: String },
     error: { type: String },
+    // CRITIC-001 (FR-8): the vision model's verdict on the most recent
+    // asset — logged per shot for the evaluation study, per the proposal's
+    // "retry count and critic verdicts should be logged" requirement. null
+    // until the critic loop has actually run (e.g. shot on_hold/failed
+    // before reaching generation, or ai-service unreachable).
+    critic_passed: { type: Boolean, default: null },
+    critic_reason: { type: String },
   },
   { _id: false },
 );
@@ -59,6 +69,14 @@ const storyboardSchema = new mongoose.Schema(
     // GET /api/jobs/:id after a page reload. Bull/Redis remains the job store
     // (no separate Mongo `jobs` collection — Section 10.1 stays deferred).
     job_id: { type: String },
+    // FR-9: the assembled final video — every successfully generated shot
+    // concatenated into one MP4 by the StoryboardVideo composition, with
+    // per-shot camera movement. Set at the end of a generation run; stays
+    // unset if no shot produced an asset, or if assembly itself failed (in
+    // which case video_error explains why and the per-shot assets are still
+    // there, still usable).
+    video_url: { type: String },
+    video_error: { type: String },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },
 );

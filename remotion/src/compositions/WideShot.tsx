@@ -1,11 +1,18 @@
 import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { ShotLayer } from '../components/ShotLayer';
 import { themeFromStyleTokens } from '../theme';
 import type { ShotCompositionProps } from '../types';
 
-// Wide/establishing shot: slow "dolly-in" (scale) over the setting, caption
-// fades in late so the environment reads first. Intended for shot.camera
-// values like "wide, low-angle, slow dolly-in" (see proposal Section 6.3).
+// Wide/establishing shot: slow "dolly-in" (scale) over the setting. Intended
+// for shot.camera values like "wide, low-angle, slow dolly-in" (see proposal
+// Section 6.3).
+//
+// With a generated still, the image is the shot and the dolly-in plays over
+// it. Without one, this falls back to the original motion-graphics card —
+// which is all this composition used to be able to draw, and the reason a
+// storyboard rendered through Remotion alone produced video of nothing but
+// its own caption text.
 export const WideShot: React.FC<ShotCompositionProps> = ({ shot, worldState }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
@@ -14,6 +21,15 @@ export const WideShot: React.FC<ShotCompositionProps> = ({ shot, worldState }) =
   const scale = interpolate(frame, [0, durationInFrames], [1, 1.15], {
     extrapolateRight: 'clamp',
   });
+
+  if (shot.imageSrc) {
+    // Establishing shots earn the longest, slowest move — the eye needs time
+    // to read an environment before the sequence cuts in closer.
+    return (
+      <ShotLayer imageSrc={shot.imageSrc} theme={theme} transform={`scale(${scale})`} />
+    );
+  }
+
   const captionOpacity = interpolate(
     frame,
     [durationInFrames * 0.5, durationInFrames * 0.5 + 20],
