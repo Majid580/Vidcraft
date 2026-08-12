@@ -52,6 +52,15 @@ export type ImageProvider = 'pollinations' | 'cloudflare'
 // depending on which RenderProvider is picked within it).
 export type GenerationMode = 'single_image' | 'storyboard'
 
+export type ShotStatus =
+  | 'pending'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  // 'on_hold' = deliberately not attempted (currently the huggingface video
+  // provider, paused pending a paid key) — distinct from 'failed'.
+  | 'on_hold'
+
 export interface Shot {
   shot_id: number
   description: string
@@ -59,8 +68,12 @@ export interface Shot {
   duration_s: number
   pathway: Pathway
   provider: RenderProvider
-  status?: 'pending' | 'processing' | 'completed' | 'failed'
+  status?: ShotStatus
   retry_count?: number
+  // Populated by generation (INTEG-001): the public /media URL of the
+  // rendered/generated asset, and any per-shot error/hold message.
+  asset_url?: string
+  error?: string
 }
 
 export interface WorldState {
@@ -74,6 +87,27 @@ export interface StoryboardResponse {
   storyboardId: string
   status: string
   worldState: WorldState
+  shots: Shot[]
+}
+
+// POST /api/storyboards/:id/generate response (INTEG-001, ADR-023) — async:
+// returns a job handle, not the finished storyboard. Poll GET /api/jobs/:id.
+export interface GenerateResponse {
+  jobId: string
+  storyboardId: string
+  status: string
+}
+
+// GET /api/jobs/:id response (INTEG-001). `state` is the Bull job lifecycle
+// (waiting | active | delayed | completed | failed | paused | stuck), plus our
+// initial 'queued'; `progress` is 0–100; `shots` carries the live per-shot
+// status/asset_url/error from the storyboard doc.
+export interface JobStatus {
+  jobId: string
+  state: string
+  progress: number
+  storyboardId: string | null
+  failedReason?: string
   shots: Shot[]
 }
 

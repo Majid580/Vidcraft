@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   AlertCircle,
   FileText,
   FlaskConical,
   Pencil,
+  RefreshCw,
   RotateCcw,
   Sparkles,
 } from 'lucide-react'
@@ -33,6 +34,7 @@ import type {
   Analysis,
   ClarifyResponse,
   ImageProvider,
+  JobStatus,
   SingleImageResponse,
   StoryboardResponse,
 } from '@/lib/types'
@@ -48,6 +50,7 @@ function App() {
   const [questions, setQuestions] = useState<string[] | null>(null)
   const [refined, setRefined] = useState<ClarifyResponse | null>(null)
   const [storyboard, setStoryboard] = useState<StoryboardResponse | null>(null)
+  const [job, setJob] = useState<JobStatus | null>(null)
   const [singleImage, setSingleImage] = useState<SingleImageResponse | null>(null)
   const [styleConfig, setStyleConfig] = useState<StyleConfig>(
     DEFAULT_STYLE_CONFIG,
@@ -56,6 +59,11 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [offline, setOffline] = useState(false)
   const [demoMode, setDemoMode] = useState(false)
+
+  // Generation-job polling (INTEG-001). Holds the pending setTimeout id so we
+  // can cancel it on completion, reset, or unmount.
+  const pollRef = useRef<number | null>(null)
+  useEffect(() => () => stopPolling(), [])
 
   const result = storyboard ?? singleImage
   const readyToGenerate =
@@ -70,12 +78,14 @@ function App() {
         : 'compose'
 
   function reset() {
+    stopPolling()
     setPrompt('')
     setPromptId(null)
     setAnalysis(null)
     setQuestions(null)
     setRefined(null)
     setStoryboard(null)
+    setJob(null)
     setSingleImage(null)
     setStyleConfig(DEFAULT_STYLE_CONFIG)
     setBusy(null)
@@ -127,6 +137,53 @@ function App() {
     }
   }
 
+  function stopPolling() {
+    if (pollRef.current != null) {
+      clearTimeout(pollRef.current)
+      pollRef.current = null
+    }
+  }
+
+  // Poll GET /api/jobs/:id every 1.5s until the job settles (INTEG-001).
+  async function pollJob(jobId: string, demo: boolean) {
+    try {
+      const j = await api.getJob(jobId, demo)
+      setJob(j)
+      if (j.state === 'completed' || j.state === 'failed') {
+        stopPolling()
+        return
+      }
+      pollRef.current = window.setTimeout(() => void pollJob(jobId, demo), 1500)
+    } catch (e) {
+      stopPolling()
+      handleError(e)
+    }
+  }
+
+  // Kick off async asset generation for a created storyboard, then poll.
+  async function startGeneration(sb: StoryboardResponse, demo: boolean) {
+    stopPolling()
+    setJob({
+      jobId: '',
+      state: 'queued',
+      progress: 0,
+      storyboardId: sb.storyboardId,
+      shots: [],
+    })
+    try {
+      const res = await api.startGeneration(sb.storyboardId, sb.shots, demo)
+      setJob((prev) => ({
+        ...(prev as JobStatus),
+        jobId: res.jobId,
+        state: res.status,
+      }))
+      void pollJob(res.jobId, demo)
+    } catch (e) {
+      setJob(null)
+      handleError(e)
+    }
+  }
+
   async function handleGenerate() {
     if (!promptId) return
     setBusy('generate')
@@ -153,6 +210,9 @@ function App() {
           demoMode,
         )
         setStoryboard(res)
+        // Chain straight into async asset generation (INTEG-001) so one
+        // "Generate" click goes prompt -> storyboard -> rendered assets.
+        void startGeneration(res, demoMode)
       }
     } catch (e) {
       handleError(e)
@@ -329,12 +389,24 @@ function App() {
             <>
               <Reveal>
                 {storyboard ? (
-                  <StoryboardView data={storyboard} />
+                  <StoryboardView data={storyboard} job={job} />
                 ) : (
                   <SingleImageView data={singleImage!} />
                 )}
               </Reveal>
-              <div className="flex justify-center pt-2">
+              <div className="flex flex-wrap justify-center gap-3 pt-2">
+                {storyboard &&
+                  job &&
+                  (job.state === 'completed' || job.state === 'failed') && (
+                    <Button
+                      variant="outline"
+                      onClick={() => void startGeneration(storyboard, demoMode)}
+                      className="gap-2"
+                    >
+                      <RefreshCw className="size-4" />
+                      Regenerate
+                    </Button>
+                  )}
                 <Button variant="outline" onClick={reset} className="gap-2">
                   <RotateCcw className="size-4" />
                   Create another

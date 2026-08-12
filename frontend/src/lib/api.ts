@@ -9,12 +9,22 @@
 import type {
   AnalyzeResponse,
   ClarifyResponse,
+  GenerateResponse,
   ImageProvider,
+  JobStatus,
   RenderProvider,
+  Shot,
   SingleImageResponse,
   StoryboardResponse,
 } from './types'
-import { demoAnalyze, demoClarify, demoStoryboard, demoSingleImage } from './demo'
+import {
+  demoAnalyze,
+  demoClarify,
+  demoGetJob,
+  demoSingleImage,
+  demoStartGeneration,
+  demoStoryboard,
+} from './demo'
 
 const BASE = import.meta.env.VITE_API_URL ?? ''
 
@@ -67,6 +77,36 @@ async function request<T>(path: string, body: unknown): Promise<T> {
   return data as T
 }
 
+// GET variant of the above (no body) — for polling job status.
+async function getRequest<T>(path: string): Promise<T> {
+  let res: Response
+  try {
+    res = await fetch(`${BASE}/api${path}`)
+  } catch {
+    throw new ApiError(0, 'Backend not reachable on :5000.', true)
+  }
+
+  let data: unknown = null
+  try {
+    data = await res.json()
+  } catch {
+    /* non-JSON */
+  }
+
+  if (!res.ok) {
+    if (OFFLINE_STATUSES.has(res.status)) {
+      throw new ApiError(res.status, 'Backend not reachable on :5000.', true)
+    }
+    const msg =
+      (data as { error?: string; message?: string })?.error ??
+      (data as { message?: string })?.message ??
+      `Request failed (${res.status})`
+    throw new ApiError(res.status, msg)
+  }
+
+  return data as T
+}
+
 export function analyzePrompt(prompt: string, demo = false) {
   return demo ? demoAnalyze(prompt) : request<AnalyzeResponse>('/prompts', { prompt })
 }
@@ -103,6 +143,25 @@ export function generateStoryboard(
         styleTokens,
         renderProvider,
       })
+}
+
+// INTEG-001 (ADR-023): kick off async generation for a created storyboard.
+// Returns a job handle (202); poll pollJob() below. `shots` is only used in
+// demo mode (to simulate per-shot generation client-side) — the real backend
+// derives everything from the storyboard id.
+export function startGeneration(
+  storyboardId: string,
+  shots: Shot[],
+  demo = false,
+) {
+  return demo
+    ? demoStartGeneration(shots)
+    : request<GenerateResponse>(`/storyboards/${storyboardId}/generate`, {})
+}
+
+// Poll a generation job's status (GET /api/jobs/:id).
+export function getJob(jobId: string, demo = false) {
+  return demo ? demoGetJob(jobId) : getRequest<JobStatus>(`/jobs/${jobId}`)
 }
 
 // Single-image mode: skips the Screenwriter/storyboard decomposition

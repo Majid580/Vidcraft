@@ -6,11 +6,14 @@
 import type {
   AnalyzeResponse,
   ClarifyResponse,
+  Dimensions,
+  GenerateResponse,
   ImageProvider,
+  JobStatus,
   RenderProvider,
+  Shot,
   SingleImageResponse,
   StoryboardResponse,
-  Dimensions,
 } from './types'
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -121,6 +124,60 @@ export async function demoSingleImage(
     enhancedPrompt,
     imageUrl: `data:image/svg+xml,${encodeURIComponent(svg)}`,
   }
+}
+
+// Demo-mode generation (INTEG-001): simulates the async POST /generate +
+// GET /api/jobs/:id loop entirely client-side, so the storyboard's shots
+// "generate" over a few seconds with labeled SVG placeholders — driven by the
+// exact same poll code path App uses against the real backend.
+interface DemoJob {
+  startedAt: number
+  shots: Shot[]
+}
+const demoJobs = new Map<string, DemoJob>()
+const DEMO_PER_SHOT_MS = 1100
+
+function demoShotAsset(shot: Shot): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient></defs>
+    <rect width="640" height="360" fill="url(#g)"/>
+    <text x="50%" y="46%" text-anchor="middle" fill="white" font-size="22" font-family="sans-serif">Shot ${shot.shot_id} · Demo</text>
+    <text x="50%" y="56%" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" opacity="0.85">(${shot.provider}, no real generation)</text>
+  </svg>`
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`
+}
+
+export async function demoStartGeneration(shots: Shot[]): Promise<GenerateResponse> {
+  await delay(300)
+  const jobId = `demo-job-${Date.now()}`
+  demoJobs.set(jobId, {
+    startedAt: Date.now(),
+    shots: shots.map((s): Shot => ({ ...s, status: 'pending', asset_url: undefined, error: undefined })),
+  })
+  return { jobId, storyboardId: 'demo', status: 'queued' }
+}
+
+export async function demoGetJob(jobId: string): Promise<JobStatus> {
+  await delay(200)
+  const job = demoJobs.get(jobId)
+  if (!job) return { jobId, state: 'completed', progress: 100, storyboardId: 'demo', shots: [] }
+
+  const total = job.shots.length || 1
+  const done = Math.min(job.shots.length, Math.floor((Date.now() - job.startedAt) / DEMO_PER_SHOT_MS))
+  const shots = job.shots.map((s, i): Shot => {
+    if (i < done) {
+      // huggingface (video) is deliberately held — mirror the real backend.
+      if (s.provider === 'huggingface')
+        return { ...s, status: 'on_hold', error: 'Video generation is on hold (demo) pending a paid key.' }
+      return { ...s, status: 'completed', asset_url: demoShotAsset(s) }
+    }
+    if (i === done) return { ...s, status: 'processing' }
+    return { ...s, status: 'pending' }
+  })
+  const state = done >= job.shots.length ? 'completed' : 'active'
+  return { jobId, state, progress: Math.round((done / total) * 100), storyboardId: 'demo', shots }
 }
 
 export async function demoStoryboard(
