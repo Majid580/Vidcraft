@@ -1,0 +1,2205 @@
+[
+  {
+    "id": "sci-fi-1",
+    "genre": "sci-fi",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A lone terraforming drone hovers above a barren red canyon on Mars, its underside glowing with pale green light as it seeds the rust-colored soil at dusk.",
+    "timestamp": "2026-08-12T06:06:08.943599+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the barren canyon landscape at dusk",
+        "camera": "static, wide shot with a slight low-angle, using available light and neutral grading to capture the vast, barren canyon landscape at dusk",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The terraforming drone enters the frame, hovering above the canyon floor with its underside glowing",
+        "camera": "low-angle medium shot with slow dolly-in and slight zoom to emphasize the drone's glow against the darkening canyon landscape",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 3,
+        "description": "Close-up of the drone's underside as it releases seeds into the rust-colored soil",
+        "camera": "close-up, static, with foreground layering of rust-colored soil and motivated lighting from the fading dusk sun",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 4,
+        "description": "The drone moves across the canyon, seeding the soil, as the dusk sky darkens behind it",
+        "camera": "aerial drone shot, slow pan, with rim/backlight to separate the drone from the darkening dusk sky, using a wide lens to capture the expansive canyon landscape",
+        "duration_s": 6
+      }
+    ],
+    "world_state": {
+      "characters": [],
+      "setting": "barren red canyon on Mars at dusk",
+      "style_tokens": [
+        "wide",
+        "static",
+        "low-angle",
+        "naturalistic",
+        "dolly-in",
+        "slow",
+        "medium-shot",
+        "close-up",
+        "low-key",
+        "shallow-focus",
+        "aerial",
+        "rim-light",
+        "dusk"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7868125438690186,
+    "enhanced_description": "Establishing shot of the barren canyon landscape at dusk. The terraforming drone enters the frame, hovering above the canyon floor with its underside glowing. Close-up of the drone's underside as it releases seeds into the rust-colored soil. The drone moves across the canyon, seeding the soil, as the dusk sky darkens behind it",
+    "original_score": 83,
+    "enhanced_score": 49,
+    "original_dimensions": {
+      "subject_clarity": 60,
+      "action_specificity": 80,
+      "environment_detail": 100,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 62,
+      "action_specificity": 70,
+      "environment_detail": 50,
+      "visual_richness": 39,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "sci-fi-2",
+    "genre": "sci-fi",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A cargo hauler drifts silently through a debris field left by an old space battle, its pilot spots a derelict station ahead, and finally eases the ship into a docking clamp as sparks scatter from a damaged strut.",
+    "timestamp": "2026-08-12T06:18:17.608590+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The cargo hauler drifts through the debris field, showing the remnants of an old space battle",
+        "camera": "wide, crane shot with a high vantage point, looking down on the cargo hauler as it drifts through the debris field, with the derelict station in the background, using a silhouette lighting effect to emphasize the mysterious and graphic nature of the scene",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The pilot spots the derelict station ahead, looking at it with a mix of curiosity and caution",
+        "camera": "medium shot, slow zoom-in with deep focus to keep the pilot's face and the derelict station in sharp focus",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The cargo hauler approaches the derelict station, showing its damaged exterior",
+        "camera": "medium shot, slow dolly-in with a slight wide-angle lens to emphasize the scale of the damaged exterior against the vastness of space, utilizing negative space to convey isolation and desolation",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The ship eases into a docking clamp, with sparks scattering from a damaged strut as it settles into place",
+        "camera": "static medium shot with lens flare, emphasizing the sparks and damaged strut against the vast, empty backdrop of the debris field",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "pilot"
+      ],
+      "setting": "debris field in space with a derelict station",
+      "style_tokens": [
+        "wide",
+        "sweeping",
+        "silhouette",
+        "epic",
+        "medium",
+        "slow-zoom-in",
+        "deep-focus",
+        "slow",
+        "negative-space",
+        "static",
+        "lens-flare"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8771618604660034,
+    "enhanced_description": "The cargo hauler drifts through the debris field, showing the remnants of an old space battle. The pilot spots the derelict station ahead, looking at it with a mix of curiosity and caution. The cargo hauler approaches the derelict station, showing its damaged exterior. The ship eases into a docking clamp, with sparks scattering from a damaged strut as it settles into place",
+    "original_score": 66,
+    "enhanced_score": 48,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 17,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 73,
+      "environment_detail": 30,
+      "visual_richness": 11,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "sci-fi-3",
+    "genre": "sci-fi",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Inside a cramped generation ship's hydroponics bay, rows of glowing blue-lit plants sway gently as a maintenance robot drifts between them on magnetic rails.",
+    "timestamp": "2026-08-12T06:18:24.978376+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The camera pans over the rows of glowing blue-lit plants, showing their gentle sway",
+        "camera": "use a slow pan to pivot the camera horizontally across the rows of glowing blue-lit plants, keeping them in sharp focus with a shallow depth of field to blur the cramped surroundings of the generation ship's hydroponics bay",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "A maintenance robot comes into view, drifting between the plants on magnetic rails",
+        "camera": "medium, dolly shot following the maintenance robot as it drifts between the plants on magnetic rails",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera zooms in on the robot as it tends to a specific plant, its mechanical arms extending",
+        "camera": "close-up, slow dolly-in on the robot's mechanical arms as it tends to the plant, with a slight zoom to emphasize the details of the arms' movements",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The camera pulls back to show the robot continuing its rounds, the plants swaying in the background",
+        "camera": "slow pan to wide, showing the robot and the swaying plants in the cramped hydroponics bay",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "maintenance robot"
+      ],
+      "setting": "cramped generation ship's hydroponics bay",
+      "style_tokens": [
+        "slow",
+        "pan",
+        "shallow-focus",
+        "low-key",
+        "medium",
+        "dolly",
+        "smooth",
+        "immersive",
+        "close-up",
+        "dolly-in",
+        "mechanical",
+        "wide"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.6553304195404053,
+    "enhanced_description": "The camera pans over the rows of glowing blue-lit plants, showing their gentle sway. A maintenance robot comes into view, drifting between the plants on magnetic rails. The camera zooms in on the robot as it tends to a specific plant, its mechanical arms extending. The camera pulls back to show the robot continuing its rounds, the plants swaying in the background",
+    "original_score": 67,
+    "enhanced_score": 52,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 44,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 75,
+      "action_specificity": 75,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "sci-fi-4",
+    "genre": "sci-fi",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A scavenger climbs through the rusted hull of a crashed starship on a desert moon, discovers a still-humming reactor core deep inside, and steps back as the whole chamber floods with pulsing amber light.",
+    "timestamp": "2026-08-12T06:18:31.417574+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The scavenger climbs through the rusted hull of the starship, navigating through debris and wreckage",
+        "camera": "handheld, low-angle, wide lens to capture the scavenger's navigation through the debris and wreckage, with a mix of natural light and harsh shadows to emphasize the desolate environment",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The scavenger discovers the still-humming reactor core, a large and ominous cylindrical structure in the center of the chamber",
+        "camera": "frame the reactor core in a centered composition, using a medium shot with hard lighting to emphasize its texture and ominous presence",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The chamber begins to flood with pulsing amber light, illuminating the scavenger's awestruck face as they step back from the reactor core",
+        "camera": "close-up of the scavenger's face with a slow dolly-out, using volumetric lighting to capture the pulsing amber light beams as they illuminate the subject, creating an otherworldly atmosphere",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The scavenger is silhouetted against the intense, pulsing light, which fills the entire chamber and spills out into the surrounding wreckage",
+        "camera": "wide, static shot with high contrast, hard lighting from the pulsing source in the chamber, silhouetting the scavenger",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "scavenger"
+      ],
+      "setting": "crashed starship on a desert moon",
+      "style_tokens": [
+        "handheld",
+        "wide",
+        "low-key",
+        "documentary",
+        "hard",
+        "centered",
+        "medium",
+        "dramatic",
+        "volumetric",
+        "intimate",
+        "dolly-out",
+        "low-contrast",
+        "high-contrast",
+        "hard-light",
+        "silhouette"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8542667627334595,
+    "enhanced_description": "The scavenger climbs through the rusted hull of the starship, navigating through debris and wreckage. The scavenger discovers the still-humming reactor core, a large and ominous cylindrical structure in the center of the chamber. The chamber begins to flood with pulsing amber light, illuminating the scavenger's awestruck face as they step back from the reactor core. The scavenger is silhouetted against the intense, pulsing light, which fills the entire chamber and spills out into the surrounding wreckage",
+    "original_score": 67,
+    "enhanced_score": 57,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 40,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 30,
+      "visual_richness": 47,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "fantasy-1",
+    "genre": "fantasy",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A robed alchemist stirs a bubbling cauldron in a cluttered tower workshop, shelves of glowing vials and dried herbs crowding the walls around her.",
+    "timestamp": "2026-08-12T06:18:37.614581+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The alchemist stands at the center, stirring the cauldron as it bubbles and emits a faint glow",
+        "camera": "medium shot, static, with soft, practical lighting emanating from the faint glow of the cauldron and any other visible light sources in the cluttered workshop",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "A close-up of the cauldron, showing the bubbling liquid and the alchemist's stirring spoon",
+        "camera": "extreme close-up of the bubbling liquid and spoon, slow dolly-in, with a shallow depth of field to isolate the subject",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera pans out to reveal the cluttered workshop, with shelves of glowing vials and dried herbs surrounding the alchemist",
+        "camera": "start with a medium shot of the alchemist, then pan out slowly to a wide shot, incorporating foreground layering with shelves and herbs to build depth, and use a rack focus to shift attention from the alchemist to the surrounding environment",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The alchemist looks up, a look of intense focus on her face as she inspects the contents of the cauldron",
+        "camera": "close-up, slight Dutch angle, static, with a medium to high aperture lens to blur the cluttered background and emphasize the alchemist's face",
+        "duration_s": 2
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "robed alchemist"
+      ],
+      "setting": "cluttered tower workshop",
+      "style_tokens": [
+        "soft",
+        "practical",
+        "intimate",
+        "low-key",
+        "closeup",
+        "dramatic",
+        "shallow-focus",
+        "wide",
+        "slow pan",
+        "deep focus",
+        "layered",
+        "close-up",
+        "intense",
+        "static"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7750054597854614,
+    "enhanced_description": "The alchemist stands at the center, stirring the cauldron as it bubbles and emits a faint glow. A close-up of the cauldron, showing the bubbling liquid and the alchemist's stirring spoon. The camera pans out to reveal the cluttered workshop, with shelves of glowing vials and dried herbs surrounding the alchemist. The alchemist looks up, a look of intense focus on her face as she inspects the contents of the cauldron",
+    "original_score": 68,
+    "enhanced_score": 42,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 53,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 50,
+      "action_specificity": 74,
+      "environment_detail": 30,
+      "visual_richness": 32,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "fantasy-2",
+    "genre": "fantasy",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A young knight kneels before an ancient stone altar deep in a moss-covered ruin, places a broken sword upon it, and watches the blade knit itself back together in a burst of golden light.",
+    "timestamp": "2026-08-12T06:18:45.240491+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The young knight approaches the ancient stone altar, the moss-covered ruin surrounding them",
+        "camera": "frame the young knight in a wide, static shot with a low-angle perspective, utilizing rim lighting to separate them from the moss-covered ruin, and capture the scene during the golden hour for a warm, soft glow",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The knight kneels before the altar, placing the broken sword upon it, their hands and face filled with a mix of reverence and desperation",
+        "camera": "medium shot, slow zoom-in with underlighting to emphasize the knight's reverence and desperation, using a full shot framing to capture the character's posture and the ancient stone altar",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "A burst of golden light envelops the broken sword, the camera shaking slightly as if from an otherworldly energy",
+        "camera": "close-up, handheld with slight shake, warm golden lighting",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "The golden light fades, revealing the sword now whole, the knight's eyes widening in awe as they reach out to reclaim their restored blade",
+        "camera": "medium shot, slow dolly-out with warm, soft golden hour lighting and a slight low-angle to convey awe and heroism",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "young knight"
+      ],
+      "setting": "moss-covered ruin with ancient stone altar",
+      "style_tokens": [
+        "wide",
+        "low-angle",
+        "rim-lighting",
+        "golden-hour",
+        "full",
+        "low-key",
+        "dramatic",
+        "handheld",
+        "shaky",
+        "warm-light",
+        "epic",
+        "slow"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8651989102363586,
+    "enhanced_description": "The young knight approaches the ancient stone altar, the moss-covered ruin surrounding them. The knight kneels before the altar, placing the broken sword upon it, their hands and face filled with a mix of reverence and desperation. A burst of golden light envelops the broken sword, the camera shaking slightly as if from an otherworldly energy. The golden light fades, revealing the sword now whole, the knight's eyes widening in awe as they reach out to reclaim their restored blade",
+    "original_score": 80,
+    "enhanced_score": 59,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 84,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 75,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 61,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "fantasy-3",
+    "genre": "fantasy",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A colossal treant stands motionless at the edge of an enchanted forest, moss-draped branches forming a natural archway where fireflies drift in slow spirals.",
+    "timestamp": "2026-08-12T06:18:51.849823+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the treant at the forest's edge",
+        "camera": "use an extreme wide shot with a static camera position to capture the treant at the forest's edge, emphasizing its placement within the vast environment of the enchanted forest",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of moss-draped branches forming a natural archway",
+        "camera": "close-up, slow dolly-in along the natural archway's leading lines, with a slight low-angle to emphasize the grandeur of the moss-draped branches",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "Fireflies drifting in slow spirals through the archway",
+        "camera": "medium, handheld, worm's-eye view with slow floating movement and soft diffusion, capturing fireflies through a hazy glow with volumetric lighting",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The treant's face, motionless, with fireflies dancing around it",
+        "camera": "extreme close-up, static, with underlighting to emphasize the treant's facial features and the dancing fireflies",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "treant"
+      ],
+      "setting": "enchanted forest",
+      "style_tokens": [
+        "wide",
+        "static",
+        "establishing",
+        "close-up",
+        "dolly-in",
+        "low-angle",
+        "leading-lines",
+        "dreamlike",
+        "soft",
+        "volumetric",
+        "extreme-closeup",
+        "underlit",
+        "low-key"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8457629680633545,
+    "enhanced_description": "Establishing shot of the treant at the forest's edge. Close-up of moss-draped branches forming a natural archway. Fireflies drifting in slow spirals through the archway. The treant's face, motionless, with fireflies dancing around it",
+    "original_score": 77,
+    "enhanced_score": 53,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 94,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 25,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 55,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "fantasy-4",
+    "genre": "fantasy",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A traveling bard enters a rowdy tavern, tunes her lute by the fire as the room quiets, then launches into a rousing ballad that has the whole crowd stamping and cheering.",
+    "timestamp": "2026-08-12T06:18:56.943576+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The bard enters the tavern, surveying the room as the patrons turn to look",
+        "camera": "static wide shot with headroom, using Rembrandt lighting to highlight the bard's face as they survey the room, with a potential rack focus to shift attention between the bard and the reacting patrons",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The bard sits by the fire, tuning her lute as the room quiets in anticipation",
+        "camera": "medium shot, slow push-in with soft diffused warm light and shallow depth of field",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The bard begins to play and sing, the camera panning across the crowd as they start to clap and cheer",
+        "camera": "start with a close-up of the bard, then slowly dolly-out to a medium shot as the crowd begins to clap and cheer, capturing their reactions and the rowdy tavern atmosphere",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The crowd is fully engaged, stamping and cheering as the bard reaches the climax of the ballad",
+        "camera": "handheld, full shot with a slow push-in to emphasize the bard's performance and the crowd's energetic reaction",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "traveling bard",
+        "tavern patrons"
+      ],
+      "setting": "rowdy tavern",
+      "style_tokens": [
+        "wide",
+        "static",
+        "rembrandt",
+        "medium-depth",
+        "soft",
+        "intimate",
+        "warm",
+        "shallow-focus",
+        "dolly-out",
+        "medium",
+        "immersive",
+        "fluid",
+        "full",
+        "movement-push-in",
+        "low-key"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7878620624542236,
+    "enhanced_description": "The bard enters the tavern, surveying the room as the patrons turn to look. The bard sits by the fire, tuning her lute as the room quiets in anticipation. The bard begins to play and sing, the camera panning across the crowd as they start to clap and cheer. The crowd is fully engaged, stamping and cheering as the bard reaches the climax of the ballad",
+    "original_score": 72,
+    "enhanced_score": 48,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 0,
+      "visual_richness": 75,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 76,
+      "environment_detail": 30,
+      "visual_richness": 11,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "horror-1",
+    "genre": "horror",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A single flickering bulb swings above an abandoned asylum corridor, its light catching peeling wallpaper and a wheelchair tipped on its side.",
+    "timestamp": "2026-08-12T06:19:06.332022+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the long, dark corridor with a single flickering bulb",
+        "camera": "wide, static shot with low-key lighting, emphasizing the single flickering bulb and casting long shadows down the corridor",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the flickering bulb, emphasizing its unsteady light",
+        "camera": "close-up, slow dolly-in with underlighting to emphasize the eerie, unsteady glow of the bulb",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The light from the bulb falls on the peeling wallpaper and the tipped wheelchair",
+        "camera": "medium shot, slow pan from the wheelchair to the peeling wallpaper with underlighting from the bulb to create an eerie atmosphere",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "A tighter shot of the wheelchair, highlighting its abandonment and the decay around it",
+        "camera": "tight, static, low-angle, wide-lens",
+        "duration_s": 2
+      }
+    ],
+    "world_state": {
+      "characters": [],
+      "setting": "abandoned asylum corridor",
+      "style_tokens": [
+        "low-key",
+        "wide",
+        "static",
+        "high-contrast",
+        "dolly-in",
+        "underlit",
+        "uneven-lighting",
+        "slow-pan",
+        "eerie",
+        "underlight"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7593127489089966,
+    "enhanced_description": "Establishing shot of the long, dark corridor with a single flickering bulb. Close-up of the flickering bulb, emphasizing its unsteady light. The light from the bulb falls on the peeling wallpaper and the tipped wheelchair. A tighter shot of the wheelchair, highlighting its abandonment and the decay around it",
+    "original_score": 63,
+    "enhanced_score": 55,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 50,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 89,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "horror-2",
+    "genre": "horror",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A babysitter checks each darkened room of a quiet house after hearing a thump upstairs, freezes at a closet door left slightly ajar, and slowly reaches for the handle as the hallway light flickers out.",
+    "timestamp": "2026-08-12T06:19:22.541394+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The babysitter stands at the bottom of the stairs, looking up into the darkness, a concerned expression on her face",
+        "camera": "low-angle, static shot with underlighting, looking up at the babysitter's concerned face from the bottom of the stairs",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The babysitter slowly approaches a closet door left slightly ajar, her eyes fixed on the gap",
+        "camera": "close-up of the babysitter's face with slow dolly-in, maintaining constant headroom as she approaches the closet door, with the door's gap at the edge of the frame to create unease by breaking lead room",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The babysitter's hand reaches for the closet door handle, her fingers hesitating for a moment before making contact",
+        "camera": "Use an extreme close-up shot with a static camera to capture the babysitter's hand reaching for the closet door handle, emphasizing the hesitation and tension in her fingers as they make contact, utilizing a low-light setting to enhance the suspense.",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "The hallway light flickers out, plunging the babysitter into darkness as she stands frozen, her hand on the door handle",
+        "camera": "tight, low-angle with underlighting, static",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "babysitter"
+      ],
+      "setting": "a quiet, darkened house",
+      "style_tokens": [
+        "low-key",
+        "worms-eye",
+        "underlight",
+        "close-up",
+        "dolly-in",
+        "unease",
+        "extreme close-up",
+        "static",
+        "tension",
+        "claustrophobic"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.780271053314209,
+    "enhanced_description": "The babysitter stands at the bottom of the stairs, looking up into the darkness, a concerned expression on her face. The babysitter slowly approaches a closet door left slightly ajar, her eyes fixed on the gap. The babysitter's hand reaches for the closet door handle, her fingers hesitating for a moment before making contact. The hallway light flickers out, plunging the babysitter into darkness as she stands frozen, her hand on the door handle",
+    "original_score": 67,
+    "enhanced_score": 55,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 19,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 68,
+      "environment_detail": 30,
+      "visual_richness": 29,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "horror-3",
+    "genre": "horror",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A scarecrow stands crooked in a moonlit cornfield, its painted grin catching just enough light to seem like it's watching the farmhouse across the road.",
+    "timestamp": "2026-08-12T06:19:39.151449+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the cornfield with the scarecrow in the distance",
+        "camera": "wide, static, overhead shot with shallow depth of field and day-for-night color grading",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the scarecrow's face, emphasizing its painted grin",
+        "camera": "close-up of the scarecrow's face with underlighting, slow dolly-in to emphasize the painted grin",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The farmhouse across the road, with the scarecrow visible in the background, creating an unsettling atmosphere",
+        "camera": "medium shot, static, with underlighting from the moon to create an unsettling atmosphere, emphasizing the scarecrow in the background",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "scarecrow"
+      ],
+      "setting": "moonlit cornfield near a farmhouse",
+      "style_tokens": [
+        "wide",
+        "static",
+        "shallow-focus",
+        "low-key",
+        "close-up",
+        "underlight",
+        "slow",
+        "intimate",
+        "eerie",
+        "underlit"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7722131609916687,
+    "enhanced_description": "Establishing shot of the cornfield with the scarecrow in the distance. Close-up of the scarecrow's face, emphasizing its painted grin. The farmhouse across the road, with the scarecrow visible in the background, creating an unsettling atmosphere",
+    "original_score": 72,
+    "enhanced_score": 63,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 64,
+      "environment_detail": 30,
+      "visual_richness": 92,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 63,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "noir-1",
+    "genre": "noir-crime",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A private detective leans against a rain-streaked window, cigarette smoke curling past venetian blinds that stripe his face in shadow.",
+    "timestamp": "2026-08-12T06:19:52.170052+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The private detective stands alone, leaning against the window, lost in thought as rain streaks down the pane behind him.",
+        "camera": "medium shot, static, low-key lighting with hard contrast and Venetian-blind slats of light, Dutch angle",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "A close-up of the detective's face, striped with shadows from the venetian blinds, cigarette smoke wafting up past his eyes.",
+        "camera": "low-key, extreme close-up of the detective's face with underlighting, slow dolly-in, Venetian-blind slats of light casting shadows",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera pans out to reveal the rainy cityscape outside the window, a stark contrast to the detective's quiet, smoke-filled world indoors.",
+        "camera": "slow pan out from the window, using a wide lens to capture the contrast between the indoor smoke-filled room and the rainy cityscape, with low-key lighting and deep shadows to evoke a film noir mood",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "private detective"
+      ],
+      "setting": "a rainy city, indoors",
+      "style_tokens": [
+        "low-key",
+        "dutch-angle",
+        "static",
+        "film-noir",
+        "extreme close-up",
+        "underlight",
+        "wide",
+        "slow-pan"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7738447785377502,
+    "enhanced_description": "The private detective stands alone, leaning against the window, lost in thought as rain streaks down the pane behind him.. A close-up of the detective's face, striped with shadows from the venetian blinds, cigarette smoke wafting up past his eyes.. The camera pans out to reveal the rainy cityscape outside the window, a stark contrast to the detective's quiet, smoke-filled world indoors.",
+    "original_score": 65,
+    "enhanced_score": 52,
+    "original_dimensions": {
+      "subject_clarity": 60,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 54,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "noir-2",
+    "genre": "noir-crime",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A getaway driver waits with the engine idling outside a darkened bank, glances at his watch as the alarm suddenly blares, and floors it the moment two figures burst through the door with duffel bags.",
+    "timestamp": "2026-08-12T06:20:02.902284+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The getaway driver sits in the car, looking at his watch with a mixture of anxiety and anticipation",
+        "camera": "Extreme close-up on the watch, using a Dutch angle to convey the driver's anxiety and anticipation, with the darkened bank outside silhouetted in the background",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The alarm blares and the bank's doors burst open, two figures in the doorway with duffel bags",
+        "camera": "frame the two figures in the doorway with a wide, low-angle shot, using the doorframe as a natural frame-within-a-frame, with underlighting to emphasize the darkness of the night and the ominous atmosphere of the scene",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "The getaway driver looks up, sees the robbers, and puts the car in gear, starting to speed away",
+        "camera": "low-key lit, close-up, slow dolly-in with a slight dutch angle to capture the getaway driver's reaction, using a medium to high contrast lens to emphasize the darkened bank setting at night",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The car speeds away from the bank, leaving the robbers' escape scene in a cloud of dust and chaos",
+        "camera": "tracking shot with a wide-angle lens, low-key lighting, and a slight Dutch angle to capture the car speeding away in a cloud of dust, with the bank's dark silhouette in the background",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "getaway driver",
+        "two bank robbers"
+      ],
+      "setting": "outside a darkened bank at night",
+      "style_tokens": [
+        "extreme-closeup",
+        "dutch-angle",
+        "low-key",
+        "silhouette",
+        "wide",
+        "low-angle",
+        "frame-within-frame",
+        "underlit",
+        "dolly-in",
+        "high-contrast"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8288633823394775,
+    "enhanced_description": "The getaway driver sits in the car, looking at his watch with a mixture of anxiety and anticipation. The alarm blares and the bank's doors burst open, two figures in the doorway with duffel bags. The getaway driver looks up, sees the robbers, and puts the car in gear, starting to speed away. The car speeds away from the bank, leaving the robbers' escape scene in a cloud of dust and chaos",
+    "original_score": 62,
+    "enhanced_score": 55,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 0,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 58,
+      "environment_detail": 30,
+      "visual_richness": 10,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "noir-3",
+    "genre": "noir-crime",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A lone figure crosses an empty, fog-choked street beneath a buzzing neon sign that reads only in fragments through the mist.",
+    "timestamp": "2026-08-12T06:20:18.886371+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The camera pans over the fog-choked street, revealing the lone figure in the distance",
+        "camera": "wide, panning shot with a high-saturation neon palette and shallow focus to emphasize the lone figure in the distance",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The figure begins to cross the street, the fog swirling around their legs",
+        "camera": "medium shot, slow zoom-in with a shallow-focus lens to emphasize the fog swirling around the figure's legs, and incorporate the buzzing neon sign in the background to add a pop of color",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "A close-up of the neon sign, its fragments flickering in and out of visibility through the mist",
+        "camera": "extreme close-up, handheld, underlit with a high-saturation neon palette, capturing the flickering fragments of the sign",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "The figure reaches the other side of the street, looking back over their shoulder as the fog closes in behind them",
+        "camera": "start with a medium shot of the figure, then execute a slow dolly-out while maintaining focus on the figure, allowing the fog to close in behind them, and incorporate a slight zoom-in to enhance the sense of unease, with the buzzing neon sign blurred in the background, and the figure's face partially silhouetted against the faint light",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "lone figure"
+      ],
+      "setting": "empty, fog-choked street with a buzzing neon sign",
+      "style_tokens": [
+        "wide",
+        "low-key",
+        "neon",
+        "shallow-focus",
+        "extreme-closeup",
+        "underlit",
+        "high-saturation",
+        "dolly-out",
+        "silhouette",
+        "unease"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.6926930546760559,
+    "enhanced_description": "The camera pans over the fog-choked street, revealing the lone figure in the distance. The figure begins to cross the street, the fog swirling around their legs. A close-up of the neon sign, its fragments flickering in and out of visibility through the mist. The figure reaches the other side of the street, looking back over their shoulder as the fog closes in behind them",
+    "original_score": 69,
+    "enhanced_score": 41,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 62,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 50,
+      "action_specificity": 71,
+      "environment_detail": 30,
+      "visual_richness": 27,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "urban-1",
+    "genre": "urban-everyday",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A street vendor flips skewers over a smoking grill on a crowded night market corner, steam and sparks rising against a backdrop of neon shopfronts.",
+    "timestamp": "2026-08-12T06:20:33.901576+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Street vendor expertly flipping skewers over the grill, with steam and sparks rising",
+        "camera": "handheld, medium shot with a slight tilt down to emphasize the sizzling skewers and rising steam, underlit by the grill's flames",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of sizzling skewers and rising sparks, emphasizing the heat and energy of the grill",
+        "camera": "extreme close-up, slow dolly-in, with a shallow depth of field and warm high-contrast lighting to emphasize the sizzling and sparks",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "Wide shot of the night market corner, capturing the vendor, the grill, and the surrounding neon shopfronts, conveying the vibrant atmosphere",
+        "camera": "use an extreme wide shot with a wide-angle lens to capture the night market corner, keeping the camera static to convey the vibrant atmosphere of the crowded market",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "street vendor"
+      ],
+      "setting": "crowded night market corner",
+      "style_tokens": [
+        "handheld",
+        "medium",
+        "underlight",
+        "dynamic",
+        "extreme",
+        "shallow-focus",
+        "high-contrast",
+        "warm",
+        "wide",
+        "static",
+        "vibrant",
+        "immersive"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8668909668922424,
+    "enhanced_description": "Street vendor expertly flipping skewers over the grill, with steam and sparks rising. Close-up of sizzling skewers and rising sparks, emphasizing the heat and energy of the grill. Wide shot of the night market corner, capturing the vendor, the grill, and the surrounding neon shopfronts, conveying the vibrant atmosphere",
+    "original_score": 66,
+    "enhanced_score": 50,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 25,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 33,
+      "action_specificity": 82,
+      "environment_detail": 20,
+      "visual_richness": 38,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "urban-2",
+    "genre": "urban-everyday",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A commuter sprints down a subway platform as the doors begin to close, wedges an arm through the gap at the last second, and collapses into a seat catching her breath while other passengers glance up.",
+    "timestamp": "2026-08-12T06:20:46.353912+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "commuter sprinting down the subway platform towards the closing train doors",
+        "camera": "use a tracking shot to follow the commuter down the subway platform, framing them with the train doors and platform architecture to create a sense of urgency and depth, with a wide lens to capture the environment and leading lines of the platform guiding the viewer's eye towards the train",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "commuter's arm wedging through the gap as the doors close",
+        "camera": "close-up of the commuter's arm, static, with the subway doors framing the shot",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "commuter collapsing into a seat, catching her breath",
+        "camera": "medium close-up, slow dolly-in to emphasize the commuter's exhausted expression, with a slight emphasis on the background blur to convey disorientation",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "other passengers glancing up at the commuter, reacting to the sudden entrance",
+        "camera": "medium shot with slight lead room, static, with a neutral lens and soft lighting to capture the reactions of the passengers",
+        "duration_s": 3
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "commuter",
+        "other passengers"
+      ],
+      "setting": "subway platform and train",
+      "style_tokens": [
+        "wide",
+        "tracking",
+        "dynamic",
+        "deep-focus",
+        "close-up",
+        "static",
+        "frame-within-frame",
+        "medium",
+        "dolly-in",
+        "exhausted",
+        "disorienting",
+        "neutral",
+        "soft-lighting"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8939380645751953,
+    "enhanced_description": "commuter sprinting down the subway platform towards the closing train doors. commuter's arm wedging through the gap as the doors close. commuter collapsing into a seat, catching her breath. other passengers glancing up at the commuter, reacting to the sudden entrance",
+    "original_score": 71,
+    "enhanced_score": 57,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 47,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 50,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 50,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "urban-3",
+    "genre": "urban-everyday",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "An elderly man feeds pigeons on a park bench at sunrise, then a pack of giggling children dash past and scatter the whole flock into a swirl of wingbeats.",
+    "timestamp": "2026-08-12T06:21:02.084097+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Elderly man sits on a park bench, feeding pigeons that gather around him",
+        "camera": "medium shot, static, with a warm, soft, golden-hour lighting and a slight overhead angle to emphasize the elderly man's peaceful interaction with the pigeons",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "A pack of giggling children run into frame, dashing past the elderly man",
+        "camera": "use a steadicam shot to follow the pack of children as they run into frame, dashing past the elderly man, who is framed within a park archway or a tree's branches during the golden hour, with a wide lens to capture the warm, soft light and the flowing movement",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "Pigeons take flight, swirling around the bench in a flurry of wingbeats",
+        "camera": "overhead shot with slow motion, using a stabilizing rig to capture the swirling pigeons",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The elderly man watches the commotion, a mix of surprise and amusement on his face",
+        "camera": "close-up, slow dolly-in with a slight zoom to emphasize the emotional shift on the elderly man's face, using available morning light to create a naturalistic look",
+        "duration_s": 3
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "elderly man",
+        "children"
+      ],
+      "setting": "park at sunrise",
+      "style_tokens": [
+        "warm",
+        "soft",
+        "golden-hour",
+        "medium",
+        "wide",
+        "steadicam",
+        "frame-within-frame",
+        "overhead",
+        "slow",
+        "fluid",
+        "dreamlike",
+        "dolly-in",
+        "close-up",
+        "naturalistic"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.876579999923706,
+    "enhanced_description": "Elderly man sits on a park bench, feeding pigeons that gather around him. A pack of giggling children run into frame, dashing past the elderly man. Pigeons take flight, swirling around the bench in a flurry of wingbeats. The elderly man watches the commotion, a mix of surprise and amusement on his face",
+    "original_score": 77,
+    "enhanced_score": 55,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 50,
+      "visual_richness": 50,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 39,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "action-1",
+    "genre": "action-thriller",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A stuntman-double leaps between two rooftops mid-motion, city skyline sprawling beneath him and his jacket snapping in the wind.",
+    "timestamp": "2026-08-12T06:21:16.652965+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the city skyline with the stuntman-double standing on the edge of a rooftop",
+        "camera": "Start with an extreme wide shot of the city skyline, then slowly crane down to reveal the stuntman-double standing on the edge of a rooftop, using a high vantage point to deliver a sense of grand scale and geography.",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The stuntman-double leaps between the rooftops, jacket snapping in the wind",
+        "camera": "crane shot, high-angle, slow motion, with a wide lens to capture the stuntman-double leaping between rooftops",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "Close-up of the stuntman-double's face, focused and determined, as he soars through the air",
+        "camera": "Extreme close-up of the stuntman-double's face using a slow dolly-in movement to magnify tension and significance, set against the city rooftops backdrop",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "The stuntman-double lands safely on the adjacent rooftop, looking out over the city",
+        "camera": "use an extreme wide shot, with a static camera positioned high above to capture the stuntman-double on the rooftop, emphasizing the cityscape and establishing the setting",
+        "duration_s": 3
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "stuntman-double"
+      ],
+      "setting": "city rooftops",
+      "style_tokens": [
+        "extreme-wide",
+        "high-angle",
+        "crane-down",
+        "epic-scope",
+        "aerial",
+        "wide",
+        "slow-motion",
+        "extreme close-up",
+        "slow dolly-in",
+        "low-angle",
+        "static",
+        "epic",
+        "establishing"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8045538663864136,
+    "enhanced_description": "Establishing shot of the city skyline with the stuntman-double standing on the edge of a rooftop. The stuntman-double leaps between the rooftops, jacket snapping in the wind. Close-up of the stuntman-double's face, focused and determined, as he soars through the air. The stuntman-double lands safely on the adjacent rooftop, looking out over the city",
+    "original_score": 43,
+    "enhanced_score": 44,
+    "original_dimensions": {
+      "subject_clarity": 0,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 25,
+      "action_specificity": 67,
+      "environment_detail": 30,
+      "visual_richness": 75,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "action-2",
+    "genre": "action-thriller",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A courier weaves a motorcycle through gridlocked traffic while chasers close in behind, ducks beneath a lowering parking-garage gate just as it slams shut, and skids to a stop in the sudden silence.",
+    "timestamp": "2026-08-12T06:21:32.072504+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The courier navigates through congested traffic on a motorcycle, with chasers visible in the distance",
+        "camera": "dolly shot, moving alongside the motorcycle with a wide lens, capturing the congested traffic and chasers in the distance",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The courier sees the parking garage ahead and speeds towards it as the gate starts to lower",
+        "camera": "dolly/tracking shot with a medium frame, following the courier as they speed towards the parking garage, utilizing leading lines of the road to draw the viewer's eye towards the gate",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The courier ducks beneath the lowering gate just as it slams shut, blocking the chasers",
+        "camera": "low-angle, slow motion, extreme close-up on the gate as it slams shut, with tight framing and off-balance angles to enhance suspense",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "The courier skids to a stop in the sudden silence of the parking garage, looking back at the closed gate",
+        "camera": "Extreme close-up, static shot of the courier's face, particularly the eyes, as they look back at the closed gate, with a slight emphasis on the background to create unsettling tension",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "courier",
+        "chasers"
+      ],
+      "setting": "city streets and parking garage",
+      "style_tokens": [
+        "wide",
+        "dolly",
+        "immersive",
+        "fluid",
+        "tracking",
+        "medium",
+        "leading-lines",
+        "low-key",
+        "tight",
+        "slow-motion",
+        "suspenseful",
+        "extreme-closeup",
+        "static",
+        "tension",
+        "suspense"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8402218818664551,
+    "enhanced_description": "The courier navigates through congested traffic on a motorcycle, with chasers visible in the distance. The courier sees the parking garage ahead and speeds towards it as the gate starts to lower. The courier ducks beneath the lowering gate just as it slams shut, blocking the chasers. The courier skids to a stop in the sudden silence of the parking garage, looking back at the closed gate",
+    "original_score": 68,
+    "enhanced_score": 65,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 88,
+      "environment_detail": 30,
+      "visual_richness": 21,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 90,
+      "action_specificity": 74,
+      "environment_detail": 30,
+      "visual_richness": 56,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "action-3",
+    "genre": "action-thriller",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Two rival climbers cling to a sheer cliff face mid-storm, rain lashing sideways as one reaches for a handhold just out of grasp.",
+    "timestamp": "2026-08-12T06:21:46.392591+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the two climbers clinging to the cliff face, rain and wind battering them",
+        "camera": "Static, wide shot with a low-angle to emphasize the climbers' precarious position on the cliff face, using available natural light to capture the storm's intensity",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of Climber 1's face, eyes fixed on a handhold just out of reach, rain dripping down their face",
+        "camera": "Extreme close-up, slow dolly-in, with a slightly low-angle to emphasize Climber 1's determined gaze upwards, and soft, diffuse lighting to capture rain dripping down their face",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "Medium shot of Climber 1's hand straining to reach the handhold, fingers stretching and failing to grasp it",
+        "camera": "Extreme close-up, handheld, with a low-angle view of Climber 1's straining hand, emphasizing the struggle to reach the handhold",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "Wide shot of both climbers, one still reaching for the handhold, the other looking on with a mix of concern and rivalry",
+        "camera": "Start with a wide shot to capture both climbers and the cliff face, then slowly pan to emphasize the stormy environment and the climbers' reactions, using the full width of the frame to convey their isolation and the vastness of the space",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "Climber 1",
+        "Climber 2"
+      ],
+      "setting": "Sheer cliff face during a storm",
+      "style_tokens": [
+        "wide",
+        "low-angle",
+        "static",
+        "natural-light",
+        "close-up",
+        "dolly-in",
+        "soft-lighting",
+        "extreme closeup",
+        "handheld",
+        "lowangle",
+        "tension",
+        "slow-pan",
+        "establishing",
+        "stormy"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.6958543062210083,
+    "enhanced_description": "Establishing shot of the two climbers clinging to the cliff face, rain and wind battering them. Close-up of Climber 1's face, eyes fixed on a handhold just out of reach, rain dripping down their face. Medium shot of Climber 1's hand straining to reach the handhold, fingers stretching and failing to grasp it. Wide shot of both climbers, one still reaching for the handhold, the other looking on with a mix of concern and rivalry",
+    "original_score": 69,
+    "enhanced_score": 56,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 0,
+      "visual_richness": 86,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 50,
+      "action_specificity": 75,
+      "environment_detail": 30,
+      "visual_richness": 49,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "action-4",
+    "genre": "action-thriller",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A bomb-disposal technician kneels over a ticking device in an evacuated subway car, cuts the wrong wire and freezes as the timer speeds up, then finds the real wire with seconds to spare.",
+    "timestamp": "2026-08-12T06:22:02.253279+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The technician carefully examines the device, searching for the correct wire to cut",
+        "camera": "Use a static extreme close-up shot to frame the technician's hands and the device, with tight framing and a medium to high angle to create tension and significance, emphasizing the importance of the task.",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The technician cuts a wire, and the timer suddenly speeds up, causing them to freeze in panic",
+        "camera": "close-up of the technician's face with a slow dolly-in, utilizing a dolly zoom to maintain the face's size while the background warps, emphasizing panic",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The technician frantically searches for the correct wire as the timer counts down",
+        "camera": "tight, handheld, extreme close-up on the technician's hands and the timer, with slow push-ins to magnify tension",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The technician finds the real wire and cuts it, stopping the timer just seconds before it explodes",
+        "camera": "Extreme close-up, static shot of the technician's hands cutting the wire, with a neon-lit background of the subway car's signs and screens",
+        "duration_s": 2
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "bomb-disposal technician"
+      ],
+      "setting": "evacuated subway car",
+      "style_tokens": [
+        "extreme close-up",
+        "static",
+        "tight framing",
+        "suspense",
+        "close-up",
+        "dolly-in",
+        "low-key",
+        "vertigo-effect",
+        "tight",
+        "handheld",
+        "extreme-closeup",
+        "extreme",
+        "neon",
+        "high-saturation"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7128963470458984,
+    "enhanced_description": "The technician carefully examines the device, searching for the correct wire to cut. The technician cuts a wire, and the timer suddenly speeds up, causing them to freeze in panic. The technician frantically searches for the correct wire as the timer counts down. The technician finds the real wire and cuts it, stopping the timer just seconds before it explodes",
+    "original_score": 79,
+    "enhanced_score": 70,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 36,
+      "temporal_coherence": 100
+    }
+  },
+  {
+    "id": "historical-1",
+    "genre": "historical",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A blacksmith hammers a glowing horseshoe on his anvil inside a dim medieval forge, sparks scattering with every strike.",
+    "timestamp": "2026-08-12T06:22:19.145521+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The blacksmith is seen from a wide angle, hammer in hand, as he prepares to strike the glowing horseshoe on the anvil.",
+        "camera": "static, wide-angle shot with a low-key lighting setup and the blacksmith positioned to utilize Rembrandt lighting, emphasizing the glow of the horseshoe",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "A close-up of the horseshoe as the blacksmith strikes it, sparks flying everywhere, illuminating the dark forge.",
+        "camera": "close-up, slow dolly-in with low-key lighting and underlighting to emphasize the sparks and illuminate the dark forge",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera pans out to show the blacksmith's face, sweat dripping down his face, as he inspects his work, the glowing horseshoe still on the anvil.",
+        "camera": "start on a medium close-up of the blacksmith's face, using a slow and steady pan-out to reveal the glowing horseshoe on the anvil, capturing the sweat and intensity of the moment in the dimly lit medieval forge",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "blacksmith"
+      ],
+      "setting": "dim medieval forge",
+      "style_tokens": [
+        "wide",
+        "low-key",
+        "static",
+        "close-up",
+        "dolly-in",
+        "underlit",
+        "medium",
+        "slow",
+        "pan-out"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8239824175834656,
+    "enhanced_description": "The blacksmith is seen from a wide angle, hammer in hand, as he prepares to strike the glowing horseshoe on the anvil.. A close-up of the horseshoe as the blacksmith strikes it, sparks flying everywhere, illuminating the dark forge.. The camera pans out to show the blacksmith's face, sweat dripping down his face, as he inspects his work, the glowing horseshoe still on the anvil.",
+    "original_score": 70,
+    "enhanced_score": 52,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 25,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "historical-2",
+    "genre": "historical",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A telegraph operator taps out an urgent message in a dusty frontier station, waits anxiously for a reply that doesn't come, then bolts outside as riders appear on the horizon.",
+    "timestamp": "2026-08-12T06:22:30.887698+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The telegraph operator's fingers fly across the telegraph machine, sending out an urgent message",
+        "camera": "Extreme close-up of the telegraph operator's fingers on the machine, using a static camera with soft light to emphasize the urgency and importance of the message",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The operator waits anxiously, looking at the machine with anticipation, but the silence is deafening",
+        "camera": "close-up, slow dolly-in with slight zoom out to maintain subject size, emphasizing the dusty frontier station's background to create a sense of unease",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The operator bolts out of the station, looking out at the horizon with a mix of fear and urgency",
+        "camera": "canted angle, handheld, wide shot with underlighting and negative space",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "Riders appear on the horizon, their silhouettes growing larger as they approach the station",
+        "camera": "use a wide-angle lens with a slow dolly zoom-in to capture the riders' approach, emphasizing their growth from silhouettes on the horizon to prominent figures against the dusty, sun-baked backdrop of the frontier station",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "telegraph operator",
+        "riders"
+      ],
+      "setting": "dusty frontier station",
+      "style_tokens": [
+        "extreme closeup",
+        "static",
+        "soft light",
+        "dolly-in",
+        "low-key",
+        "tight",
+        "dutch",
+        "handheld",
+        "wide",
+        "slow",
+        "dusty",
+        "silhouettes"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7503837943077087,
+    "enhanced_description": "The telegraph operator's fingers fly across the telegraph machine, sending out an urgent message. The operator waits anxiously, looking at the machine with anticipation, but the silence is deafening. The operator bolts out of the station, looking out at the horizon with a mix of fear and urgency. Riders appear on the horizon, their silhouettes growing larger as they approach the station",
+    "original_score": 70,
+    "enhanced_score": 59,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 72,
+      "environment_detail": 30,
+      "visual_richness": 47,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 66,
+      "environment_detail": 30,
+      "visual_richness": 24,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "historical-3",
+    "genre": "historical",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A lantern-lit study holds a robed scholar hunched over illuminated manuscripts, quill scratching steadily by candlelight.",
+    "timestamp": "2026-08-12T06:22:44.753193+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The scholar is seen hunched over, surrounded by piles of manuscripts, with a lantern casting a warm glow on their work.",
+        "camera": "medium shot, slight low-angle, warm soft light from lantern with subtle shadows on the scholar's face",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "A close-up of the scholar's hands as they carefully write with the quill, the scratching sound filling the air.",
+        "camera": "extreme close-up of the quill and hands, slow dolly-in with warm lantern lighting",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera pans out to reveal the scholar's face, intent on their work, illuminated only by the soft light of the lantern and candles.",
+        "camera": "slow zoom-out with a medium shot, using available soft light from lanterns and candles to create a warm and intimate atmosphere",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "robed scholar"
+      ],
+      "setting": "lantern-lit study",
+      "style_tokens": [
+        "soft",
+        "warm",
+        "intimate",
+        "low-angle",
+        "extreme-closeup",
+        "low-key",
+        "dolly-in",
+        "medium",
+        "slow"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8259854316711426,
+    "enhanced_description": "The scholar is seen hunched over, surrounded by piles of manuscripts, with a lantern casting a warm glow on their work.. A close-up of the scholar's hands as they carefully write with the quill, the scratching sound filling the air.. The camera pans out to reveal the scholar's face, intent on their work, illuminated only by the soft light of the lantern and candles.",
+    "original_score": 58,
+    "enhanced_score": 46,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 0,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 24,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "sports-1",
+    "genre": "sports",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A marathon runner crosses the finish line at dawn, arms raised, the empty stadium stands glowing faintly under the rising sun.",
+    "timestamp": "2026-08-12T06:22:56.859433+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The marathon runner crosses the finish line, arms raised in triumph",
+        "camera": "use a wide lens with a low angle, static shot to capture the runner crossing the finish line, with the empty stadium's lines leading the viewer's eye to the triumphant athlete, and utilize the soft, warm lighting of the golden hour to enhance the epic feel of the moment",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the runner's face, exhausted but exhilarated",
+        "camera": "close-up, slow dolly-in, with a slight low-angle to emphasize the runner's emotion, and soft, warm lighting to capture the exhilaration",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The empty stadium stands, glowing faintly under the rising sun",
+        "camera": "frame the stadium stands in a wide shot, using a slow pan to capture the glow of the rising sun, emphasizing the empty seats and the light peeking through, with a shallow focus to blur the background and a low-angle shot to make the stands seem imposing",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The runner stands at the finish line, basking in the moment, as the sun rises behind",
+        "camera": "medium shot, static, with the sun rising behind the runner, using the golden hour lighting to create a warm and soft glow",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "marathon runner"
+      ],
+      "setting": "empty stadium at dawn",
+      "style_tokens": [
+        "wide",
+        "low-angle",
+        "epic",
+        "golden-hour",
+        "close-up",
+        "dolly-in",
+        "low-key",
+        "volumetric",
+        "warm",
+        "soft",
+        "medium"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.9262920618057251,
+    "enhanced_description": "The marathon runner crosses the finish line, arms raised in triumph. Close-up of the runner's face, exhausted but exhilarated. The empty stadium stands, glowing faintly under the rising sun. The runner stands at the finish line, basking in the moment, as the sun rises behind",
+    "original_score": 73,
+    "enhanced_score": 51,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 50,
+      "visual_richness": 57,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 75,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 44,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "sports-2",
+    "genre": "sports",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A boxer circles cautiously in the ring for the first two rounds, absorbs a hard combination against the ropes, then rallies with a decisive uppercut that sends her opponent to the canvas.",
+    "timestamp": "2026-08-12T06:23:12.621427+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The boxer cautiously circles her opponent in the ring, sizing them up.",
+        "camera": "medium close-up, static, with a slight low-angle to convey the boxer's intensity and caution, using available lighting in the ring to create deep shadows and emphasize the tension",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "The opponent lands a hard combination against the ropes, sending the boxer stumbling back.",
+        "camera": "Medium close-up, static shot with a slow zoom-in, framing the boxer's reaction as they stumble back against the ropes.",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The boxer rallies, landing a decisive uppercut that sends her opponent crashing to the canvas.",
+        "camera": "Crane / jib shot from high above the boxing ring, framing from the chest up, slow motion",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The referee starts the count as the opponent struggles to get back to their feet.",
+        "camera": "The camera is locked off on a tripod, framing the referee and the opponent from head to toe, filling the frame with the figure while retaining a little environment in the boxing ring.",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "boxer",
+        "opponent"
+      ],
+      "setting": "boxing ring",
+      "style_tokens": [
+        "medium",
+        "static",
+        "low-angle",
+        "high-contrast",
+        "medium-closeup",
+        "slow-zoom-in",
+        "wide",
+        "dolly-in",
+        "shallow-focus",
+        "full"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8453856706619263,
+    "enhanced_description": "The boxer cautiously circles her opponent in the ring, sizing them up.. The opponent lands a hard combination against the ropes, sending the boxer stumbling back.. The boxer rallies, landing a decisive uppercut that sends her opponent crashing to the canvas.. The referee starts the count as the opponent struggles to get back to their feet.",
+    "original_score": 79,
+    "enhanced_score": 62,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 75,
+      "environment_detail": 30,
+      "visual_richness": 28,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "sports-3",
+    "genre": "sports",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A surfer drops into a towering wave at golden hour, carves hard along its face, and disappears into the barrel just as it collapses into white spray.",
+    "timestamp": "2026-08-12T06:23:23.034395+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Wide shot of the surfer paddling towards the wave",
+        "camera": "wide, handheld, capturing the surfer's movement as they paddle towards the wave, with the sun's warm light casting long shadows across the beach",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the surfer's face as they drop into the wave",
+        "camera": "Macro lens, dolly-in, low-angle, warm lighting",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "Medium shot of the surfer carving along the wave's face",
+        "camera": "Medium shot of the surfer carving along the wave's face, framed to emphasize the surfer's movement and the wave's texture, shot with a medium lens and taking advantage of the golden hour's warm, soft light, with a slight dolly-in movement to follow the surfer.",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "Close-up of the wave's face as it collapses into white spray",
+        "camera": "Close-up of the wave's face as it collapses into white spray, shot with a shallow focus and a lens that captures the golden hour's warm, soft light, with a slight dolly-in as the wave crashes.",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 5,
+        "description": "Wide shot of the wave's aftermath, with the surfer's board visible in the distance",
+        "camera": "Extreme wide shot, static, wide-angle lens, golden hour lighting. Frame the surfer's board in the distance, with the coastal beach stretching out to the horizon.",
+        "duration_s": 2
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "surfer"
+      ],
+      "setting": "coastal beach at golden hour",
+      "style_tokens": [
+        "extreme-wide",
+        "golden-hour",
+        "handheld",
+        "macro",
+        "warm",
+        "low-angle",
+        "wide",
+        "shallow-focus",
+        "low-key",
+        "wide-angle"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.4750244617462158,
+    "enhanced_description": "Wide shot of the surfer paddling towards the wave. Close-up of the surfer's face as they drop into the wave. Medium shot of the surfer carving along the wave's face. Close-up of the wave's face as it collapses into white spray. Wide shot of the wave's aftermath, with the surfer's board visible in the distance",
+    "original_score": 70,
+    "enhanced_score": 69,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 88,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 80,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "food-1",
+    "genre": "food-culinary",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A chef plates a delicate dessert under warm kitchen lights, drizzling dark chocolate in careful spirals across white porcelain.",
+    "timestamp": "2026-08-12T06:23:31.732792+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99732, Requested 703. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "food-2",
+    "genre": "food-culinary",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A home baker kneads dough on a flour-dusted counter, shapes it into loaves, and finally pulls a tray of golden, steaming bread from the oven as morning light fills the kitchen.",
+    "timestamp": "2026-08-12T06:23:38.407548+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99727, Requested 682. Please try again in 5m53.376s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "food-3",
+    "genre": "food-culinary",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "Steam rises from a bubbling pot of noodles on a street-food cart as the vendor tosses in fresh vegetables, then ladles a steaming bowl straight into a waiting customer's hands.",
+    "timestamp": "2026-08-12T06:23:42.073697+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99724, Requested 541. Please try again in 3m48.96s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "music-1",
+    "genre": "music-performance",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A violinist stands alone on an empty concert stage, spotlight narrowing as she draws the bow across the strings in the hush before the audience arrives.",
+    "timestamp": "2026-08-12T06:23:44.663618+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99720, Requested 677. Please try again in 5m43.008s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "music-2",
+    "genre": "music-performance",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A garage band rehearses in a cramped basement, struggles through a rough first take, then locks into the song perfectly on their third try as everyone grins at each other.",
+    "timestamp": "2026-08-12T06:23:48.266496+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99716, Requested 704. Please try again in 6m2.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "music-3",
+    "genre": "music-performance",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A DJ's hands hover over a mixing deck in a packed nightclub, colored lights strobing across the crowd in time with the bass.",
+    "timestamp": "2026-08-12T06:23:51.534372+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99713, Requested 499. Please try again in 3m3.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "comedy-1",
+    "genre": "comedy-whimsical",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A raccoon in a tiny chef's hat balances precariously on a kitchen counter, eyeing a pie cooling on the windowsill.",
+    "timestamp": "2026-08-12T06:23:54.217772+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99709, Requested 698. Please try again in 5m51.647999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "comedy-2",
+    "genre": "comedy-whimsical",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A man in a business suit tiptoes past a sleeping dog toward the front door, freezes mid-step when a floorboard creaks, then bolts for the exit as the dog springs awake barking.",
+    "timestamp": "2026-08-12T06:23:57.807201+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99704, Requested 670. Please try again in 5m23.135999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "comedy-3",
+    "genre": "comedy-whimsical",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A toddler in oversized rain boots stomps gleefully through a puddle, sending an arc of water directly onto an unamused cat, which bolts away in an undignified sprint.",
+    "timestamp": "2026-08-12T06:24:01.605971+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99701, Requested 541. Please try again in 3m29.088s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "abstract-1",
+    "genre": "abstract-artistic",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Ink drops bloom and swirl through water in slow motion, ribbons of deep blue and gold twisting into intricate, ever-shifting patterns.",
+    "timestamp": "2026-08-12T06:24:04.184953+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99697, Requested 719. Please try again in 5m59.424s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "abstract-2",
+    "genre": "abstract-artistic",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A single white line is drawn across a blank black canvas, splits into branching fractal patterns that spread outward, and finally resolves into the shape of a blooming flower.",
+    "timestamp": "2026-08-12T06:24:07.910500+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99694, Requested 537. Please try again in 3m19.584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "abstract-3",
+    "genre": "abstract-artistic",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Sand grains cascade in a slow-motion hourglass, backlit so each falling particle catches the light like a tiny spark.",
+    "timestamp": "2026-08-12T06:24:10.622217+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99690, Requested 723. Please try again in 5m56.832s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "nature-1",
+    "genre": "nature-wildlife",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A snow leopard perches motionless on a rocky Himalayan ledge, golden late-afternoon light catching its pale, spotted fur.",
+    "timestamp": "2026-08-12T06:24:14.388725+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99686, Requested 691. Please try again in 5m25.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "nature-2",
+    "genre": "nature-wildlife",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A pod of dolphins swims lazily beside a fishing boat at dawn, suddenly bursts into a synchronized leap over the wake, then vanishes back beneath the glassy water.",
+    "timestamp": "2026-08-12T06:24:17.962342+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99683, Requested 506. Please try again in 2m43.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "nature-3",
+    "genre": "nature-wildlife",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Morning mist clings to a redwood forest floor, shafts of sunlight cutting through the canopy in slow, drifting beams.",
+    "timestamp": "2026-08-12T06:24:20.135764+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99679, Requested 756. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "nature-4",
+    "genre": "nature-wildlife",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A hummingbird hovers uncertainly near a garden feeder, darts away when a bee gets too close, then returns moments later to drink undisturbed as the bee wanders off.",
+    "timestamp": "2026-08-12T06:24:23.717375+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99674, Requested 732. Please try again in 5m50.784s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "family-1",
+    "genre": "family-slice-of-life",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "A father teaches his daughter to ride a bicycle in a quiet suburban driveway, one hand steadying the seat as she wobbles forward.",
+    "timestamp": "2026-08-12T06:24:27.462104+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99671, Requested 500. Please try again in 2m27.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "family-2",
+    "genre": "family-slice-of-life",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A family gathers around a dinner table as an old story is told, laughter rising as the punchline lands, and then quiets into warm smiles as they clink glasses together.",
+    "timestamp": "2026-08-12T06:24:30.057610+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99667, Requested 696. Please try again in 5m13.632s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "family-3",
+    "genre": "family-slice-of-life",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Grandparents nap side by side in porch rocking chairs on a lazy summer afternoon, a half-finished crossword resting on the small table between them.",
+    "timestamp": "2026-08-12T06:24:33.819323+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99663, Requested 706. Please try again in 5m18.816s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "family-4",
+    "genre": "family-slice-of-life",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "Two siblings build an elaborate blanket fort in the living room, argue briefly over the last pillow, then squeeze in together to read a book by flashlight.",
+    "timestamp": "2026-08-12T06:24:37.523629+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99660, Requested 533. Please try again in 2m46.752s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "romance-1",
+    "genre": "romance",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "Two strangers share an umbrella at a rain-soaked bus stop, both smiling shyly as their hands brush reaching for the same handle.",
+    "timestamp": "2026-08-12T06:24:40.116750+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99656, Requested 717. Please try again in 5m22.272s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "romance-2",
+    "genre": "romance",
+    "complexity": "multi-beat",
+    "condition": "multiagent",
+    "original_prompt": "A couple strolls along a moonlit pier, pauses at the railing to watch fireworks bloom over the water, and turns to share a quiet kiss as the last burst fades.",
+    "timestamp": "2026-08-12T06:24:43.790415+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99652, Requested 712. Please try again in 5m14.496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  },
+  {
+    "id": "romance-3",
+    "genre": "romance",
+    "complexity": "single-beat",
+    "condition": "multiagent",
+    "original_prompt": "An elderly couple dances slowly in their kitchen to music from an old radio, foreheads touching, utterly unaware of anything else in the room.",
+    "timestamp": "2026-08-12T06:24:47.330749+00:00",
+    "status": "error",
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99649, Requested 521. Please try again in 2m26.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+  }
+]
