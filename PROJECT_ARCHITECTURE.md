@@ -1491,7 +1491,7 @@ Ten phases, taken directly from the proposal's Gantt chart (proposal §8) and In
 | Task ID | Name | Depends on | Files/components | Acceptance criteria | Complexity |
 |---|---|---|---|---|---|
 | DOCS-001 | Final report writing | All prior phases | (outside this repo, or a `report/` dir — `TBD`) | Report submitted | — |
-| DEMO-001 | Live demonstration rehearsal | INTEG-001 | — | One successful live end-to-end run demonstrated (§3) | — |
+| DEMO-001 | Live demonstration rehearsal | INTEG-001 | `DEMO_RUNBOOK.md` | One successful live end-to-end run demonstrated (×3) — **met 2026-08-12**: 3 real UI runs across both pathways (Remotion 3/3 shots, Cloudflare 4/4, Pollinations 2-of-4 after real provider 500s), all producing poster + captions + hardsub with frame counts matching the assembled cut exactly. See `DEMO_RUNBOOK.md`. | — |
 
 ---
 
@@ -1820,7 +1820,7 @@ A component must satisfy **all** of the following before its status may be chang
 ### Project complete
 - All Minimum Viable outcomes (Section 1 / proposal §3) are true and independently verified.
 - Target outcomes are true and reported (directional result not required to favor the multi-agent pipeline — an honest negative/mixed result still counts as "done" for the evaluation study specifically).
-- Final live demonstration has actually been run successfully at least once (not "should work").
+- Final live demonstration has actually been run successfully at least once (not "should work"). **Satisfied 2026-08-12** — three successful live end-to-end runs through the real UI, logged in `DEMO_RUNBOOK.md` (DEMO-001). Note the rehearsal's two operational findings: ai-service needs a throwaway warm-up run before any demo (a cold first request takes ~2 minutes and returns 502 through the Vite proxy), and Remotion is the pathway to demo live because it carries no external-provider risk.
 
 ### The verification rule (applies to all of the above)
 **A feature/component/phase must never be marked `VERIFIED` because documentation says it's done, or because code that looks plausible exists.** `VERIFIED` requires actually inspecting the code and/or running it and/or running its tests, and recording that inspection in `PROJECT_PROGRESS.md`'s "Verified Components" section (with what was checked and the result). This is the single most important rule in this entire document — it is the whole reason `PROJECT_PROGRESS.md` exists as a file separate from this one.
