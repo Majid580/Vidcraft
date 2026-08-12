@@ -177,7 +177,22 @@ export async function demoGetJob(jobId: string): Promise<JobStatus> {
     return { ...s, status: 'pending' }
   })
   const state = done >= job.shots.length ? 'completed' : 'active'
-  return { jobId, state, progress: Math.round((done / total) * 100), storyboardId: 'demo', shots }
+  return {
+    jobId,
+    state,
+    progress: Math.round((done / total) * 100),
+    storyboardId: 'demo',
+    shots,
+    // FR-9 assembly is a server-side Remotion render — there is nothing
+    // offline to simulate it with, and shipping a fake MP4 would make demo
+    // mode assert something the real pipeline hasn't proven. So demo mode
+    // exercises the assembly-failed branch instead, honestly labelled; the
+    // success branch is verified against the real backend.
+    videoError:
+      state === 'completed'
+        ? 'Final-video assembly runs on the server (Remotion) and is not simulated in demo mode.'
+        : undefined,
+  }
 }
 
 export async function demoStoryboard(

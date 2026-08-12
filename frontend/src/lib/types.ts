@@ -109,6 +109,13 @@ export interface JobStatus {
   storyboardId: string | null
   failedReason?: string
   shots: Shot[]
+  // FR-9: the assembled final video — every generated shot concatenated into
+  // one MP4, held for its own duration_s, with per-shot camera movement.
+  // Absent until the run finishes. `videoError` is set when the per-shot
+  // assets succeeded but the stitch itself didn't, which is a different (and
+  // much less bad) outcome than the generation failing.
+  videoUrl?: string
+  videoError?: string
 }
 
 // POST /api/images response (single-image mode) — no storyboard/shots,

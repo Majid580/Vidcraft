@@ -28,6 +28,12 @@ router.get('/jobs/:id', async (req, res, next) => {
       storyboardId: storyboardId || null,
       failedReason: job.failedReason || undefined,
       shots: doc ? doc.shots : [],
+      // FR-9: the assembled final video, set by the job's last step. Absent
+      // until the run finishes; videoError explains an assembly that failed
+      // after the per-shot assets succeeded, so the UI can say the shots are
+      // fine but the stitch isn't rather than implying the whole run failed.
+      videoUrl: (doc && doc.video_url) || undefined,
+      videoError: (doc && doc.video_error) || undefined,
     });
   } catch (err) {
     next(err);

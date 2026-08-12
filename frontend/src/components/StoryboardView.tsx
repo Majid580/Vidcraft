@@ -99,6 +99,58 @@ function ShotAsset({ shot }: { shot: Shot }) {
   )
 }
 
+// FR-9: the finished deliverable. Shown above the per-shot grid once the job
+// completes, because this — not the individual stills — is what the user came
+// for; the shot breakdown below it becomes supporting detail.
+function FinalVideo({ job }: { job: JobStatus }) {
+  if (job.state !== 'completed') return null
+
+  // Assembly is deliberately non-fatal (the per-shot assets are the expensive
+  // part and are already saved), so a failed stitch is reported as its own
+  // outcome rather than dragging the whole run down to "failed".
+  if (!job.videoUrl) {
+    if (!job.videoError) return null
+    return (
+      <Card>
+        <CardContent className="flex flex-col gap-2 py-4">
+          <span className="flex items-center gap-2 text-sm font-medium">
+            <XCircle className="size-4 text-amber-500" />
+            Shots generated, but the final video couldn&apos;t be assembled
+          </span>
+          <p className="text-muted-foreground text-xs">{job.videoError}</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card>
+      <CardContent className="flex flex-col gap-3 py-4">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="flex items-center gap-2 text-base font-semibold">
+            <Film className="size-4 text-primary" />
+            Final video
+          </h3>
+          <a
+            href={job.videoUrl}
+            download
+            className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
+          >
+            Download
+          </a>
+        </div>
+        <video
+          src={job.videoUrl}
+          controls
+          playsInline
+          preload="metadata"
+          className="w-full rounded-lg border"
+        />
+      </CardContent>
+    </Card>
+  )
+}
+
 function GenerationBar({ job }: { job: JobStatus }) {
   const done = job.state === 'completed'
   const failed = job.state === 'failed'
@@ -198,6 +250,9 @@ export function StoryboardView({
 
       {/* Generation progress (INTEG-001) */}
       {job && <GenerationBar job={job} />}
+
+      {/* Assembled final video (FR-9 / INTEG-002) */}
+      {job && <FinalVideo job={job} />}
 
       {/* Shot list */}
       <div className="grid gap-4">
