@@ -1,0 +1,1352 @@
+[
+  {
+    "id": "sci-fi-1",
+    "genre": "sci-fi",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A lone terraforming drone hovers above a barren red canyon on Mars, its underside glowing with pale green light as it seeds the rust-colored soil at dusk.",
+    "timestamp": "2026-08-12T05:25:12.297199+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone, sleek terraforming drone, its metallic body adorned with a mesh of fine, pulsing circuits, hovers precisely 10 meters above the rugged, barren expanse of a red canyon on Mars. The drone's underside radiates a soft, ethereal pale green glow, illuminating the stark, rust-colored soil below as it meticulously seeds the ground with microorganisms designed to initiate the planet's ecological transformation. The scene unfolds at dusk, with the sky transitioning into a deep shade of indigo, punctuated by the first twinkling stars. The canyon walls, carved by ancient rivers, stand as silent witnesses to the dawn of a new era, their layers of red rock glistening with a subtle, otherworldly sheen under the drone's gentle illumination. The air is crisp and thin, with an almost imperceptible haze of Martian dust particles dancing in the fading light, caught in the drone's luminescent beam. The drone itself is a marvel of human ingenuity, its seeding mechanism extending and retracting with a smooth, hydraulic motion, releasing tiny, glistening capsules into the Martian soil with the promise of future life and vitality.",
+    "camera": "Static, high-altitude shot looking down towards the drone and the canyon, with a slight Dutch angle to emphasize the alien landscape, captured in 4K resolution with a wide-angle lens to encompass the vastness of the Martian environment.",
+    "original_score": 83,
+    "enhanced_score": 86,
+    "original_dimensions": {
+      "subject_clarity": 60,
+      "action_specificity": 80,
+      "environment_detail": 100,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 100,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "sci-fi-2",
+    "genre": "sci-fi",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A cargo hauler drifts silently through a debris field left by an old space battle, its pilot spots a derelict station ahead, and finally eases the ship into a docking clamp as sparks scatter from a damaged strut.",
+    "timestamp": "2026-08-12T05:25:25.888651+00:00",
+    "status": "ok",
+    "enhanced_description": "A heavily weathered cargo hauler, its metallic hull bearing the scars of countless journeys and encounters, drifts silently through the remnants of a long-forgotten space battle, navigating through a vast, starry expanse littered with the twisted wreckage of ships and the eerie, glowing debris of exploded munitions. The pilot, a grizzled space traveler with a face etched by the harsh conditions of the cosmos, peers intently through the cockpit window, eyes fixed on a derelict space station looming in the distance. The station, once a bustling hub of intergalactic commerce and innovation, now hangs as a skeletal monolith, its exterior marred by the ravages of time and conflict. As the cargo hauler draws closer, the pilot's gaze remains locked on the station, guiding the ship with practiced ease towards a docking clamp, one of the few structures on the station that appears intact. The ship's engines die down to a gentle hum, and with a final burst of maneuvering thrusters, the cargo hauler eases into the docking clamp, the sound of scraping metal and the spark of electrical discharges filling the vacuum as a damaged strut on the clamp's arm sparks and smolders, scattering a cascade of fiery embers into the darkness. The cargo hauler comes to rest, secured in the clamp's grasp, a tiny, temporary inhabitant of the desolate, abandoned station, poised on the threshold of exploration and discovery.",
+    "camera": "The camera follows the cargo hauler in a slow, sweeping arc, capturing the vastness of the debris field and the derelict station's imposing presence, before zooming in on the ship as it docks, the sparks from the damaged strut illuminating the dark, gritty textures of the station's docking bay.",
+    "original_score": 66,
+    "enhanced_score": 59,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 17,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 60,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "sci-fi-3",
+    "genre": "sci-fi",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Inside a cramped generation ship's hydroponics bay, rows of glowing blue-lit plants sway gently as a maintenance robot drifts between them on magnetic rails.",
+    "timestamp": "2026-08-12T05:25:31.368305+00:00",
+    "status": "ok",
+    "enhanced_description": "Inside a cramped, dimly lit generation ship's hydroponics bay, rows of lush, vibrant plants stretch towards the ceiling, their leaves and stems glowing with a soft, ethereal blue light that illuminates the misty atmosphere, as a sleek, silver maintenance robot, adorned with blinking LED lights and retractable mechanical arms, drifts silently between the plant rows on a network of magnetic rails, its gentle hum and soft whir of fans filling the air, while droplets of water glisten on the leaves and the sound of soft, automated watering systems provides a constant background melody, with the ship's metallic walls and infrastructure visible in the background, covered in a mesh of pipes, ducts, and cables, giving a sense of a self-sustaining ecosystem within the vast, dark expanse of space.",
+    "camera": "a stationary, wide-angle camera with a slightly fisheye lens, positioned near the floor, looking up at the plants and the robot, with a slow, incremental zoom to emphasize the details of the scene",
+    "original_score": 67,
+    "enhanced_score": 81,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 44,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 30,
+      "visual_richness": 93,
+      "temporal_coherence": 100
+    }
+  },
+  {
+    "id": "sci-fi-4",
+    "genre": "sci-fi",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A scavenger climbs through the rusted hull of a crashed starship on a desert moon, discovers a still-humming reactor core deep inside, and steps back as the whole chamber floods with pulsing amber light.",
+    "timestamp": "2026-08-12T05:25:35.775661+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone scavenger, clad in a tattered and dusty spacesuit, carefully climbs through the corroded, rusted hull of a long-abandoned crashed starship, the harsh sunlight of the desert moon casting an unforgiving glare on the wreckage. The scavenger's gloved hands grasp for handholds, navigating through the twisted metal debris and wires, as they make their way deeper into the heart of the ship. The air is thick with the smell of ozone, smoke, and burned wiring. Finally, they stumble upon a large, dimly lit chamber, the walls lined with an array of damaged consoles and control panels. At the room's center, a still-humming reactor core, its surface etched with intricate circuits and pulsing with a soft blue glow, appears almost surreal amidst the devastation. As the scavenger approaches the core, the chamber is suddenly filled with an intense, pulsing amber light that seems to emanate from the very walls themselves, forcing the scavenger to step back, their eyes shielded by a raised arm. The light dances across the room, casting eerie shadows on the walls and illuminating the dense layer of dust that coats every surface, as if the ship itself is coming back to life.",
+    "camera": "The camera follows the scavenger in a third-person perspective, using a mix of smooth, stabilized movements and quick, dynamic cuts to convey the sense of exploration and danger, with a slight fisheye lens effect to enhance the feeling of claustrophobia inside the ship's hull, and a color palette that shifts from the bright, harsh sunlight outside to the warm, ominous glow of the reactor core.",
+    "original_score": 67,
+    "enhanced_score": 67,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 40,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 77,
+      "environment_detail": 30,
+      "visual_richness": 77,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "fantasy-1",
+    "genre": "fantasy",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A robed alchemist stirs a bubbling cauldron in a cluttered tower workshop, shelves of glowing vials and dried herbs crowding the walls around her.",
+    "timestamp": "2026-08-12T05:25:40.137348+00:00",
+    "status": "ok",
+    "enhanced_description": "In the heart of a mystical, cluttered tower workshop, a robed alchemist, her long silver hair tied back in a loose braid, intently stirs a large, ancient, bubbling cauldron that sits atop a fiery furnace, the flames dancing and casting flickering shadows on the stone walls. The air is thick with the aroma of simmering potions and the faint scent of mystical incense. Shelves, stretching from the floor to the vaulted ceiling, are crowded with an array of glowing vials filled with ethereal liquids that shimmer and pulse with an otherworldly light, alongside baskets overflowing with dried herbs and strange, exotic spices. Tomes bound in worn leather and adorned with mysterious symbols lie open on wooden workbenches, their pages fluttering gently in the soft breeze that wafts through the narrow, arched windows. The alchemist's robe, a deep, midnight blue and embroidered with intricate, golden patterns that seem to mirror the constellations in the night sky, billows slightly as she moves, her eyes fixed on the cauldron as she carefully adds a pinch of glowing, iridescent powder, causing the bubbling concoction to emit a soft, luminescent glow.",
+    "camera": "Static, with a slight Dutch angle, capturing the alchemist from a medium distance to emphasize her interaction with the cauldron and the cluttered, mystical environment of the workshop.",
+    "original_score": 68,
+    "enhanced_score": 69,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 53,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 78,
+      "environment_detail": 50,
+      "visual_richness": 90,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "fantasy-2",
+    "genre": "fantasy",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A young knight kneels before an ancient stone altar deep in a moss-covered ruin, places a broken sword upon it, and watches the blade knit itself back together in a burst of golden light.",
+    "timestamp": "2026-08-12T05:25:44.880457+00:00",
+    "status": "ok",
+    "enhanced_description": "In the heart of a long-abandoned, moss-drenched ruin, where vines crawl up crumbling stone walls and the air is thick with the scent of damp earth and decay, a young knight, clad in worn, battle-scarred armor with the emblem of a noble house emblazoned on their chest, kneels reverently before an ancient stone altar. The altar, covered in moss and lichen, bears the marks of time and weather, its surface etched with runes that seem to whisper secrets to the wind. With a solemn, almost ritualistic gesture, the knight places a broken sword upon the altar's surface. The sword, its blade shattered and worn, seems to symbolize the knight's own journey and the trials they have faced. As the hilt touches the stone, a sudden, intense burst of golden light erupts from the altar, enveloping the sword. The light is so vibrant it illuminates the dark recesses of the ruin, casting eerie shadows on the walls as it dances across the moss and stone. Within this radiance, the broken sword begins to knit itself back together, the metal reforming and strengthening until it shines with a renewed brilliance, its edge sharp and unblemished. The knight watches in awe, their face a mixture of wonder and gratitude, as the miracle unfolds before them. The golden light fades as suddenly as it appeared, leaving the knight to rise, the now-whole sword in hand, ready to face whatever challenges lie ahead, bathed in the soft, ethereal glow that lingers in the ruin.",
+    "camera": "Static, with a slight tilt upwards to emphasize the knight's reverence and the mystique of the ancient altar, capturing the full scene from the knight's kneeling form to the vaulted, moss-covered ceiling of the ruin.",
+    "original_score": 80,
+    "enhanced_score": 66,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 84,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 78,
+      "environment_detail": 30,
+      "visual_richness": 71,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "fantasy-3",
+    "genre": "fantasy",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A colossal treant stands motionless at the edge of an enchanted forest, moss-draped branches forming a natural archway where fireflies drift in slow spirals.",
+    "timestamp": "2026-08-12T05:25:49.211862+00:00",
+    "status": "ok",
+    "enhanced_description": "A colossal treant, its bark twisted and gnarled with age, stands motionless at the edge of an enchanted forest, its moss-draped branches forming a natural archway that stretches towards the sky like a verdant cathedral. The air is filled with the soft, ethereal glow of fireflies as they drift in slow, hypnotic spirals around the treant's branches, their gentle light casting an otherworldly luminescence across the forest floor. The treant's roots delve deep into the earth, and its leaves quiver softly in the breeze, releasing the sweet scent of blooming wildflowers into the air. The forest floor, carpeted with a soft layer of ferns and wildflowers, stretches out into the distance, with the faint sound of a babbling brook and the distant call of a night bird adding to the serene ambiance. As the fireflies dance around the treant, their lights begin to synchronize, pulsing in a soft, rhythmic pattern that seems to match the gentle beating of the treant's ancient heart.",
+    "camera": "Static, wide-angle shot with a slight Dutch angle, capturing the treant's imposing presence and the mystical atmosphere of the enchanted forest, with a shallow depth of field to emphasize the fireflies' gentle glow.",
+    "original_score": 77,
+    "enhanced_score": 67,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 94,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 76,
+      "environment_detail": 50,
+      "visual_richness": 84,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "fantasy-4",
+    "genre": "fantasy",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A traveling bard enters a rowdy tavern, tunes her lute by the fire as the room quiets, then launches into a rousing ballad that has the whole crowd stamping and cheering.",
+    "timestamp": "2026-08-12T05:25:53.477461+00:00",
+    "status": "ok",
+    "enhanced_description": "A weary, yet vibrant traveling bard, clad in worn leather armor and a flowing, earth-toned cloak, steps into the warm, golden glow of a rowdy tavern, the heavy wooden door creaking shut behind her. The air is thick with the smell of roasting meat, freshly brewed ale, and the murmur of hushed conversations. As she makes her way through the crowded room, the patrons - a mix of burly men, elegant ladies, and mysterious figures shrouded in shadows - turn to regard her, their faces a tapestry of curiosity and skepticism. The bard's eyes, a piercing shade of emerald, sparkle with a hint of mischief as she settles onto a stool beside the crackling fire, its flames dancing across her face. With deft fingers, she tunes her lute, the soft, melodic notes weaving a spell of anticipation over the crowd. As the final chord is struck, the room falls silent, the only sound the gentle popping of the fire and the bard's deep, measured breaths. Then, with a burst of energy, she launches into a rousing ballad, her voice soaring like a wild bird set free. The crowd, entranced by the raw emotion and poetic lyrics, begins to stamp their feet and cheer, the tavern erupting into a joyous cacophony of clapping, whistling, and shouted applause. The bard's music is a catalyst, igniting a sense of community and shared revelry, as strangers become friends, united in their love of the performance. The scene is bathed in a warm, golden light, with shadows dancing across the walls, and the atmosphere is electric, alive with the magic of music and the thrill of the unknown.",
+    "camera": "Establishing shot, slowly zooming in on the bard as she tunes her lute, then panning out to capture the crowd's reaction, with a mix of close-ups and wide shots to convey the energy and emotion of the performance",
+    "original_score": 72,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 0,
+      "visual_richness": 75,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 90,
+      "action_specificity": 79,
+      "environment_detail": 30,
+      "visual_richness": 89,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "horror-1",
+    "genre": "horror",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A single flickering bulb swings above an abandoned asylum corridor, its light catching peeling wallpaper and a wheelchair tipped on its side.",
+    "timestamp": "2026-08-12T05:25:58.641948+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone, flickering bulb hangs precariously from the ceiling, its dim, yellowish light dancing across the long, deserted corridor of an abandoned asylum, illuminating patches of peeling, faded wallpaper that cling to the walls like the remnants of a forgotten era. The light also catches a worn, rusty wheelchair, lying on its side, its wheels motionless and still, as if abandoned in haste. Shadows cast by the swinging bulb create an eerie, unsettling atmosphere, and the air is thick with the scent of decay and neglect. Cobwebs cling to the corners of the corridor, and the walls seem to whisper secrets of the past, their stories and screams muffled by the passing of time. The floor, once polished to a shine, is now dull and cracked, reflecting the light of the bulb like a dark, still lake.",
+    "camera": "A stationary camera, positioned at the far end of the corridor, captures the scene in a wide, unflinching shot, the flickering bulb at its center, as the light sways hypnotically, casting an otherworldly glow over the abandoned asylum's haunting landscape.",
+    "original_score": 63,
+    "enhanced_score": 60,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 79,
+      "environment_detail": 30,
+      "visual_richness": 66,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "horror-2",
+    "genre": "horror",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A babysitter checks each darkened room of a quiet house after hearing a thump upstairs, freezes at a closet door left slightly ajar, and slowly reaches for the handle as the hallway light flickers out.",
+    "timestamp": "2026-08-12T05:26:02.768775+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone babysitter, illuminated only by the faint moonlight streaming through the windows, cautiously navigates the darkened, eerie hallway of a silent, suburban house, the soft creaking of the wooden floorboards beneath her feet echoing through the stillness. She pauses, her head cocked to one side, as she hears a faint thump emanating from upstairs, the sound sending a shiver down her spine. With a deep breath, she begins to methodically check each room, her eyes scanning the shadows for any sign of movement. As she approaches a particular closet, she notices the door is left slightly ajar, a sliver of darkness seeming to emanate from within. Her heart racing, she freezes, her hand extending slowly, hesitantly, towards the handle, her fingers trembling ever so slightly. Just as her hand is about to make contact, the hallway light above her begins to flicker, the dim glow dancing across the walls before suddenly extinguishing, plunging the babysitter into an inky blackness, the only sound the soft hum of the house and her own ragged breathing.",
+    "camera": "Static, medium shot, with a slight Dutch angle to convey the sense of unease and tension, the camera capturing the babysitter's hesitant approach and frozen stance in front of the closet door, the flickering light above casting eerie shadows on her face before the darkness envelops her.",
+    "original_score": 67,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 19,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 78,
+      "environment_detail": 30,
+      "visual_richness": 84,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "horror-3",
+    "genre": "horror",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A scarecrow stands crooked in a moonlit cornfield, its painted grin catching just enough light to seem like it's watching the farmhouse across the road.",
+    "timestamp": "2026-08-12T05:26:07.343150+00:00",
+    "status": "ok",
+    "enhanced_description": "A weathered scarecrow, its tattered straw-stuffed body swaying gently in the breeze, stands crookedly amidst a sea of tall, golden cornstalks that stretch towards the moon like nature's own cathedral. The cornfield, bathed in the soft, ethereal glow of the full moon, casts long, ominous shadows across the ground. The scarecrow's face, painted with a cheerful, if somewhat maniacal, grin, seems to leer with an unblinking gaze towards the old, rustic farmhouse that sits quietly across the deserted road. The farmhouse, with its wooden siding and steeply pitched roof, appears as a warm, comforting haven, its windows like empty eyes staring back at the scarecrow. The air is heavy with the scent of damp earth and ripe corn, and the only sound is the soft rustling of the cornstalks and the distant hooting of an owl, adding to the surreal, dreamlike atmosphere of the scene.",
+    "camera": "Static, with a wide-angle lens, capturing the scarecrow, the cornfield, and the farmhouse in a single, haunting frame, with the moon hanging low in the sky behind the scarecrow, casting an otherworldly glow over the entire scene.",
+    "original_score": 72,
+    "enhanced_score": 67,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 64,
+      "environment_detail": 30,
+      "visual_richness": 92,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "noir-1",
+    "genre": "noir-crime",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A private detective leans against a rain-streaked window, cigarette smoke curling past venetian blinds that stripe his face in shadow.",
+    "timestamp": "2026-08-12T05:26:11.934514+00:00",
+    "status": "ok",
+    "enhanced_description": "A grizzled, hard-boiled private detective, clad in a crumpled, long-trench coat, leans against a rain-streaked window, the droplets sliding down the pane like tears, as cigarette smoke curls past the worn, yellowed venetian blinds that stripe his rugged, weary face in shadow, the faint glow of a city streetlamp outside casting an eerie light on the smoke-filled room, with stacks of dusty files, scattered papers, and empty whiskey glasses littering the desk and floor, while the sound of rain patters against the windowpane, and the detective's eyes, narrowed to a piercing gaze, seem lost in thought, reflecting on the case that has been haunting him",
+    "camera": "Static, medium-close shot, with a shallow depth of field, focusing on the detective's face, and a muted color palette with shades of grey, blue, and yellow, evoking a sense of film noir",
+    "original_score": 65,
+    "enhanced_score": 77,
+    "original_dimensions": {
+      "subject_clarity": 60,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 76,
+      "environment_detail": 30,
+      "visual_richness": 78,
+      "temporal_coherence": 100
+    }
+  },
+  {
+    "id": "noir-2",
+    "genre": "noir-crime",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A getaway driver waits with the engine idling outside a darkened bank, glances at his watch as the alarm suddenly blares, and floors it the moment two figures burst through the door with duffel bags.",
+    "timestamp": "2026-08-12T05:26:15.747181+00:00",
+    "status": "ok",
+    "enhanced_description": "A sleek, black sedan with tinted windows sits parked under the faint glow of a streetlamp, its engine purring softly outside the darkened bank, the only sound being the gentle hum of the engine and the distant hum of the city at night. The getaway driver, dressed in a black leather jacket and a pair of sunglasses, sits behind the wheel, his eyes fixed intently on the bank's entrance as he glances at his watch for what feels like the hundredth time, the soft blue glow of the watch face illuminating his tense face. Suddenly, the night air is shattered by the ear-piercing wail of the bank's alarm system, and the driver's head snaps towards the entrance as two figures, dressed in black hoodies and masks, burst through the door, each carrying a large duffel bag stuffed with cash. The driver's eyes lock onto the figures, and as they sprint towards the sedan, he floors it, the tires screeching in protest as the car surges forward, the figures leaping into the backseat as the driver speeds away from the curb, weaving through the deserted streets as the alarm fades into the distance.",
+    "camera": "A single, continuous shot from a camera mounted on the side of the sedan, capturing the driver's tense face, the darkened bank, and the two figures as they burst through the door and leap into the backseat, the camera moving smoothly with the car as it speeds away from the curb.",
+    "original_score": 62,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 0,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 50,
+      "visual_richness": 57,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "noir-3",
+    "genre": "noir-crime",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A lone figure crosses an empty, fog-choked street beneath a buzzing neon sign that reads only in fragments through the mist.",
+    "timestamp": "2026-08-12T05:26:20.436663+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone, hooded figure, dressed in a long, dark coat, slowly crosses a deserted, rain-slicked street, the pavement glistening like polished stone, as a thick, eerie fog swirls around their ankles, partially obscuring the view of the surrounding cityscape. The air is heavy with mist, and the only sound is the soft hum of a neon sign creaking in the gentle breeze, its letters fragmented and distorted by the fog, reading 'HOTEL' with the 'E' and 'L' flickering dimly, while the rest of the sign is shrouded in an impenetrable veil of gray vapor. The figure's face is hidden in the shadows of their hood, and their movements are cautious, as if they are navigating treacherous terrain, their eyes fixed on some point in the distance, beyond the reach of the faint, pulsing glow of the neon sign.",
+    "camera": "Static, low-angle shot, with the camera positioned at street level, looking up at the figure, the neon sign looming large in the background, its distorted letters and buzzing hum dominating the scene, as the fog swirls and eddies around the figure's legs, creating an sense of mystery and foreboding.",
+    "original_score": 69,
+    "enhanced_score": 69,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 62,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 30,
+      "visual_richness": 84,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "urban-1",
+    "genre": "urban-everyday",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A street vendor flips skewers over a smoking grill on a crowded night market corner, steam and sparks rising against a backdrop of neon shopfronts.",
+    "timestamp": "2026-08-12T05:26:24.287847+00:00",
+    "status": "ok",
+    "enhanced_description": "A street vendor, dressed in a vibrant orange apron with golden trim, flips skewers of marinated meat over a smoking grill, the sizzling sounds and enticing aromas filling the air as steam and sparks rise against a kaleidoscopic backdrop of neon shopfronts, their reflections dancing across the wet pavement, while crowds of people from all walks of life, bathed in the multicolored glow, hurry past or stop to sample the vendor's offerings, the scene alive with the cacophony of a night market, the smell of street food, and the distant thrum of music from a nearby stall",
+    "camera": "Handheld, dynamic, with a shallow depth of field, capturing the vendor's skilled hands and the skewers in sharp focus, while the bustling crowd and neon lights blur slightly into the background, creating a sense of energy and depth",
+    "original_score": 66,
+    "enhanced_score": 76,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 25,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 50,
+      "visual_richness": 49,
+      "temporal_coherence": 100
+    }
+  },
+  {
+    "id": "urban-2",
+    "genre": "urban-everyday",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A commuter sprints down a subway platform as the doors begin to close, wedges an arm through the gap at the last second, and collapses into a seat catching her breath while other passengers glance up.",
+    "timestamp": "2026-08-12T05:26:27.811295+00:00",
+    "status": "ok",
+    "enhanced_description": "A frantic commuter, dressed in a crumpled business suit and carrying a worn leather briefcase, sprints down a dimly lit, bustling subway platform lined with flickering fluorescent lights and adorned with vibrant advertisements, as the doors of a sleek, silver train begin to close with a loud, hydraulic hiss, the commuter wedges her arm through the rapidly narrowing gap at the last second, using her briefcase to pry the doors open just enough to slip inside, and collapses into a vacant seat, catching her breath as the doors shut behind her with a loud thud, while other passengers, a diverse mix of tired office workers, students, and tourists, glance up from their phones, books, and conversations, their faces a mixture of curiosity and annoyance, as the train lurches forward, picking up speed, and the commuter, still panting, looks around with a mix of relief and embarrassment, her eyes locking onto the concerned gaze of a fellow passenger, an elderly woman with a kind face and a warm smile, who nods in understanding and sympathy",
+    "camera": "a handheld camera, positioned at a 45-degree angle, follows the commuter as she sprints down the platform, then cuts to a medium shot as she enters the train, and finally settles into a static shot, capturing the commuter's exhausted expression and the reactions of the surrounding passengers, with a shallow depth of field, blurring the background and emphasizing the characters' emotions",
+    "original_score": 71,
+    "enhanced_score": 78,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 47,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 79,
+      "temporal_coherence": 100
+    }
+  },
+  {
+    "id": "urban-3",
+    "genre": "urban-everyday",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "An elderly man feeds pigeons on a park bench at sunrise, then a pack of giggling children dash past and scatter the whole flock into a swirl of wingbeats.",
+    "timestamp": "2026-08-12T05:26:32.169513+00:00",
+    "status": "ok",
+    "enhanced_description": "In a serene, misty park at sunrise, an elderly man with wispy white hair and worn, earth-toned clothing sits gently on a weathered wooden bench, surrounded by lush greenery and vibrant flowers that are just beginning to bloom. He is tenderly feeding a flock of pigeons that have gathered around him, their soft coos filling the air as they peck at the breadcrumbs in his outstretched hand. The warm, golden light of dawn casts a peaceful glow over the scene, with the sun's rays filtering through the trees and casting long shadows across the dew-kissed grass. Suddenly, a pack of giggling children, dressed in bright, colorful clothing, comes dashing past the bench, their laughter and shouts of excitement shattering the tranquility of the moment. The pigeons, startled by the commotion, take flight in unison, their wings beating rapidly as they swirl around the elderly man and the children, creating a whirlwind of feathers and motion. The scene is filled with the sounds of laughter, chirping birds, and the rustling of leaves as the pigeons settle back into the trees, leaving behind a trail of fluttering feathers and the faint scent of damp earth and blooming flowers.",
+    "camera": "Static, wide-angle shot with a shallow depth of field, capturing the entire scene from a slight distance, with the camera positioned at a 45-degree angle to the park bench, and a slow zoom-out as the children approach and the pigeons take flight, emphasizing the sudden burst of energy and movement in the otherwise peaceful setting.",
+    "original_score": 77,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 50,
+      "visual_richness": 50,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 50,
+      "visual_richness": 61,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "action-1",
+    "genre": "action-thriller",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A stuntman-double leaps between two rooftops mid-motion, city skyline sprawling beneath him and his jacket snapping in the wind.",
+    "timestamp": "2026-08-12T05:26:36.346743+00:00",
+    "status": "ok",
+    "enhanced_description": "A fearless stuntman-double, dressed in a sleek black leather jacket with metallic silver accents, leaps between two towering skyscrapers, his body arched in a perfect parabola as he soars through the air, the city skyline unfolding beneath him like a canvas of steel and glass, with the sun casting a warm orange glow over the concrete jungle, the sound of the wind rushing past him, his jacket snapping wildly in the gusts, his face set in a determined expression, the rooftops a blur as he lands with precision on the edge of the second building, his knees bending to absorb the impact, the city lights twinkling like diamonds against the darkening blue sky",
+    "camera": "aerial, following the stuntman in a smooth, dynamic motion, capturing the breathtaking view of the city below, with a slight Dutch angle to emphasize the sense of danger and thrill",
+    "original_score": 43,
+    "enhanced_score": 72,
+    "original_dimensions": {
+      "subject_clarity": 0,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 73,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "action-2",
+    "genre": "action-thriller",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A courier weaves a motorcycle through gridlocked traffic while chasers close in behind, ducks beneath a lowering parking-garage gate just as it slams shut, and skids to a stop in the sudden silence.",
+    "timestamp": "2026-08-12T05:26:40.168064+00:00",
+    "status": "ok",
+    "enhanced_description": "A determined courier, dressed in a sleek black leather jacket and helmet, expertly maneuvers a shiny red motorcycle through a sea of gridlocked traffic on a sun-drenched, urban highway, weaving past frustrated drivers and pedestrians, as a pair of relentless chasers in a black SUV close in behind, their tires screeching in pursuit. The courier spots a narrow opening beneath a lowering parking-garage gate, its metal arm descending rapidly, and ducks beneath it just as it slams shut, the sound of crunching metal and shattering glass echoing through the air as the SUV crashes into the gate. The courier skids to a stop on the cool, dimly lit garage floor, surrounded by rows of empty parking spaces, the sudden silence a stark contrast to the chaos left behind, as the courier catches their breath and looks back, the gate's mangled remains blocking the entrance, buying them a brief moment of respite.",
+    "camera": "a low-angle, fast-paced, point-of-view shot, with a mix of close-ups and wide shots, using a combination of handheld and mounted cameras to capture the intense action and suspense, with a slight fish-eye lens effect to enhance the sense of speed and urgency",
+    "original_score": 68,
+    "enhanced_score": 60,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 88,
+      "environment_detail": 30,
+      "visual_richness": 21,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 65,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "action-3",
+    "genre": "action-thriller",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Two rival climbers cling to a sheer cliff face mid-storm, rain lashing sideways as one reaches for a handhold just out of grasp.",
+    "timestamp": "2026-08-12T05:26:44.970162+00:00",
+    "status": "ok",
+    "enhanced_description": "Two rival climbers, drenched and exhausted, cling to a sheer, granite cliff face as a torrential storm unleashes its fury upon them. The rain lashes down sideways, stinging their faces and threatening to dislodge them from their precarious perches. The climbers' fingers, white-knuckled and strained, dig deep into the rock's crevices as they struggle to maintain their grip. One climber, eyes fixed intently on a handhold just out of reach, stretches to their limit, fingertips straining to make contact with the wet, slippery rock. The sound of thunder booms through the air, and flashes of lightning illuminate the dark sky, casting an eerie glow over the desperate scene. The cliff face, a towering monolith of stone, rises up like a giant's fist, its surface slick with rain and treacherous with loose scree. The climbers' ropes, taut and vibrating with tension, are the only lifelines between them and the abyssal void below.",
+    "camera": "The camera is positioned at a 45-degree angle to the cliff face, capturing the climbers' desperate struggle in a wide, cinematic shot. The lens is water-repellent and stabilized to withstand the driving rain, and is equipped with a high-frame-rate setting to freeze the action in dramatic, slow-motion sequences.",
+    "original_score": 69,
+    "enhanced_score": 63,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 0,
+      "visual_richness": 86,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 79,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "action-4",
+    "genre": "action-thriller",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A bomb-disposal technician kneels over a ticking device in an evacuated subway car, cuts the wrong wire and freezes as the timer speeds up, then finds the real wire with seconds to spare.",
+    "timestamp": "2026-08-12T05:26:49.836452+00:00",
+    "status": "ok",
+    "enhanced_description": "In the dimly lit, eerily silent evacuated subway car, a lone bomb-disposal technician, clad in a bulky suit and helmet, kneels over a complex, ticking device protruding from the floor. The air is thick with tension as the technician's gloved hands carefully examine the maze of wires, each breath visible in the cool, still air. With a deep breath, the technician's hand reaches out, clippers in grasp, and cuts a wire, but instead of the expected relief, the device's timer begins to speed up, the numbers blurring together in a frantic countdown. The technician's face, visible through the helmet's visor, freezes in a mixture of horror and focus. Time seems to slow as the technician's eyes dart back to the device, frantically searching for the correct wire among the remaining ones. Sweat drips down the technician's face, and with a surge of adrenaline, a hand reaches out once more, this time cutting the correct wire with mere seconds to spare. The device's countdown halts just shy of detonation, and the technician exhales slowly, relief washing over their tense posture as the subway car, once again, falls silent.",
+    "camera": "Static, close-up shot with a slight wide-angle lens to capture the intensity of the scene, focusing on the technician's face and hands as they work on the device, with the timer and wires blurred in the background, emphasizing the urgency and danger of the situation.",
+    "original_score": 79,
+    "enhanced_score": 60,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 86,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 79,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "historical-1",
+    "genre": "historical",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A blacksmith hammers a glowing horseshoe on his anvil inside a dim medieval forge, sparks scattering with every strike.",
+    "timestamp": "2026-08-12T05:26:54.587024+00:00",
+    "status": "ok",
+    "enhanced_description": "In the heart of a dimly lit medieval forge, where the air is thick with the smell of hot metal and sweat, a sturdy blacksmith stands tall, his muscular arms raised high as he hammers down on a glowing horseshoe placed upon the worn surface of his anvil. The horseshoe, radiating a fierce orange glow, illuminates the blacksmith's soot-stained face and the surrounding environment, casting flickering shadows on the stone walls of the forge. With each powerful strike of the hammer, sparks erupt and scatter in all directions, dancing in the faint light like fireflies on a summer night. The sound of clanging metal echoes through the forge, punctuated by the occasional hiss of hot metal being quenched in a nearby bucket of water. The blacksmith's leather apron, worn and cracked from years of use, protects his clothing from the sparks, while his eyes, narrowed in concentration, gleam with a fire that matches the intensity of the glowing horseshoe. Outside, the faint silhouette of a medieval town can be seen through the open doorway of the forge, with people moving about, oblivious to the meticulous craftsmanship being honed within.",
+    "camera": "Static, slightly wide-angle shot, positioned to capture the entirety of the forge, with a shallow depth of field to emphasize the blacksmith and his work, while the background remains slightly blurred.",
+    "original_score": 70,
+    "enhanced_score": 64,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 72,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "historical-2",
+    "genre": "historical",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A telegraph operator taps out an urgent message in a dusty frontier station, waits anxiously for a reply that doesn't come, then bolts outside as riders appear on the horizon.",
+    "timestamp": "2026-08-12T05:26:58.697374+00:00",
+    "status": "ok",
+    "enhanced_description": "In a dimly lit, dusty frontier telegraph station, the operator, a worn and weary man with a thick beard, sits hunched over the telegraph machine, his fingers flying across the keys as he taps out an urgent message in Morse code. The sound of the machine clacking away echoes through the small, cluttered room, filled with old maps, broken equipment, and stacks of yellowed papers. As he finishes the message, the operator looks up, his eyes fixed anxiously on the machine, waiting for a reply that never comes. The silence is oppressive, punctuated only by the occasional creak of the old wooden building and the faint sound of wind outside. Suddenly, the operator's head jerks up, his eyes locked on something outside the window. He leaps to his feet, knocking over his chair in the process, and bolts out of the station, into the bright, sun-scorched daylight. The camera follows him as he emerges into a vast, open landscape, with nothing but rolling hills and tumbleweeds stretching out to the horizon. In the distance, a plume of dust rises, and the operator's eyes are fixed on a group of riders, their faces set in determined lines, their horses' hooves pounding out a rhythmic beat as they thunder towards the station. The operator's face is a picture of concern and anticipation, his eyes darting back and forth between the riders and the station, as if unsure of what to expect.",
+    "camera": "The camera is positioned outside the station, capturing the operator's frantic exit and his gaze out at the approaching riders, using a wide-angle lens to take in the vast expanse of the landscape, with a slight Dutch angle to convey the operator's sense of unease and tension.",
+    "original_score": 70,
+    "enhanced_score": 63,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 72,
+      "environment_detail": 30,
+      "visual_richness": 47,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 89,
+      "action_specificity": 77,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "historical-3",
+    "genre": "historical",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A lantern-lit study holds a robed scholar hunched over illuminated manuscripts, quill scratching steadily by candlelight.",
+    "timestamp": "2026-08-12T05:27:04.220029+00:00",
+    "status": "ok",
+    "enhanced_description": "In a dimly lit, ornate study, the walls lined with towering shelves of ancient tomes and the air thick with the scent of old parchment and melting wax, a lone, robed scholar sits hunched over a sprawling, wooden desk. The scholar's face is aglow with the soft, golden light of multiple lanterns that hang from the vaulted ceiling, casting a warm, ethereal glow over the entire scene. The desk itself is a mess of scattered, yellowed manuscripts, some of which are adorned with intricate, hand-drawn illustrations, while others appear to be cryptic, coded texts. A single, flickering candle stands at the edge of the desk, its flame dancing precariously close to the delicate, feathered tip of the scholar's quill as it scratches steadily across a fresh, vellum page, leaving behind a trail of rich, indigo ink. The room is otherwise silent, the only sound the soft, scratching of the quill and the occasional, faint crackle of the lanterns' flames.",
+    "camera": "Static, with a slight, warm glow to mimic the lantern and candlelight, positioned directly above the scholar's desk to capture the intricate details of the manuscripts and the scholar's intense, focused expression.",
+    "original_score": 58,
+    "enhanced_score": 72,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 0,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "sports-1",
+    "genre": "sports",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A marathon runner crosses the finish line at dawn, arms raised, the empty stadium stands glowing faintly under the rising sun.",
+    "timestamp": "2026-08-12T05:27:08.258030+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone marathon runner, drenched in sweat and exhaustion, crosses the finish line at the break of dawn, arms raised triumphantly in victory as the first light of the sun casts a warm glow over the scene. The empty stadium stands, a vast expanse of seats, glow faintly under the rising sun, their shadows retreating as the light grows. The runner's face, etched with relief and elation, is illuminated by the golden light of dawn, with the faint silhouette of the stadium's architecture and the distant horizon visible behind. The atmosphere is filled with an eerie silence, broken only by the sound of the runner's heavy breathing and the distant call of birds greeting the new day. The finish line, marked by a bright banner and a timing mat, stretches across the track, a symbol of the runner's hard-won achievement. The overall mood is one of serene solitude, as if the runner is the only person in the world, basking in the glory of their accomplishment.",
+    "camera": "Static, wide-angle shot, with the camera positioned at a low angle, looking up at the runner, to emphasize the triumph and grandeur of the moment, with a slow zoom out to reveal the vast, empty stadium and the rising sun.",
+    "original_score": 73,
+    "enhanced_score": 73,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 50,
+      "visual_richness": 57,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 50,
+      "visual_richness": 82,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "sports-2",
+    "genre": "sports",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A boxer circles cautiously in the ring for the first two rounds, absorbs a hard combination against the ropes, then rallies with a decisive uppercut that sends her opponent to the canvas.",
+    "timestamp": "2026-08-12T05:27:12.351261+00:00",
+    "status": "ok",
+    "enhanced_description": "In a dimly lit, smoke-filled boxing arena, a determined female boxer, dressed in sleek red trunks and gloves, cautiously circles her opponent around the ring for the first two rounds, her eyes fixed intently on her challenger. The air is thick with tension as the crowd cheers and chants, their faces a blur of excitement and anticipation. As the boxer absorbs a hard combination of punches against the ropes, her body recoils, sweat dripping down her face, but she refuses to back down. With a fierce cry, she rallies, launching a decisive uppercut that connects with a loud thud, sending her opponent crashing to the canvas. The crowd erupts in a frenzy of cheers and applause as the boxer stands triumphant, her arms raised in victory, the bright lights of the arena reflecting off the shiny floor. The scene is set in a gritty, realistic style, with a muted color palette and a focus on dramatic lighting, emphasizing the intensity and emotion of the moment.",
+    "camera": "A steady, handheld camera follows the boxer's movements, weaving in and out of the ropes, capturing the action from a dynamic, immersive perspective, with a shallow depth of field to blur the background and emphasize the boxer's determination and skill.",
+    "original_score": 79,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 80,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 76,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "sports-3",
+    "genre": "sports",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A surfer drops into a towering wave at golden hour, carves hard along its face, and disappears into the barrel just as it collapses into white spray.",
+    "timestamp": "2026-08-12T05:27:16.522875+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone surfer, silhouetted against the vibrant hues of golden hour, drops into a towering wave that rises like a liquid monolith from the turquoise ocean. The wave's face is a mesmerizing display of blue and green, with hints of gold where the setting sun's rays dance across its surface. As the surfer carves hard along the wave's face, the board leaves a trail of frothy white water, accentuating the surfer's precise movements. The wave begins to curl over, its lip starting to throw out, forming a barrel that promises both thrill and danger. The surfer, anticipating the wave's collapse, makes a final, daring carve before disappearing into the heart of the barrel. Just as the surfer vanishes from view, the wave collapses in a spectacular display of power, its crest exploding into a thousand shards of white spray that hang suspended in the air, illuminated by the golden light of the setting sun. The scene is set against a backdrop of a serene coastline, with distant palm trees swaying gently in the breeze, contrasting sharply with the raw energy of the wave.",
+    "camera": "The camera follows the surfer from a low angle, positioned in the water, capturing the wave's majesty and the surfer's skill in a continuous, dynamic motion, before panning up to frame the wave's collapse against the vibrant sky.",
+    "original_score": 70,
+    "enhanced_score": 65,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 88,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 62,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "food-1",
+    "genre": "food-culinary",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A chef plates a delicate dessert under warm kitchen lights, drizzling dark chocolate in careful spirals across white porcelain.",
+    "timestamp": "2026-08-12T05:27:20.451761+00:00",
+    "status": "ok",
+    "enhanced_description": "In a bustling, upscale kitchen, a skilled pastry chef, dressed in a crisp white apron, meticulously plates a delicate, handcrafted dessert under the warm, golden glow of pendant lights suspended from a high, vaulted ceiling. The dessert, a masterpiece of culinary art, consists of layered, velvety mousse and intricately textured, sugar-crafted elements, all carefully arranged on a pristine, white porcelain plate. As the chef works, they drizzle rich, dark chocolate in precise, swirling spirals across the dish, the deep, brown liquid glistening in the warm light. The kitchen around them is a symphony of stainless steel, polished marble, and the soft, muted hum of professional-grade appliances, with the occasional clang of pots and the murmur of distant conversation adding depth to the atmosphere. The air is thick with the sweet, heady aroma of baking and the deep, satisfying scent of melting chocolate, teasing the senses and building anticipation for the first bite.",
+    "camera": "Static, slightly elevated shot, looking down on the chef's hands and the dessert, with a shallow depth of field to blur the surrounding kitchen and emphasize the culinary artistry on display.",
+    "original_score": 77,
+    "enhanced_score": 69,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 80,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "food-2",
+    "genre": "food-culinary",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A home baker kneads dough on a flour-dusted counter, shapes it into loaves, and finally pulls a tray of golden, steaming bread from the oven as morning light fills the kitchen.",
+    "timestamp": "2026-08-12T05:27:24.862352+00:00",
+    "status": "ok",
+    "enhanced_description": "In a warm, inviting kitchen filled with the sweet scent of freshly baked goods, a dedicated home baker stands at a worn, flour-dusted wooden counter, their hands moving deftly as they knead a large batch of dough. The dough, a blend of all-purpose flour, yeast, salt, and sugar, begins to take shape under the baker's skilled hands, transforming from a shaggy mass into a smooth, elastic ball. As the baker continues to work the dough, they divide it into several portions, gently shaping each into perfectly formed loaves. The loaves are then placed onto a baking tray lined with parchment paper, slid into a preheated oven, and baked to a golden, crispy perfection. Finally, the baker pulls the tray out of the oven, releasing a waft of steam that rises into the air, carrying the aroma of freshly baked bread. The scene is bathed in the warm, soft light of morning, which streams through a nearby window, illuminating the dust motes that dance in the air and casting a cozy glow over the entire kitchen. The baker's face lights up with a sense of satisfaction and accomplishment as they gaze at the perfectly baked loaves, their eyes shining with pride.",
+    "camera": "A stationary camera positioned in the corner of the kitchen, capturing the baker's movements and the kitchen's warm atmosphere in a wide, sweeping shot, with a slight Dutch angle to add a sense of dynamism to the scene.",
+    "original_score": 75,
+    "enhanced_score": 69,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 50,
+      "visual_richness": 40,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 50,
+      "visual_richness": 63,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "food-3",
+    "genre": "food-culinary",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "Steam rises from a bubbling pot of noodles on a street-food cart as the vendor tosses in fresh vegetables, then ladles a steaming bowl straight into a waiting customer's hands.",
+    "timestamp": "2026-08-12T05:27:29.987867+00:00",
+    "status": "ok",
+    "enhanced_description": "A vibrant street-food cart, adorned with colorful streamers and lanterns, sits on a bustling city street corner, surrounded by towering skyscrapers and neon billboards reflecting off the wet pavement. Steam rises from a large, bubbling pot of noodles, emitting a savory aroma that wafts through the air, enticing passersby. The vendor, wearing a crisp white apron and a warm smile, expertly tosses in a variety of fresh vegetables - crisp carrots, snap peas, and green onions - which sizzle and dance in the hot broth. As the vendor ladles a steaming bowl of noodles into a waiting customer's hands, the customer's eyes widen with anticipation, and they take a moment to appreciate the harmonious balance of textures and colors in the dish. The camera captures the entire scene in exquisite detail, from the glistening noodles to the satisfied expression on the customer's face, as the sounds of sizzling food, lively chatter, and honking cars fill the air, immersing the viewer in the sights, sounds, and aromas of a bustling street-food market.",
+    "camera": "Handheld, with a shallow depth of field, capturing the vibrant colors and dynamic energy of the scene, with a slight Dutch angle to convey the excitement and chaos of the street-food market",
+    "original_score": 67,
+    "enhanced_score": 62,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 21,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 81,
+      "environment_detail": 30,
+      "visual_richness": 76,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "music-1",
+    "genre": "music-performance",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A violinist stands alone on an empty concert stage, spotlight narrowing as she draws the bow across the strings in the hush before the audience arrives.",
+    "timestamp": "2026-08-12T05:27:34.360785+00:00",
+    "status": "ok",
+    "enhanced_description": "A lone violinist, dressed in a elegant black evening gown, stands poised at the center of a grand, dimly lit concert stage, the empty seats of the auditorium stretching out before her like a silent, expectant sea. The spotlight above, a narrow beam of intense white light, shines down upon her, casting a dramatic glow on her uplifted face and the polished surface of her violin. As she raises her bow, the soft scratch of the horsehair against the strings fills the air, and she begins to play, the melancholic melody swirling around her like a mist. The walls of the concert hall, adorned with intricate golden moldings and plush red curtains, seem to reverberate with the music, the sound waves dancing across the empty seats, as if the very space itself is being awakened by the violinist's haunting performance. The atmosphere is one of hushed anticipation, the stillness before the storm, as the musician's music seems to conjure the presence of the soon-to-arrive audience, her notes hanging in the air like the promise of something beautiful and fleeting.",
+    "camera": "Static, with a slight zoom on the violinist's face and hands as she plays, the lens capturing the intense emotion and focus etched on her features, while the background remains softly blurred, emphasizing the solitude and intimacy of the moment.",
+    "original_score": 77,
+    "enhanced_score": 74,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 74,
+      "environment_detail": 50,
+      "visual_richness": 96,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "music-2",
+    "genre": "music-performance",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A garage band rehearses in a cramped basement, struggles through a rough first take, then locks into the song perfectly on their third try as everyone grins at each other.",
+    "timestamp": "2026-08-12T05:27:38.405093+00:00",
+    "status": "ok",
+    "enhanced_description": "In a dimly lit, cramped basement, the walls lined with old music posters and dusty amplifiers, a garage band gathers around their instruments, eager to rehearse their new song. The air is thick with anticipation and the smell of stale air. As they launch into their first take, the sound is disjointed and rough, with the lead guitarist's notes clashing against the off-beat drumming, and the bassist's lines wavering uncertainly. The vocalist's voice cracks on the high notes, and the band's energy is palpable but uncoordinated. After a frustrating first attempt, they take a brief pause, exchanging determined glances and nods before launching into their second take. This time, the music is slightly more cohesive, but still, the timing is off, and the overall sound is lacking. Undeterred, the band takes a deep breath, adjusts their instruments, and dives into their third take. As the music begins, something magical happens - the guitarist's chords ring out clear and crisp, the drummer's beat is solid and driving, the bassist's lines are smooth and melodic, and the vocalist's voice soars with confidence. The band locks into the song, their faces alight with joy and excitement, as they feed off each other's energy. The music swells, filling the small basement with an infectious, pulsing rhythm that seems to lift everyone up. As they reach the song's climax, the band members exchange triumphant grins, lost in the exhilaration of creating something special together, the music and their camaraderie merging into a perfect, unforgettable moment.",
+    "camera": "Handheld, dynamic camera work, with a mix of close-ups, over-the-shoulder shots, and wide angles, capturing the band's emotions, interactions, and the cramped, intimate setting of the basement, with a slight grain and warm color palette to evoke a sense of realism and nostalgia.",
+    "original_score": 84,
+    "enhanced_score": 71,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 96,
+      "action_specificity": 77,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "music-3",
+    "genre": "music-performance",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A DJ's hands hover over a mixing deck in a packed nightclub, colored lights strobing across the crowd in time with the bass.",
+    "timestamp": "2026-08-12T05:27:43.493824+00:00",
+    "status": "ok",
+    "enhanced_description": "In the heart of a vibrant, packed nightclub, a skilled DJ stands confidently behind a sleek, modern mixing deck, their hands poised and ready to drop the next track. The air is electric with anticipation as the crowd, a sea of dancing figures, stretches out before them. The room pulsates with the rhythm, colored lights strobing and swirling across the faces of the revelers in perfect sync with the deep, thumping bass. Laser beams cut through the smoky atmosphere, casting a kaleidoscope of hues across the walls and the undulating crowd. The DJ's equipment glows with a mesmerizing array of lights and screens, reflecting the beat and illuminating their focused expression. The overall atmosphere is one of high energy and collective euphoria, with every element, from the music to the lighting, working together to create an unforgettable nightlife experience.",
+    "camera": "A stationary camera positioned slightly above and behind the DJ, capturing the entirety of the scene with a wide-angle lens, allowing the viewer to fully immerse themselves in the dynamic atmosphere of the nightclub.",
+    "original_score": 63,
+    "enhanced_score": 70,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 89,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "comedy-1",
+    "genre": "comedy-whimsical",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A raccoon in a tiny chef's hat balances precariously on a kitchen counter, eyeing a pie cooling on the windowsill.",
+    "timestamp": "2026-08-12T05:27:47.395506+00:00",
+    "status": "ok",
+    "enhanced_description": "A curious raccoon, donning a tiny, pristine white chef's hat adorned with a miniature golden culinary emblem, stands upright on its hind legs, balancing precariously on the edge of a cluttered, sun-drenched kitchen counter. The counter, made of worn, honey-brown wood, is littered with an assortment of baking utensils, flour-dusted mixing bowls, and scraps of culinary paper. The raccoon's beady eyes, gleaming with mischief and longing, are fixed intently on a freshly baked, golden-brown pie that sits atop a delicate, lace-trimmed doily on the windowsill. The pie, emitting a warm, comforting aroma, is surrounded by a halo of soft, natural light that streams in through the window, casting a warm glow across the kitchen. The raccoon's bushy tail twitches with excitement as it contemplates making a move for the pie, its tiny paws grasping the counter's edge for balance. In the background, the kitchen is filled with the warm, inviting atmosphere of a cozy home, complete with vintage ceramic jars, copper pots, and a large, wooden spoon resting against the side of a large, earthenware crock.",
+    "camera": "Static, medium-shot camera angle, with a slight Dutch angle to emphasize the raccoon's precarious balance, and a warm, golden color palette to evoke a sense of comfort and nostalgia.",
+    "original_score": 66,
+    "enhanced_score": 65,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 33,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 93,
+      "action_specificity": 75,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "comedy-2",
+    "genre": "comedy-whimsical",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A man in a business suit tiptoes past a sleeping dog toward the front door, freezes mid-step when a floorboard creaks, then bolts for the exit as the dog springs awake barking.",
+    "timestamp": "2026-08-12T05:27:51.765915+00:00",
+    "status": "ok",
+    "enhanced_description": "A well-dressed man, clad in a crisp, navy blue business suit with a subtle sheen, his black leather oxfords polished to a mirror finish, tiptoes with deliberate caution past a sleeping dog, a fluffy white Samoyed with a patchy brown coat, lying on a plush, cream-colored area rug in the middle of a dimly lit, elegantly decorated foyer. The walls, painted a soft, muted gray, are adorned with vintage oil paintings, and a stunning crystal chandelier hangs from the ceiling, casting a warm, golden glow. As the man, his eyes fixed intently on the dog, takes another step, the old wooden floorboard beneath his foot suddenly creaks, the sound echoing through the silent room like a gunshot. The man freezes, his body tense, his eyes wide with alarm, as the dog's ears perk up, and it springs awake, its eyes snapping open, its mouth yawning into a fierce, toothy snarl. The dog erupts into a frenzy of furious barking, its paws scrambling against the floor as it launches itself at the man. With a burst of adrenaline, the man bolts for the front door, a beautiful, solid oak piece with a heavy, ornate iron knocker in the shape of a lion's head, grabbing the brass doorknob and flinging the door open to reveal a bright, sunlit day, with a few puffy white clouds drifting lazily across a brilliant blue sky. The man sprints out into the daylight, the dog hot on his heels, its barks growing fainter as they both disappear from view.",
+    "camera": "Establishing shot, static, with a slight Dutch angle, using a wide-angle lens to capture the entirety of the scene, from the man's initial tiptoeing to his frantic exit, with a shallow depth of field to emphasize the man's desperate actions, and a warm, golden color palette to enhance the sense of tension and urgency.",
+    "original_score": 70,
+    "enhanced_score": 70,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 42,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 86,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 97,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "comedy-3",
+    "genre": "comedy-whimsical",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A toddler in oversized rain boots stomps gleefully through a puddle, sending an arc of water directly onto an unamused cat, which bolts away in an undignified sprint.",
+    "timestamp": "2026-08-12T05:27:57.514715+00:00",
+    "status": "ok",
+    "enhanced_description": "In a vibrant, rain-soaked alleyway lined with old brick buildings and filled with the sweet scent of wet earth, a chubby-cheeked toddler, no more than two years old, clad in a bright yellow raincoat that's a few sizes too big, delights in wearing oversized, shiny red rain boots that make squelching sounds with each step. With an uncontrollable giggle, the toddler stomps down into a large, mirror-like puddle, creating an impressive arc of water that glistens in the overcast light. The water's trajectory is perfectly aimed, landing squarely on a sleek, grey cat that had been watching the scene unfold with disdain from beneath a nearby awning. The cat, its fur now glistening with rainwater, lets out a startled meow before bolting away in a less-than-dignified sprint, its tail twitching in annoyance. The toddler, oblivious to the cat's distress, continues to laugh and stomp through the puddle, creating smaller splashes that dance in the dim light. The scene is filled with the sounds of laughter, meowing, and the patter of raindrops hitting the ground, all set against the backdrop of a gloomy, yet vibrant, urban landscape.",
+    "camera": "A static, high-angle shot looking down on the scene, capturing the toddler's antics, the cat's escape, and the surrounding environment in a single, uninterrupted frame, with a shallow depth of field to emphasize the main subjects.",
+    "original_score": 75,
+    "enhanced_score": 72,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 100,
+      "environment_detail": 30,
+      "visual_richness": 71,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "abstract-1",
+    "genre": "abstract-artistic",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Ink drops bloom and swirl through water in slow motion, ribbons of deep blue and gold twisting into intricate, ever-shifting patterns.",
+    "timestamp": "2026-08-12T05:28:02.458884+00:00",
+    "status": "ok",
+    "enhanced_description": "In a mesmerizing, dreamlike sequence, ink droplets burst into a crystal-clear water environment, unfolding like blooming flowers as they slowly dissipate and swirl, their deep blue and gold hues intertwining in hypnotic, ever-changing patterns that dance across the frame, illuminated by soft, diffused lighting that accentuates the fluid, organic movements of the ink, set against a stark, black background that allows the vibrant colors to take center stage, with delicate, lace-like tendrils of ink stretching and merging in a graceful, ethereal ballet, as if the very essence of the liquid is alive and responding to some unheard melody, filling the space with an otherworldly beauty that invites the viewer to step into its serene, slow-motion world.",
+    "camera": "Static, with a macro lens, capturing the scene in extreme close-up, utilizing a high frame rate to emphasize the slow, flowing motion of the ink, with a shallow depth of field to blur the edges of the frame and draw focus to the intricate, swirling patterns at its center.",
+    "original_score": 79,
+    "enhanced_score": 77,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    }
+  },
+  {
+    "id": "abstract-2",
+    "genre": "abstract-artistic",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A single white line is drawn across a blank black canvas, splits into branching fractal patterns that spread outward, and finally resolves into the shape of a blooming flower.",
+    "timestamp": "2026-08-12T05:28:06.585824+00:00",
+    "status": "ok",
+    "enhanced_description": "In a vast, dark space, a lone, luminescent white line materializes on a blank black canvas, its gentle glow illuminating the surrounding void. As the line begins to move, it suddenly splits into multiple branching paths, each one dividing and subdividing into intricate, fractal patterns that spread outward in a mesmerizing dance. The lines thicken, swirl, and intersect, forming an ever-expanding network of delicate, lace-like tendrils that fill the canvas. As the fractal patterns continue to evolve, they gradually coalesce into the unmistakable shape of a blooming flower, its petals unfolding like the pages of a book. The flower's center glows with a soft, golden light, radiating an otherworldly energy that illuminates the surrounding darkness. The camera lingers on the flower, its beauty and complexity a testament to the infinite possibilities hidden within the simplicity of a single line. The flower's petals shimmer and glow, as if infused with an ethereal essence, casting a hypnotic spell on the viewer.",
+    "camera": "Static, with a slight, gradual zoom to emphasize the flower's unfolding petals",
+    "original_score": 81,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 89,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 86,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 93,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "abstract-3",
+    "genre": "abstract-artistic",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Sand grains cascade in a slow-motion hourglass, backlit so each falling particle catches the light like a tiny spark.",
+    "timestamp": "2026-08-12T05:28:10.493036+00:00",
+    "status": "ok",
+    "enhanced_description": "In a beautifully crafted, antique hourglass, a mesmerizing cascade of sand grains flows gently from the upper bulb to the lower, suspended in mid-air as if time itself has slowed down. The hourglass is positioned against a stark, black background, and a soft, warm backlight illuminates the falling particles, making each grain sparkle like a minute diamond, casting tiny, shimmering shadows on the surrounding glass. The light dances across the delicate, swirling patterns of the sand, creating a hypnotic display of texture and luminescence, as the grains continue their serene, golden trickle, filling the air with a thousand tiny, glittering highlights.",
+    "camera": "Macro, static shot with a shallow depth of field, capturing the hourglass from a 45-degree angle, with the light source positioned directly behind the glass to maximize the sparkle effect on the falling sand grains.",
+    "original_score": 68,
+    "enhanced_score": 67,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 78,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "nature-1",
+    "genre": "nature-wildlife",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A snow leopard perches motionless on a rocky Himalayan ledge, golden late-afternoon light catching its pale, spotted fur.",
+    "timestamp": "2026-08-12T05:28:14.660618+00:00",
+    "status": "ok",
+    "enhanced_description": "A majestic snow leopard, its thick, smoky-gray fur adorned with black spots and rosettes, perches motionless on a rugged, granite rocky ledge, weathered from centuries of harsh Himalayan winds and snow. The golden, late-afternoon light of the setting sun casts a warm glow over the scene, illuminating the leopard's pale, misty-gray coat and accentuating the subtle sheen of its fur. The surrounding landscape stretches out in a breathtaking panorama, with towering, snow-capped mountain peaks rising up in the distance, their rugged silhouettes set against a brilliant blue sky dotted with puffy, white clouds. The air is crisp and thin, with a hint of wood smoke and damp earth, and the only sound is the faint rustle of the wind through the rocky outcroppings. As the leopard remains perfectly still, its piercing green eyes seem to gleam with a fierce inner light, as if watching something far off in the distance, its tail twitching ever so slightly in the breeze.",
+    "camera": "Static, wide-angle shot, with a slight low-angle perspective to emphasize the leopard's majestic presence, and a shallow depth of field to blur the surrounding landscape and draw attention to the subject.",
+    "original_score": 81,
+    "enhanced_score": 71,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 78,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "nature-2",
+    "genre": "nature-wildlife",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A pod of dolphins swims lazily beside a fishing boat at dawn, suddenly bursts into a synchronized leap over the wake, then vanishes back beneath the glassy water.",
+    "timestamp": "2026-08-12T05:28:19.532542+00:00",
+    "status": "ok",
+    "enhanced_description": "A warm, golden dawn breaks over the horizon as a pod of six bottlenose dolphins, their sleek, gray bodies glistening with dew, swims lazily beside a worn, wooden fishing boat, its faded blue hull adorned with peeling paint and rusty fishing gear, the boat's gentle wake creating a series of soft, lapping waves against the glassy, turquoise water. As the sun rises higher, the dolphins suddenly and in perfect synchrony burst into a majestic leap, their bodies arcing over the wake in a fluid, choreographed motion, the morning light dancing across their backs, casting a shimmering glow across the surrounding water. For a fleeting moment, the dolphins are suspended in mid-air, their clicks and whistles echoing through the stillness, before they vanish back beneath the surface, leaving behind a trail of rippling waves and a few scattered, shimmering water droplets that hang suspended in the air, like tiny diamonds, as the boat continues on its gentle journey, the dawn light casting a serene, peaceful glow over the entire scene.",
+    "camera": "Static, wide-angle shot, with the camera positioned at a low angle, just above the waterline, to emphasize the majesty and synchrony of the dolphins' leap, the fishing boat and the dawn horizon stretching out into the distance, with a shallow depth of field to blur the surrounding water and emphasize the dolphins' movement.",
+    "original_score": 69,
+    "enhanced_score": 73,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 93,
+      "environment_detail": 50,
+      "visual_richness": 0,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 50,
+      "visual_richness": 85,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "nature-3",
+    "genre": "nature-wildlife",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Morning mist clings to a redwood forest floor, shafts of sunlight cutting through the canopy in slow, drifting beams.",
+    "timestamp": "2026-08-12T05:28:24.215952+00:00",
+    "status": "ok",
+    "enhanced_description": "A serene and mystical redwood forest, bathed in the soft, ethereal glow of morning mist, which gently clings to the forest floor like a veil of mystery. Towering above, the majestic redwoods stretch towards the sky, their trunks robust and gnarled, their canopies a vibrant tapestry of emerald green. Shafts of sunlight, like nature's own spotlights, cut through the leafy ceiling in slow, drifting beams, casting dappled shadows on the forest floor and illuminating the mist in a mesmerizing dance of light and shadow. The air is filled with the sweet, earthy scent of damp soil and the soft, melodic songs of morning birds, creating a sense of tranquility and wonder. The forest floor, carpeted with a soft layer of ferns and wildflowers, is dotted with the occasional fallen tree, its weathered trunk covered in moss and lichen, a testament to the forest's ancient, timeless beauty.",
+    "camera": "Static, slightly elevated camera position, with a wide-angle lens to capture the grandeur of the forest, and a slow, gentle zoom to emphasize the drifting beams of sunlight",
+    "original_score": 47,
+    "enhanced_score": 66,
+    "original_dimensions": {
+      "subject_clarity": 0,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 80,
+      "action_specificity": 82,
+      "environment_detail": 50,
+      "visual_richness": 94,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "nature-4",
+    "genre": "nature-wildlife",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A hummingbird hovers uncertainly near a garden feeder, darts away when a bee gets too close, then returns moments later to drink undisturbed as the bee wanders off.",
+    "timestamp": "2026-08-12T05:28:28.335701+00:00",
+    "status": "ok",
+    "enhanced_description": "In a sun-drenched garden, a vibrant hummingbird with iridescent feathers, primarily emerald green with ruby throat patches, hovers uncertainly near a brightly colored, tubular garden feeder suspended from a rustic wooden beam, its delicate wings beating at an astonishing rate of over 80 times per second. As it prepares to land and drink from the feeder, a busy, golden honey bee suddenly appears, its buzzing growing louder as it approaches the feeder, causing the hummingbird to dart away swiftly in a flash of green and red, its tiny heart racing. The bee, now the sole occupant of the feeder, inspects the sweet liquid within, before losing interest and wandering off into the lush, floral surroundings, filled with blooming flowers of every color, including red salvia, orange marigolds, and purple lavender. Moments later, the hummingbird returns, its initial caution replaced by determination, and it lands delicately on the feeder's edge, dipping its long, extendable tongue into the sweet nectar, drinking undisturbed as the warm sunlight catches its feathers, illuminating the intricate details of its plumage. The scene is set against a backdrop of a serene garden, complete with a meandering stone path, a small pond, and a variety of trees and shrubs, all contributing to a sense of natural tranquility and beauty.",
+    "camera": "Static, with a slight zoom to emphasize the hummingbird's return to the feeder, captured from a side angle to showcase the bird's vibrant colors and the intricate details of the garden surroundings, using a macro lens to highlight the textures and patterns of the flowers, the feeder, and the hummingbird's feathers.",
+    "original_score": 72,
+    "enhanced_score": 69,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 65,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 80,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 98,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "family-1",
+    "genre": "family-slice-of-life",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "A father teaches his daughter to ride a bicycle in a quiet suburban driveway, one hand steadying the seat as she wobbles forward.",
+    "timestamp": "2026-08-12T05:28:33.202769+00:00",
+    "status": "ok",
+    "enhanced_description": "A warm, sunny afternoon in a serene suburban neighborhood, with a few trees casting dappled shadows on the driveway. A father, wearing a casual t-shirt and jeans, stands beside his young daughter, who is seated on a shiny, pink bicycle with white streamers on the handlebars and a small bell that catches the sunlight. The father's hand is gently placed on the seat of the bicycle, providing stability as his daughter pedals forward, her blonde pigtails bouncing with each wobbly movement. The driveway is made of cracked asphalt, with a few leaves and twigs scattered about, and a bright green lawn stretches out to either side, dotted with a few colorful flowers. As the daughter pedals, her face is a picture of concentration, with a hint of a smile, while the father's face is filled with encouragement and patience. The scene is filled with a sense of warmth and nostalgia, with a soft focus effect to emphasize the emotional connection between the father and daughter.",
+    "camera": "A stationary camera positioned at a 45-degree angle to the driveway, with a slight low-angle shot to emphasize the father's supportive role, using a wide-angle lens to capture the entirety of the scene, with a shallow depth of field to blur the background and draw attention to the father and daughter.",
+    "original_score": 70,
+    "enhanced_score": 72,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 62,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 83,
+      "action_specificity": 78,
+      "environment_detail": 50,
+      "visual_richness": 99,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "family-2",
+    "genre": "family-slice-of-life",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A family gathers around a dinner table as an old story is told, laughter rising as the punchline lands, and then quiets into warm smiles as they clink glasses together.",
+    "timestamp": "2026-08-12T05:28:37.592302+00:00",
+    "status": "ok",
+    "enhanced_description": "A warm, golden light spills across the faces of three generations of a family as they gather around a beautifully set, rustic dinner table, adorned with fine china, crystal glasses, and a delectable feast. The walls of the cozy, traditional dining room are lined with vintage family portraits and the sound of crackling firewood from the nearby fireplace fills the air. As the elderly patriarch begins to speak, his eyes twinkling with nostalgia, the family's faces are bathed in anticipation. The room is filled with the savory aromas of roasting meats and freshly baked bread. As the story unfolds, the family's expressions transform from curiosity to amusement, and finally, to uncontainable laughter, with tears welling up in their eyes. The punchline lands, and the room erupts in a joyful, contagious laughter, with each family member's face aglow with happiness. As the laughter subsides, the atmosphere transitions into a warm, intimate moment, with the family's faces softening into gentle, loving smiles. They clink their glasses together in a toast, the crystal ringing out as they savor the love and connection they share. The camera captures the beauty of this heartfelt moment, with the warm light, the happy faces, and the love that fills the room, creating a sense of togetherness and belonging.",
+    "camera": "A stationary camera, positioned at the head of the table, captures the entire scene, with a slight Dutch angle to convey the sense of warmth and intimacy, and a shallow depth of field to blur the background, emphasizing the family's faces and emotions.",
+    "original_score": 73,
+    "enhanced_score": 76,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 88,
+      "environment_detail": 0,
+      "visual_richness": 75,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 96,
+      "action_specificity": 82,
+      "environment_detail": 80,
+      "visual_richness": 74,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "family-3",
+    "genre": "family-slice-of-life",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Grandparents nap side by side in porch rocking chairs on a lazy summer afternoon, a half-finished crossword resting on the small table between them.",
+    "timestamp": "2026-08-12T05:28:41.936288+00:00",
+    "status": "ok",
+    "enhanced_description": "A serene summer afternoon scene unfolds on a charming, wrap-around porch, where two grandparents, comfortably dressed in casual, pastel-colored clothing, gently rock back and forth in their respective wooden rocking chairs. The chairs, adorned with plush cushions in a floral pattern, are positioned side by side, with a small, rustic wooden table between them. On the table, a half-finished crossword puzzle lies open, alongside a pair of reading glasses and a pencil, as if the grandparents had momentarily stepped away from their leisurely activity. The warm sunlight casts a gentle glow over the scene, with a few sunbeams peeking through the porch's white railings, illuminating the dust particles dancing in the air. The atmosphere is tranquil, with the soft creaking of the rocking chairs and the distant chirping of birds filling the air, as the grandparents bask in the warmth and each other's company, their faces peaceful and content in slumber.",
+    "camera": "Static, with a slight Dutch angle, capturing the entire scene from a medium distance, with a warm, shallow depth of field, blurring the surrounding environment and emphasizing the grandparents and their peaceful afternoon",
+    "original_score": 83,
+    "enhanced_score": 72,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "family-4",
+    "genre": "family-slice-of-life",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "Two siblings build an elaborate blanket fort in the living room, argue briefly over the last pillow, then squeeze in together to read a book by flashlight.",
+    "timestamp": "2026-08-12T05:28:46.329626+00:00",
+    "status": "ok",
+    "enhanced_description": "In a cozy, dimly lit living room with walls painted a warm beige and filled with the soft glow of evening sunlight peeking through the curtains, two siblings, a boy with messy brown hair and a girl with curly blonde locks, both in their pajamas, are in the midst of constructing an elaborate blanket fort. The room is cluttered with couch cushions, chairs, and blankets, all being creatively repurposed as fort components. As they work, the siblings' excitement and anticipation are palpable. The boy and girl momentarily stop, their faces illuminated only by the soft, golden light of the setting sun, as they engage in a brief, playful argument over the last plush pillow. The boy jokingly tries to snatch it away, while the girl giggles and holds on tight, her eyes sparkling with amusement. After their brief squabble, they squeeze into their newly built fort together, the boy holding a flashlight and the girl cradling a favorite storybook. As they settle in, the flashlight casts flickering shadows on the walls of their fort, and the siblings begin to read their book, their voices hushed and their faces aglow with the magic of the story and the warmth of their special moment together. The camera captures the siblings' joy, the coziness of the fort, and the enchantment of the evening, all in one heartwarming scene.",
+    "camera": "A stationary camera with a wide-angle lens, positioned to capture the entirety of the living room and the siblings' blanket fort, with a slight warm filter to enhance the cozy atmosphere of the scene.",
+    "original_score": 75,
+    "enhanced_score": 79,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 100,
+      "visual_richness": 61,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "romance-1",
+    "genre": "romance",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "Two strangers share an umbrella at a rain-soaked bus stop, both smiling shyly as their hands brush reaching for the same handle.",
+    "timestamp": "2026-08-12T05:28:50.755289+00:00",
+    "status": "ok",
+    "enhanced_description": "On a drizzly evening, a vintage-style bus stop, with a worn, wooden bench and a faded advertisement, stands alone under the dim glow of a streetlamp. The rain pours down, creating a rhythmic melody on the metal roof of the bus stop, as two strangers, a young woman with curly brown hair and a bright yellow raincoat, and a tall, lanky man with a navy blue suit and a fedora, coincidentally reach for the same worn, red umbrella. As their hands touch, they exchange shy, shivering smiles, their eyes locking for a brief moment. The woman's smile hints at a mixture of surprise and curiosity, while the man's eyes crinkle at the corners, suggesting a warm, gentle humor. The camera captures the tender, awkward moment as they both grasp the umbrella handle, their fingers intertwined, and they begin to walk together, side by side, under the shelter of the colorful umbrella, as the rain continues to fall around them, creating a misty, dreamlike atmosphere.",
+    "camera": "Handheld, with a slight Dutch angle, capturing the intimate, chance encounter between the two strangers, with a shallow depth of field, blurring the rainy background, and emphasizing the emotional connection between the characters.",
+    "original_score": 64,
+    "enhanced_score": 76,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 78,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  },
+  {
+    "id": "romance-2",
+    "genre": "romance",
+    "complexity": "multi-beat",
+    "condition": "baseline",
+    "original_prompt": "A couple strolls along a moonlit pier, pauses at the railing to watch fireworks bloom over the water, and turns to share a quiet kiss as the last burst fades.",
+    "timestamp": "2026-08-12T05:28:54.548574+00:00",
+    "status": "ok",
+    "enhanced_description": "A romantic couple, hand in hand, strolls leisurely along a weathered, wooden moonlit pier, the soft glow of string lights and the gentle lapping of waves against the shore creating a serene ambiance. As they pause at the rustic railing, they gaze out at the horizon where a kaleidoscope of fireworks erupts, blooming like vibrant flowers across the dark sky, their reflections dancing in the rippling water below. The couple's faces, aglow with wonder, are illuminated by the fleeting bursts of colorful light. As the final firework dissolves into a smoldering ember, the couple turns to each other, their eyes locking in a tender moment, and they share a quiet, intimate kiss under the star-studded sky, the world around them melting away. The atmosphere is filled with the sweet scent of saltwater and the distant, fading booms of fireworks, leaving an air of enchantment and love.",
+    "camera": "Static, with a slight tilt to emphasize the couple's emotional moment, capturing the expansive night sky and the water's edge, with a shallow depth of field to blur the background and focus on the couple's tender kiss.",
+    "original_score": 72,
+    "enhanced_score": 65,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 75,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 30,
+      "visual_richness": 88,
+      "temporal_coherence": 25
+    }
+  },
+  {
+    "id": "romance-3",
+    "genre": "romance",
+    "complexity": "single-beat",
+    "condition": "baseline",
+    "original_prompt": "An elderly couple dances slowly in their kitchen to music from an old radio, foreheads touching, utterly unaware of anything else in the room.",
+    "timestamp": "2026-08-12T05:28:58.659602+00:00",
+    "status": "ok",
+    "enhanced_description": "In a warm, softly lit kitchen, with vintage floral wallpaper and worn, honey-colored wooden cabinets, an elderly couple sways gently to the nostalgic melody drifting from an antique radio perched on the counter. The radio, its wooden casing polished to a warm sheen, sits beside a vase filled with fresh sunflowers, their bright yellow petals reflecting the golden tones of the setting sun streaming through the window. The couple, lost in their own little world, dance with their foreheads touching, their eyes closed, and their faces serene. The woman, with silver hair styled in loose waves, wears a comfortable, pastel pink sweater and a flowy skirt that sways with each step, while the man, with a kind face and thinning hair, has on a simple white shirt and dark trousers. The air is filled with the scent of freshly baked cookies, and the soft music seems to envelop them, making the rest of the world fade away. As they dance, the warm light catches the dust particles dancing in the air, adding a magical quality to the intimate scene.",
+    "camera": "A stationary camera, positioned in a corner of the kitchen, captures the couple from a slight distance, using a warm, shallow depth of field to blur the background and emphasize the tender moment they share, with the soft focus and golden light evoking a sense of nostalgia and timelessness.",
+    "original_score": 61,
+    "enhanced_score": 71,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 0,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 75,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 50
+    }
+  }
+]

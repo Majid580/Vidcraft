@@ -1,0 +1,352 @@
+[
+  {
+    "id": "sci-fi-1",
+    "prompt": "A lone terraforming drone hovers above a barren red canyon on Mars, its underside glowing with pale green light as it seeds the rust-colored soil at dusk.",
+    "complexity": "single-beat",
+    "genre": "sci-fi",
+    "tags": ["space", "mars", "drone", "solitude"]
+  },
+  {
+    "id": "sci-fi-2",
+    "prompt": "A cargo hauler drifts silently through a debris field left by an old space battle, its pilot spots a derelict station ahead, and finally eases the ship into a docking clamp as sparks scatter from a damaged strut.",
+    "complexity": "multi-beat",
+    "genre": "sci-fi",
+    "tags": ["spaceship", "salvage", "tension"]
+  },
+  {
+    "id": "sci-fi-3",
+    "prompt": "Inside a cramped generation ship's hydroponics bay, rows of glowing blue-lit plants sway gently as a maintenance robot drifts between them on magnetic rails.",
+    "complexity": "single-beat",
+    "genre": "sci-fi",
+    "tags": ["spaceship", "robot", "calm"]
+  },
+  {
+    "id": "sci-fi-4",
+    "prompt": "A scavenger climbs through the rusted hull of a crashed starship on a desert moon, discovers a still-humming reactor core deep inside, and steps back as the whole chamber floods with pulsing amber light.",
+    "complexity": "multi-beat",
+    "genre": "sci-fi",
+    "tags": ["salvage", "discovery", "wonder"]
+  },
+  {
+    "id": "fantasy-1",
+    "prompt": "A robed alchemist stirs a bubbling cauldron in a cluttered tower workshop, shelves of glowing vials and dried herbs crowding the walls around her.",
+    "complexity": "single-beat",
+    "genre": "fantasy",
+    "tags": ["magic", "workshop", "mystery"]
+  },
+  {
+    "id": "fantasy-2",
+    "prompt": "A young knight kneels before an ancient stone altar deep in a moss-covered ruin, places a broken sword upon it, and watches the blade knit itself back together in a burst of golden light.",
+    "complexity": "multi-beat",
+    "genre": "fantasy",
+    "tags": ["knight", "ritual", "hope"]
+  },
+  {
+    "id": "fantasy-3",
+    "prompt": "A colossal treant stands motionless at the edge of an enchanted forest, moss-draped branches forming a natural archway where fireflies drift in slow spirals.",
+    "complexity": "single-beat",
+    "genre": "fantasy",
+    "tags": ["forest", "creature", "serene"]
+  },
+  {
+    "id": "fantasy-4",
+    "prompt": "A traveling bard enters a rowdy tavern, tunes her lute by the fire as the room quiets, then launches into a rousing ballad that has the whole crowd stamping and cheering.",
+    "complexity": "multi-beat",
+    "genre": "fantasy",
+    "tags": ["tavern", "performance", "joy"]
+  },
+  {
+    "id": "horror-1",
+    "prompt": "A single flickering bulb swings above an abandoned asylum corridor, its light catching peeling wallpaper and a wheelchair tipped on its side.",
+    "complexity": "single-beat",
+    "genre": "horror",
+    "tags": ["abandoned", "dread", "decay"]
+  },
+  {
+    "id": "horror-2",
+    "prompt": "A babysitter checks each darkened room of a quiet house after hearing a thump upstairs, freezes at a closet door left slightly ajar, and slowly reaches for the handle as the hallway light flickers out.",
+    "complexity": "multi-beat",
+    "genre": "horror",
+    "tags": ["suspense", "night", "fear"]
+  },
+  {
+    "id": "horror-3",
+    "prompt": "A scarecrow stands crooked in a moonlit cornfield, its painted grin catching just enough light to seem like it's watching the farmhouse across the road.",
+    "complexity": "single-beat",
+    "genre": "horror",
+    "tags": ["night", "unease", "rural"]
+  },
+  {
+    "id": "noir-1",
+    "prompt": "A private detective leans against a rain-streaked window, cigarette smoke curling past venetian blinds that stripe his face in shadow.",
+    "complexity": "single-beat",
+    "genre": "noir-crime",
+    "tags": ["detective", "shadow", "rain"]
+  },
+  {
+    "id": "noir-2",
+    "prompt": "A getaway driver waits with the engine idling outside a darkened bank, glances at his watch as the alarm suddenly blares, and floors it the moment two figures burst through the door with duffel bags.",
+    "complexity": "multi-beat",
+    "genre": "noir-crime",
+    "tags": ["heist", "tension", "night"]
+  },
+  {
+    "id": "noir-3",
+    "prompt": "A lone figure crosses an empty, fog-choked street beneath a buzzing neon sign that reads only in fragments through the mist.",
+    "complexity": "single-beat",
+    "genre": "noir-crime",
+    "tags": ["fog", "neon", "mystery"]
+  },
+  {
+    "id": "urban-1",
+    "prompt": "A street vendor flips skewers over a smoking grill on a crowded night market corner, steam and sparks rising against a backdrop of neon shopfronts.",
+    "complexity": "single-beat",
+    "genre": "urban-everyday",
+    "tags": ["night-market", "food", "city"]
+  },
+  {
+    "id": "urban-2",
+    "prompt": "A commuter sprints down a subway platform as the doors begin to close, wedges an arm through the gap at the last second, and collapses into a seat catching her breath while other passengers glance up.",
+    "complexity": "multi-beat",
+    "genre": "urban-everyday",
+    "tags": ["subway", "rush", "relief"]
+  },
+  {
+    "id": "urban-3",
+    "prompt": "An elderly man feeds pigeons on a park bench at sunrise, then a pack of giggling children dash past and scatter the whole flock into a swirl of wingbeats.",
+    "complexity": "multi-beat",
+    "genre": "urban-everyday",
+    "tags": ["park", "morning", "gentle"]
+  },
+  {
+    "id": "action-1",
+    "prompt": "A stuntman-double leaps between two rooftops mid-motion, city skyline sprawling beneath him and his jacket snapping in the wind.",
+    "complexity": "single-beat",
+    "genre": "action-thriller",
+    "tags": ["rooftop", "stunt", "adrenaline"]
+  },
+  {
+    "id": "action-2",
+    "prompt": "A courier weaves a motorcycle through gridlocked traffic while chasers close in behind, ducks beneath a lowering parking-garage gate just as it slams shut, and skids to a stop in the sudden silence.",
+    "complexity": "multi-beat",
+    "genre": "action-thriller",
+    "tags": ["chase", "motorcycle", "tension"]
+  },
+  {
+    "id": "action-3",
+    "prompt": "Two rival climbers cling to a sheer cliff face mid-storm, rain lashing sideways as one reaches for a handhold just out of grasp.",
+    "complexity": "single-beat",
+    "genre": "action-thriller",
+    "tags": ["climbing", "storm", "peril"]
+  },
+  {
+    "id": "action-4",
+    "prompt": "A bomb-disposal technician kneels over a ticking device in an evacuated subway car, cuts the wrong wire and freezes as the timer speeds up, then finds the real wire with seconds to spare.",
+    "complexity": "multi-beat",
+    "genre": "action-thriller",
+    "tags": ["suspense", "countdown", "relief"]
+  },
+  {
+    "id": "historical-1",
+    "prompt": "A blacksmith hammers a glowing horseshoe on his anvil inside a dim medieval forge, sparks scattering with every strike.",
+    "complexity": "single-beat",
+    "genre": "historical",
+    "tags": ["medieval", "craft", "fire"]
+  },
+  {
+    "id": "historical-2",
+    "prompt": "A telegraph operator taps out an urgent message in a dusty frontier station, waits anxiously for a reply that doesn't come, then bolts outside as riders appear on the horizon.",
+    "complexity": "multi-beat",
+    "genre": "historical",
+    "tags": ["frontier", "urgency", "dust"]
+  },
+  {
+    "id": "historical-3",
+    "prompt": "A lantern-lit study holds a robed scholar hunched over illuminated manuscripts, quill scratching steadily by candlelight.",
+    "complexity": "single-beat",
+    "genre": "historical",
+    "tags": ["scholar", "candlelight", "quiet"]
+  },
+  {
+    "id": "sports-1",
+    "prompt": "A marathon runner crosses the finish line at dawn, arms raised, the empty stadium stands glowing faintly under the rising sun.",
+    "complexity": "single-beat",
+    "genre": "sports",
+    "tags": ["marathon", "triumph", "dawn"]
+  },
+  {
+    "id": "sports-2",
+    "prompt": "A boxer circles cautiously in the ring for the first two rounds, absorbs a hard combination against the ropes, then rallies with a decisive uppercut that sends her opponent to the canvas.",
+    "complexity": "multi-beat",
+    "genre": "sports",
+    "tags": ["boxing", "comeback", "intensity"]
+  },
+  {
+    "id": "sports-3",
+    "prompt": "A surfer drops into a towering wave at golden hour, carves hard along its face, and disappears into the barrel just as it collapses into white spray.",
+    "complexity": "multi-beat",
+    "genre": "sports",
+    "tags": ["surfing", "ocean", "golden-hour"]
+  },
+  {
+    "id": "food-1",
+    "prompt": "A chef plates a delicate dessert under warm kitchen lights, drizzling dark chocolate in careful spirals across white porcelain.",
+    "complexity": "single-beat",
+    "genre": "food-culinary",
+    "tags": ["kitchen", "dessert", "precision"]
+  },
+  {
+    "id": "food-2",
+    "prompt": "A home baker kneads dough on a flour-dusted counter, shapes it into loaves, and finally pulls a tray of golden, steaming bread from the oven as morning light fills the kitchen.",
+    "complexity": "multi-beat",
+    "genre": "food-culinary",
+    "tags": ["baking", "morning", "warmth"]
+  },
+  {
+    "id": "food-3",
+    "prompt": "Steam rises from a bubbling pot of noodles on a street-food cart as the vendor tosses in fresh vegetables, then ladles a steaming bowl straight into a waiting customer's hands.",
+    "complexity": "multi-beat",
+    "genre": "food-culinary",
+    "tags": ["street-food", "steam", "bustle"]
+  },
+  {
+    "id": "music-1",
+    "prompt": "A violinist stands alone on an empty concert stage, spotlight narrowing as she draws the bow across the strings in the hush before the audience arrives.",
+    "complexity": "single-beat",
+    "genre": "music-performance",
+    "tags": ["concert", "solitude", "anticipation"]
+  },
+  {
+    "id": "music-2",
+    "prompt": "A garage band rehearses in a cramped basement, struggles through a rough first take, then locks into the song perfectly on their third try as everyone grins at each other.",
+    "complexity": "multi-beat",
+    "genre": "music-performance",
+    "tags": ["band", "rehearsal", "camaraderie"]
+  },
+  {
+    "id": "music-3",
+    "prompt": "A DJ's hands hover over a mixing deck in a packed nightclub, colored lights strobing across the crowd in time with the bass.",
+    "complexity": "single-beat",
+    "genre": "music-performance",
+    "tags": ["nightclub", "lights", "energy"]
+  },
+  {
+    "id": "comedy-1",
+    "prompt": "A raccoon in a tiny chef's hat balances precariously on a kitchen counter, eyeing a pie cooling on the windowsill.",
+    "complexity": "single-beat",
+    "genre": "comedy-whimsical",
+    "tags": ["animal", "mischief", "playful"]
+  },
+  {
+    "id": "comedy-2",
+    "prompt": "A man in a business suit tiptoes past a sleeping dog toward the front door, freezes mid-step when a floorboard creaks, then bolts for the exit as the dog springs awake barking.",
+    "complexity": "multi-beat",
+    "genre": "comedy-whimsical",
+    "tags": ["slapstick", "dog", "panic"]
+  },
+  {
+    "id": "comedy-3",
+    "prompt": "A toddler in oversized rain boots stomps gleefully through a puddle, sending an arc of water directly onto an unamused cat, which bolts away in an undignified sprint.",
+    "complexity": "multi-beat",
+    "genre": "comedy-whimsical",
+    "tags": ["toddler", "puddle", "cat"]
+  },
+  {
+    "id": "abstract-1",
+    "prompt": "Ink drops bloom and swirl through water in slow motion, ribbons of deep blue and gold twisting into intricate, ever-shifting patterns.",
+    "complexity": "single-beat",
+    "genre": "abstract-artistic",
+    "tags": ["ink", "slow-motion", "color"]
+  },
+  {
+    "id": "abstract-2",
+    "prompt": "A single white line is drawn across a blank black canvas, splits into branching fractal patterns that spread outward, and finally resolves into the shape of a blooming flower.",
+    "complexity": "multi-beat",
+    "genre": "abstract-artistic",
+    "tags": ["fractal", "growth", "minimal"]
+  },
+  {
+    "id": "abstract-3",
+    "prompt": "Sand grains cascade in a slow-motion hourglass, backlit so each falling particle catches the light like a tiny spark.",
+    "complexity": "single-beat",
+    "genre": "abstract-artistic",
+    "tags": ["hourglass", "light", "time"]
+  },
+  {
+    "id": "nature-1",
+    "prompt": "A snow leopard perches motionless on a rocky Himalayan ledge, golden late-afternoon light catching its pale, spotted fur.",
+    "complexity": "single-beat",
+    "genre": "nature-wildlife",
+    "tags": ["wildlife", "mountains", "golden-hour"]
+  },
+  {
+    "id": "nature-2",
+    "prompt": "A pod of dolphins swims lazily beside a fishing boat at dawn, suddenly bursts into a synchronized leap over the wake, then vanishes back beneath the glassy water.",
+    "complexity": "multi-beat",
+    "genre": "nature-wildlife",
+    "tags": ["ocean", "dolphins", "dawn"]
+  },
+  {
+    "id": "nature-3",
+    "prompt": "Morning mist clings to a redwood forest floor, shafts of sunlight cutting through the canopy in slow, drifting beams.",
+    "complexity": "single-beat",
+    "genre": "nature-wildlife",
+    "tags": ["forest", "mist", "serene"]
+  },
+  {
+    "id": "nature-4",
+    "prompt": "A hummingbird hovers uncertainly near a garden feeder, darts away when a bee gets too close, then returns moments later to drink undisturbed as the bee wanders off.",
+    "complexity": "multi-beat",
+    "genre": "nature-wildlife",
+    "tags": ["garden", "hummingbird", "delicate"]
+  },
+  {
+    "id": "family-1",
+    "prompt": "A father teaches his daughter to ride a bicycle in a quiet suburban driveway, one hand steadying the seat as she wobbles forward.",
+    "complexity": "single-beat",
+    "genre": "family-slice-of-life",
+    "tags": ["family", "childhood", "tender"]
+  },
+  {
+    "id": "family-2",
+    "prompt": "A family gathers around a dinner table as an old story is told, laughter rising as the punchline lands, and then quiets into warm smiles as they clink glasses together.",
+    "complexity": "multi-beat",
+    "genre": "family-slice-of-life",
+    "tags": ["dinner", "laughter", "warmth"]
+  },
+  {
+    "id": "family-3",
+    "prompt": "Grandparents nap side by side in porch rocking chairs on a lazy summer afternoon, a half-finished crossword resting on the small table between them.",
+    "complexity": "single-beat",
+    "genre": "family-slice-of-life",
+    "tags": ["porch", "summer", "quiet"]
+  },
+  {
+    "id": "family-4",
+    "prompt": "Two siblings build an elaborate blanket fort in the living room, argue briefly over the last pillow, then squeeze in together to read a book by flashlight.",
+    "complexity": "multi-beat",
+    "genre": "family-slice-of-life",
+    "tags": ["siblings", "play", "cozy"]
+  },
+  {
+    "id": "romance-1",
+    "prompt": "Two strangers share an umbrella at a rain-soaked bus stop, both smiling shyly as their hands brush reaching for the same handle.",
+    "complexity": "single-beat",
+    "genre": "romance",
+    "tags": ["rain", "meet-cute", "shy"]
+  },
+  {
+    "id": "romance-2",
+    "prompt": "A couple strolls along a moonlit pier, pauses at the railing to watch fireworks bloom over the water, and turns to share a quiet kiss as the last burst fades.",
+    "complexity": "multi-beat",
+    "genre": "romance",
+    "tags": ["pier", "fireworks", "intimate"]
+  },
+  {
+    "id": "romance-3",
+    "prompt": "An elderly couple dances slowly in their kitchen to music from an old radio, foreheads touching, utterly unaware of anything else in the room.",
+    "complexity": "single-beat",
+    "genre": "romance",
+    "tags": ["kitchen", "tender", "lasting-love"]
+  }
+]
