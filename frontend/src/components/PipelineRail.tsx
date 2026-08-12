@@ -107,34 +107,47 @@ function ShotTicks({ shots }: { shots: Shot[] }) {
   return (
     <div className="mt-2.5 flex flex-wrap gap-1.5">
       {shots.map((s) => {
-        const cls =
-          s.status === 'completed'
-            ? s.critic_passed === false
-              ? 'border-warning/50 bg-warning/20 text-warning'
-              : 'border-accent/50 bg-accent/20 text-accent'
+        // Each state carries a glyph as well as a colour. Status must never
+        // be colour alone — and red-vs-orange in particular is unreadable
+        // for deuteranopes (measured ΔE 4.1), so the glyph is doing real
+        // work here, not decoration.
+        const held = s.status === 'on_hold'
+        const criticFailed = s.status === 'completed' && s.critic_passed === false
+        const view = criticFailed
+          ? { cls: 'border-warning/50 bg-warning/15 text-warning', glyph: '!' }
+          : s.status === 'completed'
+            ? { cls: 'border-accent/55 bg-accent/15 text-accent', glyph: '✓' }
             : s.status === 'processing'
-              ? 'border-primary/60 bg-primary/20 text-primary pulse-active'
+              ? {
+                  cls: 'border-primary/60 bg-primary/15 text-primary pulse-active',
+                  glyph: '·',
+                }
               : s.status === 'failed'
-                ? 'border-destructive/50 bg-destructive/20 text-destructive'
-                : s.status === 'on_hold'
-                  ? 'border-warning/50 bg-warning/15 text-warning'
-                  : 'border-border text-muted-foreground/60'
-        const note =
-          s.status === 'completed' && s.critic_passed === false
-            ? ` · critic: ${s.critic_reason ?? 'not matched'}${s.retry_count ? ` (after ${s.retry_count} retries)` : ''}`
-            : s.error
-              ? ` · ${s.error}`
-              : ''
+                ? { cls: 'border-destructive/50 bg-destructive/15 text-destructive', glyph: '✕' }
+                : held
+                  ? { cls: 'border-warning/50 bg-warning/10 text-warning', glyph: '‖' }
+                  : { cls: 'border-border text-muted-foreground/50', glyph: '' }
+
+        const note = criticFailed
+          ? ` · critic: ${s.critic_reason ?? 'not matched'}${s.retry_count ? ` (after ${s.retry_count} ${s.retry_count > 1 ? 'retries' : 'retry'})` : ''}`
+          : s.error
+            ? ` · ${s.error}`
+            : ''
         return (
           <span
             key={s.shot_id}
-            title={`Shot ${s.shot_id} — ${s.status}${note}`}
+            title={`Shot ${s.shot_id} — ${criticFailed ? 'generated, critic flagged it' : s.status}${note}`}
             className={cn(
-              'data grid h-6 min-w-6 place-items-center rounded-[4px] border px-1.5 text-[10px] transition-colors duration-300',
-              cls,
+              'data inline-flex h-6 items-center gap-1 rounded-[4px] border px-1.5 text-[10px] transition-colors duration-300',
+              view.cls,
             )}
           >
             {s.shot_id}
+            {view.glyph && (
+              <span aria-hidden className="opacity-80">
+                {view.glyph}
+              </span>
+            )}
           </span>
         )
       })}

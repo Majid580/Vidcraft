@@ -81,7 +81,7 @@ export function ClarificationChat({
             size="lg"
             disabled={!canSubmit}
             onClick={() => onSubmit(answers)}
-            className="bg-primary h-11 gap-2 px-6 font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-40"
+            className="btn-premium h-11 gap-2 px-6 font-semibold text-primary-foreground disabled:opacity-40"
           >
             {loading ? (
               <>

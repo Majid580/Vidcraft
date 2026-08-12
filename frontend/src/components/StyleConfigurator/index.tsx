@@ -614,7 +614,7 @@ export function StyleConfigurator({
           size="lg"
           disabled={loading}
           onClick={onGenerate}
-          className="bg-primary h-11 shrink-0 gap-2 px-6 font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          className="btn-premium h-11 shrink-0 gap-2 px-6 font-semibold text-primary-foreground disabled:opacity-50"
         >
           {loading ? (
             <>

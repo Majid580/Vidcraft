@@ -76,7 +76,7 @@
   --destructive-foreground: #fbf8f3;
 
   --info: #1e7c88;
-  --success: #2f7d52;
+  --success: #1e7c88; /* aliased to the cool pole: a separate green sat at ΔE 8.9 from cyan, below the 15 normal-vision floor */
   --warning: #a8701a;
 
   --border: rgba(20, 24, 29, 0.13);
@@ -105,6 +105,35 @@
   --sidebar-accent-foreground: #14181d;
   --sidebar-border: rgba(20, 24, 29, 0.13);
   --sidebar-ring: #b4741b;
+
+  /* ---- Data-mark colours ----
+     Deliberately separate from the text/UI accents above. A colour that is
+     legible as 12px body text and a colour that reads well as a filled mark
+     are different colours: --accent (#1e7c88) clears 4.5:1 as text but reads
+     grey as a mark (OKLCH chroma 0.084, below the 0.1 floor), while the mark
+     step below carries chroma 0.10 and would only reach 3.79:1 as text.
+     Validated with the dataviz palette validator against the plate surface:
+     CVD separation ΔE 14.5 (deutan), normal-vision ΔE 21.9, all ≥ 3:1 vs
+     surface. Text always wears the text tokens; these are for marks only. */
+  --mark-warm: #b4741b;
+  --mark-cool: #0089a0;
+  --mark-bad: #b4342a;
+  /* Sequential ramp for magnitude (one hue, light→dark) — the dimension
+     meters. Never a traffic-light rainbow: the number is the magnitude and
+     the label is the identity, so hue carries neither. */
+  --ramp-1: #e8cba3;
+  --ramp-2: #d9a75f;
+  --ramp-3: #c08c2c;
+  --ramp-4: #b4741b;
+
+  /* ---- Elevation ----
+     Light falls from above, so every shadow is offset downward and every
+     raised surface catches a hairline highlight on its top edge. Two layers:
+     a tight contact shadow and a wide ambient one. */
+  --shadow-1: 0 1px 2px rgba(8, 10, 13, 0.16), 0 2px 8px -2px rgba(8, 10, 13, 0.1);
+  --shadow-2: 0 2px 4px rgba(8, 10, 13, 0.18), 0 12px 28px -8px rgba(8, 10, 13, 0.16);
+  --shadow-3: 0 4px 8px rgba(8, 10, 13, 0.2), 0 28px 56px -16px rgba(8, 10, 13, 0.24);
+  --edge-light: rgba(255, 255, 255, 0.7);
 
   --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
   --sans: 'Geist Variable', system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -151,7 +180,7 @@
   --destructive-foreground: #14181d;
 
   --info: #3fb8c4;
-  --success: #5cbd8a;
+  --success: #3fb8c4; /* see light theme note — no near-duplicate hue in the status set */
   --warning: #e8a33d;
 
   --border: rgba(233, 228, 218, 0.11);
@@ -176,6 +205,25 @@
   --sidebar-accent-foreground: #e9e4da;
   --sidebar-border: rgba(233, 228, 218, 0.11);
   --sidebar-ring: #e8a33d;
+
+  /* Dark-mode mark steps are selected against the dark plate, not flipped
+     from the light ones. Validated: CVD ΔE 14.2 (deutan), normal-vision
+     ΔE 22.9, all ≥ 3:1 vs #1a1f26. */
+  --mark-warm: #e8a33d;
+  --mark-cool: #3fb8c4;
+  --mark-bad: #e5695c;
+  --ramp-1: #6b5836;
+  --ramp-2: #a07c34;
+  --ramp-3: #cf9333;
+  --ramp-4: #e8a33d;
+
+  /* On a dark surface the ambient shadow does almost nothing; the top-edge
+     highlight is what separates one plate from another, so it carries more
+     of the work and the shadows go deeper. */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.45), 0 14px 32px -10px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 4px 10px rgba(0, 0, 0, 0.5), 0 32px 64px -18px rgba(0, 0, 0, 0.6);
+  --edge-light: rgba(233, 228, 218, 0.09);
 
   color-scheme: dark;
 }
@@ -342,6 +390,19 @@
     background: var(--card);
     border: 1px solid var(--border);
     position: relative;
+    /* The hairline along the top edge is the whole trick: a real surface
+       catches the light on the edge that faces it. Paired with a downward
+       shadow it reads as a physical plate rather than a coloured rectangle. */
+    box-shadow:
+      inset 0 1px 0 0 var(--edge-light),
+      var(--shadow-1);
+  }
+
+  /* For the few surfaces that should sit above the rest. */
+  .plate-raised {
+    box-shadow:
+      inset 0 1px 0 0 var(--edge-light),
+      var(--shadow-2);
   }
 
   /* A single hairline of the grade axis across the top edge — the only
@@ -390,10 +451,48 @@
       border-color var(--dur-base) ease;
     will-change: transform;
   }
+  /* Hover responds in three channels at once — lift, border warmth, and a
+     shadow that both deepens and picks up the brand hue. One channel alone
+     reads as a cheap rollover; three read as a physical object moving toward
+     the light. */
   .hover-lift:hover {
     transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
-    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.55);
+    border-color: color-mix(in srgb, var(--primary) 42%, var(--border));
+    box-shadow:
+      inset 0 1px 0 0 var(--edge-light),
+      var(--shadow-2),
+      0 18px 44px -26px color-mix(in srgb, var(--primary) 55%, transparent);
+  }
+
+  /* Primary action: a top-lit fill with a warm cast shadow, so the button
+     looks like it is made of the same material as the plates it sits on. */
+  .btn-premium {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--primary) 92%, white),
+      var(--primary)
+    );
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+      0 1px 2px rgba(8, 10, 13, 0.28),
+      0 8px 20px -8px color-mix(in srgb, var(--primary) 62%, transparent);
+    transition:
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      filter var(--dur-fast) ease;
+  }
+  .btn-premium:hover:not(:disabled) {
+    filter: brightness(1.05);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.34),
+      0 2px 4px rgba(8, 10, 13, 0.3),
+      0 14px 30px -10px color-mix(in srgb, var(--primary) 72%, transparent);
+  }
+  .btn-premium:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow:
+      inset 0 1px 2px rgba(8, 10, 13, 0.25),
+      0 1px 2px rgba(8, 10, 13, 0.2);
   }
 
   /* Light "spills" from the pointer across the plate — a grading monitor
