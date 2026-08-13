@@ -6,6 +6,7 @@ const generationService = require('../services/generationService');
 const remotionService = require('../services/remotionService');
 const ffmpegService = require('../services/ffmpegService');
 const criticService = require('../services/criticService');
+const narrationService = require('../services/narrationService');
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -101,10 +102,25 @@ async function processGeneration(job) {
   doc.subtitles_url = undefined;
   doc.subtitled_video_url = undefined;
   doc.postprocess_error = undefined;
+  doc.narration_error = undefined;
   try {
     const filename = 'storyboard.mp4';
     const mediaDir = path.join(generationService.GENERATED_DIR, doc.id);
     const videoPath = path.join(mediaDir, filename);
+
+    // FR-10 (NARR-001, ADR-032) — voiceover, BEFORE the render because it
+    // rewrites each narrated shot's duration_s to the measured length of the
+    // speech it carries. Remotion takes duration as an input, so fitting the
+    // video to the audio here is what makes drift structurally impossible
+    // rather than something to correct afterwards. Non-fatal: on failure the
+    // shots keep their authored durations and the video renders silently.
+    const narration = await narrationService.attachNarration(
+      doc,
+      mediaDir,
+      `/media/${doc.id}`,
+    );
+    doc.narration_error = narration.error;
+
     const render = await remotionService.renderStoryboard(
       doc.shots,
       doc.world_state,

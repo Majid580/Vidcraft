@@ -43,6 +43,11 @@ router.get('/jobs/:id', async (req, res, next) => {
       subtitlesUrl: (doc && doc.subtitles_url) || undefined,
       subtitledVideoUrl: (doc && doc.subtitled_video_url) || undefined,
       postprocessError: (doc && doc.postprocess_error) || undefined,
+      // FR-10 (ADR-032). Beats ride along inside `shots` above, since a
+      // shot's beats are its timeline. This reports only a voiceover that
+      // was attempted and failed — the video above is unaffected and plays
+      // silently.
+      narrationError: (doc && doc.narration_error) || undefined,
     });
   } catch (err) {
     next(err);

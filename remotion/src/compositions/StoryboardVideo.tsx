@@ -43,18 +43,29 @@ const framesFor = (shot: Shot) => Math.max(1, Math.round(shot.duration_s * FPS))
 // first place rather than being guessed at and hoped for.
 //
 // Silent beats simply contribute their length and no <Audio>.
+// Beat offsets come from CUMULATIVE rounding inside the shot, never from
+// rounding each beat's duration on its own — two 1.11s beats round to
+// 33+33=66 frames while their 2.22s shot rounds to 67, and that one frame is
+// enough to push a clip past the end of its <Series.Sequence> or to disagree
+// with the caption track, which derives its boundaries the same way in
+// ffmpegService.buildVtt. Both must round identically or the voice and the
+// subtitles describe different moments.
 const BeatAudio: React.FC<{ shot: Shot }> = ({ shot }) => {
   if (!shot.beats?.length) return null;
 
-  let offsetFrames = 0;
+  const shotFrames = framesFor(shot);
+  let elapsed = 0;
+  let previous = 0;
+
   return (
     <>
       {shot.beats.map((beat) => {
-        const from = offsetFrames;
-        offsetFrames += Math.max(1, Math.round(beat.duration_s * FPS));
-        if (!beat.narrationSrc) return null;
+        const from = previous;
+        elapsed += beat.duration_s;
+        previous = Math.min(shotFrames, Math.round(elapsed * FPS));
+        if (!beat.narrationSrc || previous <= from) return null;
         return (
-          <Sequence key={beat.beat_id} from={from}>
+          <Sequence key={beat.beat_id} from={from} durationInFrames={previous - from}>
             <Audio src={beat.narrationSrc} />
           </Sequence>
         );

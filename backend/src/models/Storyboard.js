@@ -23,12 +23,40 @@ const worldStateSchema = new mongoose.Schema(
   { _id: false },
 );
 
+// FR-10 (NARR-001, ADR-032). A beat is one continuous thing happening with
+// one line of voiceover over it. `duration_s` is MEASURED from the
+// synthesised speech, never authored — the shot is then held for exactly as
+// long as the beats it carries, which is what makes the voice and the
+// picture impossible to desynchronise. A beat with empty narration is
+// deliberately silent and still occupies time.
+const beatSchema = new mongoose.Schema(
+  {
+    beat_id: { type: Number, required: true },
+    action: { type: String, required: true },
+    narration: { type: String, default: '' },
+    duration_s: { type: Number, required: true },
+    start_s: { type: Number },
+    end_s: { type: Number },
+    narration_url: { type: String },
+    voice: { type: String },
+    // Why this beat has no audio, when it was meant to. Synthesis failure is
+    // per-beat and non-fatal: the beat degrades to a silent slot of the same
+    // length rather than costing the whole render.
+    narration_error: { type: String },
+  },
+  { _id: false },
+);
+
 const shotSchema = new mongoose.Schema(
   {
     shot_id: { type: Number, required: true },
     description: { type: String, required: true },
     camera: { type: String, required: true },
+    // With narration this is the sum of the shot's MEASURED beat durations,
+    // overwriting the Screenwriter's authored guess. Without it, that guess
+    // stands, exactly as before.
     duration_s: { type: Number, required: true },
+    beats: { type: [beatSchema], default: undefined },
     pathway: { type: String, enum: ['remotion', 'external_api'], required: true },
     provider: { type: String, enum: RENDER_PROVIDERS, required: true },
     status: {
@@ -88,6 +116,14 @@ const storyboardSchema = new mongoose.Schema(
     subtitles_url: { type: String },
     subtitled_video_url: { type: String },
     postprocess_error: { type: String },
+    // FR-10 (NARR-001, ADR-032). Why the voiceover was not produced, when it
+    // was attempted. Narration is non-fatal in the same way assembly and
+    // post-processing are: on failure every shot keeps its authored
+    // duration_s and the video renders silently, so this field explains a
+    // missing voice track rather than marking the run as broken. The beats
+    // themselves live on each shot, since their timings ARE that shot's
+    // timeline.
+    narration_error: { type: String },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },
 );

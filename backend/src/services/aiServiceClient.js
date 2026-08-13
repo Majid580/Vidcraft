@@ -57,6 +57,18 @@ function generateStoryboard(clarifiedPrompt) {
   return post('/storyboard/generate', { clarified_prompt: clarifiedPrompt });
 }
 
+// FR-10 (ADR-032). Returns each shot with its beats — every beat carrying
+// the MEASURED duration of its own narration and the audio as base64 — plus
+// the duration_s the shot must adopt for the voice to stay in sync. The
+// caller adopts those numbers; it must never recompute them.
+function generateNarration(shots, worldState, voice) {
+  return post('/narration/script', {
+    shots,
+    world_state: worldState,
+    ...(voice ? { voice } : {}),
+  });
+}
+
 function criticEvaluate(imageBase64, description) {
   return post('/critic/evaluate', { image_base64: imageBase64, description });
 }
@@ -66,5 +78,6 @@ module.exports = {
   getClarificationQuestions,
   resolveClarification,
   generateStoryboard,
+  generateNarration,
   criticEvaluate,
 };

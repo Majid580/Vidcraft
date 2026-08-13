@@ -106,12 +106,51 @@ function buildVtt(shots) {
   const cues = [];
   let cursor = 0;
 
-  included.forEach((shot, index) => {
-    const start = cursor;
-    cursor += framesFor(shot);
+  included.forEach((shot) => {
+    // FR-10 (ADR-032) — when a shot has been narrated, its beats ARE the
+    // timeline, so captions follow them: one cue per beat, carrying the line
+    // actually spoken over it. Captions that said something other than the
+    // voiceover would be worse than none, and beat boundaries are already
+    // the measured truth here.
+    //
+    // Crucially this still walks the SAME cursor in the same frame units, so
+    // the total the desync guard checks is unchanged — a shot's beats sum to
+    // its duration_s by construction (narrationService set it that way).
+    const beats = Array.isArray(shot.beats) && shot.beats.length ? shot.beats : null;
+    const shotStart = cursor;
+    const shotFrames = framesFor(shot);
+    cursor += shotFrames;
+
+    if (beats) {
+      // Beat boundaries are derived by CUMULATIVE rounding inside the shot,
+      // never by rounding each beat's duration on its own. Rounding
+      // independently lets a shot's beats sum to a frame more or less than
+      // the shot itself — e.g. two 1.11s beats round to 33+33=66 frames
+      // while their 2.22s shot rounds to 67 — which would desynchronise the
+      // captions from the picture and, worse, corrupt the frame total the
+      // guard below checks against Remotion's actual render. Deriving each
+      // boundary from the running total, and clamping the last to the shot's
+      // own frame count, makes the beats sum to the shot exactly.
+      let elapsed = 0;
+      let previous = 0;
+      beats.forEach((beat) => {
+        elapsed += beat.duration_s;
+        const offset = Math.min(shotFrames, Math.round(elapsed * STORYBOARD_FPS));
+        const start = shotStart + previous;
+        const end = shotStart + offset;
+        previous = offset;
+        // A deliberately silent beat gets no cue but still consumes its
+        // time, so everything after it stays aligned.
+        const text = wrapCue(beat.narration || '');
+        if (!text || end <= start) return;
+        cues.push(`${cues.length + 1}\n${timestamp(start)} --> ${timestamp(end)}\n${text}`);
+      });
+      return;
+    }
+
     const text = wrapCue(shot.description);
     if (!text) return;
-    cues.push(`${index + 1}\n${timestamp(start)} --> ${timestamp(cursor)}\n${text}`);
+    cues.push(`${cues.length + 1}\n${timestamp(shotStart)} --> ${timestamp(cursor)}\n${text}`);
   });
 
   return {

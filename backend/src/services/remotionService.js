@@ -124,6 +124,26 @@ function renderStoryboard(shots, worldState, outputPath) {
         // Remotion's headless browser needs an absolute URL; asset_url is
         // stored as a server-relative /media path.
         ...(isImage ? { imageSrc: `${MEDIA_BASE_URL}${shot.asset_url}` } : {}),
+        // FR-10 (ADR-032) — the voiceover. This mapping is explicit rather
+        // than a spread of the whole shot, so a field that is not named here
+        // never reaches the composition: beats had to be carried across
+        // deliberately, and their audio needs the same relative -> absolute
+        // treatment as the stills. duration_s above is already the measured
+        // sum of these beats (narrationService set it), so the picture is
+        // held for exactly as long as the speech.
+        ...(Array.isArray(shot.beats) && shot.beats.length
+          ? {
+            beats: shot.beats.map((beat) => ({
+              beat_id: beat.beat_id,
+              action: beat.action,
+              narration: beat.narration,
+              duration_s: beat.duration_s,
+              ...(beat.narration_url
+                ? { narrationSrc: `${MEDIA_BASE_URL}${beat.narration_url}` }
+                : {}),
+            })),
+          }
+          : {}),
       };
     });
 
