@@ -79,8 +79,15 @@ keeps the demo moving):
 | 3 | Style stage: pick Cinematic + **Remotion** | — | "The user picks the rendering pathway explicitly — that's ADR-020. No agent guesses it." |
 | 4 | Click **Generate storyboard** | ~25s | "LangGraph now runs four agents: Screenwriter decomposes into shots, Cinematographer grounds each shot's camera in a 75-passage RAG index, then a sentence-similarity check verifies the storyboard still matches the prompt, with bounded retries." |
 | 5 | Shot list appears; **the pipeline rail** advances through its five stages | ~60s | "This is the whole contribution on one screen — the four agents, then per-shot rendering, then assembly. Each shot renders through its own Bull job, and each square carries the critic's verdict: a shot that generated but failed critique looks different from one that failed outright, and it gets regenerated automatically." |
-| 6 | Final video appears | ~30s | "Remotion assembles the shots into one continuous 1080p MP4 with per-shot camera moves, then FFmpeg adds the poster frame and captions." |
-| 7 | **Press CC**, show captions; show both downloads | — | "Captions are generated from the shot descriptions and timed to the assembled cut. The clean master and a burned-in copy are both available." |
+| 6 | Final video appears — **play it with sound up** | ~30s | "Remotion assembles the shots into one continuous 1080p MP4 with per-shot camera moves and the narration track, then FFmpeg adds the poster frame and captions." |
+| 7 | **Press CC**, show captions; show both downloads | — | "Captions carry the spoken narration and are timed to the same beat boundaries the voice is, so they cannot drift apart. The clean master and a burned-in copy are both available." |
+| 8 | *(if asked about the audio)* | — | "No video model we can reach produces sound — Runway, Pika, Luma, Kling and the Hugging Face models are all silent; only Veo 3 and Sora 2 generate audio and neither is in our tiers. So we synthesise it, and we fit the **video to the audio**: each line is spoken first, its real length measured, and the shot held for exactly that long. Drift isn't corrected, it's impossible — ADR-032." |
+
+> **Narration lengthens the video.** Spoken lines usually need longer than the
+> Screenwriter's authored 3-5s shots, so a narrated run is noticeably longer than
+> the silent timings recorded in the rehearsal log below — those were measured
+> before FR-10 existed. Re-time before presenting, or set `NARRATION_ENABLED=false`
+> to get exactly the silent behaviour the log describes.
 
 **Total: ~2 minutes of machine time.** Fill it with step 4's explanation — the
 orchestration is the interesting part and it is exactly what is running while you talk.
