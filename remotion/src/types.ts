@@ -10,11 +10,31 @@ export type WorldState = {
   reference_image_url?: string;
 };
 
+// FR-10 (NARR-001, ADR-032): one continuous thing happening on screen, with
+// one line of voiceover over it. `duration_s` here is MEASURED from the
+// synthesised speech, never authored — which is what makes the voice and the
+// picture impossible to desynchronise: the shot is held for exactly as long
+// as the lines it carries. A beat with empty narration is deliberately
+// silent and still occupies time.
+export type Beat = {
+  beat_id: number;
+  action: string;
+  narration: string;
+  duration_s: number;
+  // Absolute http URL of this beat's synthesised audio (the backend's /media
+  // mount). Absent when the beat is silent, or when narration was never
+  // generated for this storyboard.
+  narrationSrc?: string;
+};
+
 export type Shot = {
   shot_id: number;
   description: string;
   camera: string;
+  // With narration, this is the sum of the shot's measured beat durations.
+  // Without it, the Screenwriter's authored value, exactly as before.
   duration_s: number;
+  beats?: Beat[];
   pathway: 'remotion' | 'external_api';
   // Absolute http URL of this shot's generated still (the backend's /media
   // mount). Present once an image provider has generated the shot; absent

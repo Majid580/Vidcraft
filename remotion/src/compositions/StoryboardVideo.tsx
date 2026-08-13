@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, Series } from 'remotion';
+import { AbsoluteFill, Audio, Sequence, Series } from 'remotion';
 import { WideShot } from './WideShot';
 import { MediumShot } from './MediumShot';
 import { CloseUpShot } from './CloseUpShot';
@@ -32,6 +32,37 @@ const COMPONENTS = {
 
 const framesFor = (shot: Shot) => Math.max(1, Math.round(shot.duration_s * FPS));
 
+// FR-10 (ADR-032): the voiceover track.
+//
+// Nothing here schedules the picture around the audio, and that is the whole
+// point. Each beat's duration_s was MEASURED from its synthesised speech
+// before this composition ever ran, and a shot's duration_s is the sum of its
+// beats — so placing each clip at its beat's offset inside the shot lands it
+// exactly where the timeline already expects it. Drift is not corrected here;
+// it is structurally absent, because the timing came from the audio in the
+// first place rather than being guessed at and hoped for.
+//
+// Silent beats simply contribute their length and no <Audio>.
+const BeatAudio: React.FC<{ shot: Shot }> = ({ shot }) => {
+  if (!shot.beats?.length) return null;
+
+  let offsetFrames = 0;
+  return (
+    <>
+      {shot.beats.map((beat) => {
+        const from = offsetFrames;
+        offsetFrames += Math.max(1, Math.round(beat.duration_s * FPS));
+        if (!beat.narrationSrc) return null;
+        return (
+          <Sequence key={beat.beat_id} from={from}>
+            <Audio src={beat.narrationSrc} />
+          </Sequence>
+        );
+      })}
+    </>
+  );
+};
+
 export const StoryboardVideo: React.FC<StoryboardCompositionProps> = ({
   shots,
   worldState,
@@ -47,6 +78,7 @@ export const StoryboardVideo: React.FC<StoryboardCompositionProps> = ({
               durationInFrames={framesFor(shot)}
             >
               <Component shot={shot} worldState={worldState} />
+              <BeatAudio shot={shot} />
             </Series.Sequence>
           );
         })}
