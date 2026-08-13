@@ -36,8 +36,17 @@ function analyzePrompt(prompt) {
   return post('/analyze', { prompt });
 }
 
-function getClarificationQuestions(prompt, flags, suggestions) {
-  return post('/clarify/questions', { prompt, flags, suggestions });
+// `overallScore` is optional (ADR-031): the ai-service sizes the question
+// budget from the flags alone without it, but passing the FR-1 overall score
+// lets it ask an extra question of a prompt that is weak everywhere rather
+// than broken in one dimension.
+function getClarificationQuestions(prompt, flags, suggestions, overallScore) {
+  return post('/clarify/questions', {
+    prompt,
+    flags,
+    suggestions,
+    ...(Number.isFinite(overallScore) ? { overall_score: overallScore } : {}),
+  });
 }
 
 function resolveClarification(prompt, questions, answers) {

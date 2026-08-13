@@ -42,6 +42,10 @@ class ClarifyQuestionsRequest(BaseModel):
     prompt: str = Field(..., min_length=1)
     flags: list[str] = Field(default_factory=list)
     suggestions: list[str] = Field(default_factory=list)
+    # Optional so an older caller that sends only flags keeps working; when
+    # present it sharpens the question budget for prompts that are mediocre
+    # across every dimension rather than broken in one (ADR-031).
+    overall_score: int | None = Field(default=None, ge=0, le=100)
 
 
 class ClarifyQuestionsResponse(BaseModel):
@@ -51,7 +55,9 @@ class ClarifyQuestionsResponse(BaseModel):
 @app.post("/clarify/questions", response_model=ClarifyQuestionsResponse)
 def clarify_questions(request: ClarifyQuestionsRequest):
     try:
-        questions = generate_questions(request.prompt, request.flags, request.suggestions)
+        questions = generate_questions(
+            request.prompt, request.flags, request.suggestions, request.overall_score
+        )
         return {"questions": questions}
     except GroqConfigError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc

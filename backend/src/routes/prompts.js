@@ -22,6 +22,7 @@ router.post('/prompts', requireFields(['prompt']), async (req, res, next) => {
         prompt,
         analysis.flags,
         analysis.suggestions,
+        analysis.overall_score,
       );
       clarificationQuestions = questions;
     }

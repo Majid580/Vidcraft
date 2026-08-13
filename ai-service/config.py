@@ -35,6 +35,23 @@ FALLBACK_LLM_API_KEY = os.getenv("FALLBACK_LLM_API_KEY", "") or GROQ_API_KEY
 FALLBACK_LLM_MODEL = os.getenv("FALLBACK_LLM_MODEL", "llama-3.1-8b-instant")
 LLM_TIMEOUT_SECONDS = float(os.getenv("LLM_TIMEOUT_SECONDS", "60"))
 
+# --- Clarification question budget (AI-003, FR-2, per ADR-031) ---
+# The number of follow-up questions SCALES WITH HOW UNDER-SPECIFIED THE
+# PROMPT IS, rather than being a fixed 2. The budget starts at one question
+# per distinct FR-1 flag — a flag IS an unresolved gap, and asking more
+# questions than there are gaps just produces padding — then adds one for a
+# prompt too short to have expressed detail spaCy could flag, and one more
+# for a prompt that is weak across the board. Still a SINGLE round, which is
+# what guarantees the pipeline terminates (proposal Section 6.2).
+CLARIFICATION_MAX_QUESTIONS = int(os.getenv("CLARIFICATION_MAX_QUESTIONS", "6"))
+# Under this many words, a prompt is too short to have said much at all, and
+# the analyzer cannot flag detail that was never written — so short prompts
+# earn an extra question that the flags alone would not have bought.
+CLARIFICATION_SHORT_PROMPT_WORDS = int(os.getenv("CLARIFICATION_SHORT_PROMPT_WORDS", "12"))
+# An overall FR-1 score under this is weak across the board rather than
+# weak in one place, and earns one further question.
+CLARIFICATION_LOW_SCORE = int(os.getenv("CLARIFICATION_LOW_SCORE", "40"))
+
 # --- RAG / vector index (RAG-001, per ADR-004 and FR-4) ---
 # all-MiniLM-L6-v2 is the corpus + query embedding model (FR-4); it emits
 # 384-dim vectors. EMBEDDING_DIM lets an empty index be sized without
