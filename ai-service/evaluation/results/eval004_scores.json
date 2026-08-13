@@ -1,0 +1,627 @@
+{
+  "meta": {
+    "size": 512,
+    "frame_count": 24,
+    "failed_frames": 0,
+    "unpaired": 4,
+    "paired_available": 46,
+    "excluded_partial": 41,
+    "cached_only": true
+  },
+  "per_prompt": [
+    {
+      "id": "abstract-1",
+      "genre": "abstract-artistic",
+      "complexity": "single-beat",
+      "baseline": 0.5693769082427025,
+      "multiagent_mean": 0.6774210184812546,
+      "multiagent_best": 0.7894657552242279,
+      "shot_count": 3,
+      "spacy": {
+        "original_score": 79,
+        "baseline_enhanced_score": 77,
+        "multiagent_enhanced_score": 59,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 90,
+          "environment_detail": 30,
+          "visual_richness": 100,
+          "temporal_coherence": 75
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 82,
+          "environment_detail": 30,
+          "visual_richness": 100,
+          "temporal_coherence": 75
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 67,
+          "action_specificity": 85,
+          "environment_detail": 30,
+          "visual_richness": 87,
+          "temporal_coherence": 25
+        }
+      }
+    },
+    {
+      "id": "abstract-2",
+      "genre": "abstract-artistic",
+      "complexity": "multi-beat",
+      "baseline": 0.7485208660364151,
+      "multiagent_mean": 0.6402597483247519,
+      "multiagent_best": 0.7145370543003082,
+      "shot_count": 4,
+      "spacy": {
+        "original_score": 81,
+        "baseline_enhanced_score": 68,
+        "multiagent_enhanced_score": 55,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 87,
+          "environment_detail": 30,
+          "visual_richness": 89,
+          "temporal_coherence": 100
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 86,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 93,
+          "temporal_coherence": 50
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 82,
+          "environment_detail": 30,
+          "visual_richness": 36,
+          "temporal_coherence": 25
+        }
+      }
+    },
+    {
+      "id": "abstract-3",
+      "genre": "abstract-artistic",
+      "complexity": "single-beat",
+      "baseline": 0.8514602482318878,
+      "multiagent_mean": 0.7669531553983688,
+      "multiagent_best": 0.8904911577701569,
+      "shot_count": 4,
+      "spacy": {
+        "original_score": 68,
+        "baseline_enhanced_score": 67,
+        "multiagent_enhanced_score": 59,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 57,
+          "temporal_coherence": 75
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 78,
+          "environment_detail": 30,
+          "visual_richness": 100,
+          "temporal_coherence": 25
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 75,
+          "action_specificity": 82,
+          "environment_detail": 30,
+          "visual_richness": 57,
+          "temporal_coherence": 50
+        }
+      }
+    },
+    {
+      "id": "action-1",
+      "genre": "action-thriller",
+      "complexity": "single-beat",
+      "baseline": 0.8727595210075378,
+      "multiagent_mean": 0.8672055043280125,
+      "multiagent_best": 0.9675199538469315,
+      "shot_count": 4,
+      "spacy": {
+        "original_score": 43,
+        "baseline_enhanced_score": 72,
+        "multiagent_enhanced_score": 44,
+        "original_dimensions": {
+          "subject_clarity": 0,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 31,
+          "temporal_coherence": 75
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 73,
+          "temporal_coherence": 75
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 25,
+          "action_specificity": 67,
+          "environment_detail": 30,
+          "visual_richness": 75,
+          "temporal_coherence": 25
+        }
+      }
+    },
+    {
+      "id": "action-2",
+      "genre": "action-thriller",
+      "complexity": "multi-beat",
+      "baseline": 0.6186572462320328,
+      "multiagent_mean": 0.6253877561539412,
+      "multiagent_best": 0.6867168098688126,
+      "shot_count": 4,
+      "spacy": {
+        "original_score": 68,
+        "baseline_enhanced_score": 60,
+        "multiagent_enhanced_score": 65,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 88,
+          "environment_detail": 30,
+          "visual_richness": 21,
+          "temporal_coherence": 100
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 81,
+          "environment_detail": 30,
+          "visual_richness": 65,
+          "temporal_coherence": 25
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 90,
+          "action_specificity": 74,
+          "environment_detail": 30,
+          "visual_richness": 56,
+          "temporal_coherence": 75
+        }
+      }
+    }
+  ],
+  "paired_mean_of_shots": {
+    "n": 5,
+    "baseline_mean": 0.7321549579501152,
+    "multiagent_mean": 0.7154454365372658,
+    "mean_difference": -0.016709521412849426,
+    "wins": 2,
+    "losses": 3,
+    "baseline_sd": 0.13569235647326072,
+    "multiagent_sd": 0.10111045093688285,
+    "difference_sd": 0.08546279079290148,
+    "paired_t": -0.43719173460133554,
+    "paired_t_p": 0.6845397783167659,
+    "wilcoxon": 6.0,
+    "wilcoxon_p": 0.8125,
+    "cohens_dz": -0.19551808755392663
+  },
+  "paired_best_shot": {
+    "n": 5,
+    "baseline_mean": 0.7321549579501152,
+    "multiagent_mean": 0.8097461462020874,
+    "mean_difference": 0.0775911882519722,
+    "wins": 4,
+    "losses": 1,
+    "baseline_sd": 0.13569235647326072,
+    "multiagent_sd": 0.11834759641566688,
+    "difference_sd": 0.09304178266742605,
+    "paired_t": 1.8647447029960555,
+    "paired_t_p": 0.13565340565326642,
+    "wilcoxon": 1.0,
+    "wilcoxon_p": 0.125,
+    "cohens_dz": 0.8339391833163671
+  },
+  "spacy": {
+    "original_mean": 67.8,
+    "baseline_mean": 68.8,
+    "multiagent_mean": 56.4,
+    "dimensions": {
+      "subject_clarity": {
+        "original": 80.0,
+        "baseline": 97.2,
+        "multiagent": 71.4
+      },
+      "action_specificity": {
+        "original": 85.0,
+        "baseline": 80.2,
+        "multiagent": 78.0
+      },
+      "environment_detail": {
+        "original": 30.0,
+        "baseline": 30.0,
+        "multiagent": 30.0
+      },
+      "visual_richness": {
+        "original": 59.6,
+        "baseline": 86.2,
+        "multiagent": 62.2
+      },
+      "temporal_coherence": {
+        "original": 85.0,
+        "baseline": 50.0,
+        "multiagent": 40.0
+      }
+    }
+  },
+  "dropped": [],
+  "frames": [
+    {
+      "id": "abstract-1",
+      "genre": "abstract-artistic",
+      "complexity": "single-beat",
+      "original_prompt": "Ink drops bloom and swirl through water in slow motion, ribbons of deep blue and gold twisting into intricate, ever-shifting patterns.",
+      "frames": [
+        {
+          "condition": "baseline",
+          "shot_id": 1,
+          "render_prompt": "Static, with a macro lens, capturing the scene in extreme close-up, utilizing a high frame rate to emphasize the slow, flowing motion of the ink, with a shallow depth of field to blur the edges of the frame and draw focus to the intricate, swirling patterns at its center. In a mesmerizing, dreamlike sequence, ink droplets burst into a crystal-clear water environment, unfolding like blooming flowers as they slowly dissipate and swirl, their deep blue and gold hues intertwining in hypnotic, ever-changing patterns that dance across the frame, illuminated by soft, diffused lighting that accentuates the fluid, organic movements of the ink, set against a stark, black background that allows the vibrant colors to take center stage, with delicate, lace-like tendrils of ink stretching and merging in a graceful, ethereal ballet, as if the very essence of the liquid is alive and responding to some unheard melody, filling the space with an otherworldly beauty that invites the viewer to step into its serene, slow-motion world.",
+          "seed": 1977650065,
+          "cosine": 0.227750763297081,
+          "clipscore": 0.5693769082427025
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 1,
+          "render_prompt": "macro lens, slow-motion, soft diffusion, and gentle floating movement to capture the ink drops blooming and swirling in the water. Ink drops are released into the water, starting to bloom and swirl.",
+          "seed": 1977650065,
+          "cosine": 0.25024306774139404,
+          "clipscore": 0.6256076693534851
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 2,
+          "render_prompt": "extreme close-up, static, with a macro lens and high-saturation lighting to emphasize the deep blue and gold colors of the ink. Close-up of the ink as it creates intricate patterns, with deep blue and gold colors twisting together.",
+          "seed": 1977650065,
+          "cosine": 0.31578630208969116,
+          "clipscore": 0.7894657552242279
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 3,
+          "render_prompt": "slow dolly-out with a wide-angle lens to capture the full, ever-shifting pattern of ink in the water. The camera zooms out to show the full, ever-shifting pattern of ink in the water.",
+          "seed": 1977650065,
+          "cosine": 0.2468758523464203,
+          "clipscore": 0.6171896308660507
+        }
+      ],
+      "spacy": {
+        "original_score": 79,
+        "baseline_enhanced_score": 77,
+        "multiagent_enhanced_score": 59,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 90,
+          "environment_detail": 30,
+          "visual_richness": 100,
+          "temporal_coherence": 75
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 82,
+          "environment_detail": 30,
+          "visual_richness": 100,
+          "temporal_coherence": 75
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 67,
+          "action_specificity": 85,
+          "environment_detail": 30,
+          "visual_richness": 87,
+          "temporal_coherence": 25
+        }
+      },
+      "attempt_count": 1,
+      "similarity_score": 0.8521033525466919
+    },
+    {
+      "id": "abstract-2",
+      "genre": "abstract-artistic",
+      "complexity": "multi-beat",
+      "original_prompt": "A single white line is drawn across a blank black canvas, splits into branching fractal patterns that spread outward, and finally resolves into the shape of a blooming flower.",
+      "frames": [
+        {
+          "condition": "baseline",
+          "shot_id": 1,
+          "render_prompt": "Static, with a slight, gradual zoom to emphasize the flower's unfolding petals. In a vast, dark space, a lone, luminescent white line materializes on a blank black canvas, its gentle glow illuminating the surrounding void. As the line begins to move, it suddenly splits into multiple branching paths, each one dividing and subdividing into intricate, fractal patterns that spread outward in a mesmerizing dance. The lines thicken, swirl, and intersect, forming an ever-expanding network of delicate, lace-like tendrils that fill the canvas. As the fractal patterns continue to evolve, they gradually coalesce into the unmistakable shape of a blooming flower, its petals unfolding like the pages of a book. The flower's center glows with a soft, golden light, radiating an otherworldly energy that illuminates the surrounding darkness. The camera lingers on the flower, its beauty and complexity a testament to the infinite possibilities hidden within the simplicity of a single line. The flower's petals shimmer and glow, as if infused with an ethereal essence, casting a hypnotic spell on the viewer.",
+          "seed": 1927317208,
+          "cosine": 0.29940834641456604,
+          "clipscore": 0.7485208660364151
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 1,
+          "render_prompt": "static, wide shot with a shallow focus on the white line, using leading lines composition technique to draw the eye across the canvas, with high contrast lighting to create a silhouette of the line against the black background. A single white line is drawn across the canvas.",
+          "seed": 1927317208,
+          "cosine": 0.22248367965221405,
+          "clipscore": 0.5562091991305351
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 2,
+          "render_prompt": "start with an extreme close-up using a macro lens, then slowly zoom out to reveal the branching fractal patterns, placing key elements along the lines or at their intersections to create a sense of depth and direction. The line splits into branching fractal patterns that spread outward.",
+          "seed": 1927317208,
+          "cosine": 0.2858148217201233,
+          "clipscore": 0.7145370543003082
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 3,
+          "render_prompt": "medium shot, slow pan with macro lens and high-saturation neon lighting to emphasize the evolving fractal patterns. The fractal patterns continue to spread and evolve.",
+          "seed": 1927317208,
+          "cosine": 0.2678282856941223,
+          "clipscore": 0.6695707142353058
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 4,
+          "render_prompt": "static, wide shot with shallow depth of field and high-saturation color palette, using silhouette lighting to emphasize the blooming flower's shape against a bright, black canvas background. The patterns resolve into the shape of a blooming flower.",
+          "seed": 1927317208,
+          "cosine": 0.2482888102531433,
+          "clipscore": 0.6207220256328583
+        }
+      ],
+      "spacy": {
+        "original_score": 81,
+        "baseline_enhanced_score": 68,
+        "multiagent_enhanced_score": 55,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 87,
+          "environment_detail": 30,
+          "visual_richness": 89,
+          "temporal_coherence": 100
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 86,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 93,
+          "temporal_coherence": 50
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 82,
+          "environment_detail": 30,
+          "visual_richness": 36,
+          "temporal_coherence": 25
+        }
+      },
+      "attempt_count": 1,
+      "similarity_score": 0.9437885284423828
+    },
+    {
+      "id": "abstract-3",
+      "genre": "abstract-artistic",
+      "complexity": "single-beat",
+      "original_prompt": "Sand grains cascade in a slow-motion hourglass, backlit so each falling particle catches the light like a tiny spark.",
+      "frames": [
+        {
+          "condition": "baseline",
+          "shot_id": 1,
+          "render_prompt": "Macro, static shot with a shallow depth of field, capturing the hourglass from a 45-degree angle, with the light source positioned directly behind the glass to maximize the sparkle effect on the falling sand grains. In a beautifully crafted, antique hourglass, a mesmerizing cascade of sand grains flows gently from the upper bulb to the lower, suspended in mid-air as if time itself has slowed down. The hourglass is positioned against a stark, black background, and a soft, warm backlight illuminates the falling particles, making each grain sparkle like a minute diamond, casting tiny, shimmering shadows on the surrounding glass. The light dances across the delicate, swirling patterns of the sand, creating a hypnotic display of texture and luminescence, as the grains continue their serene, golden trickle, filling the air with a thousand tiny, glittering highlights.",
+          "seed": 1944094827,
+          "cosine": 0.3405840992927551,
+          "clipscore": 0.8514602482318878
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 1,
+          "render_prompt": "macro lens, static, hard light from a direct source above to accentuate texture and edge of sand grains. Extreme close-up of sand grains at the top of the hourglass, just before they start falling.",
+          "seed": 1944094827,
+          "cosine": 0.2906055450439453,
+          "clipscore": 0.7265138626098633
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 2,
+          "render_prompt": "close-up, macro lens, backlit with rim lighting, slow motion. Sand grains start to fall, backlit to catch the light, in slow motion.",
+          "seed": 1944094827,
+          "cosine": 0.27837425470352173,
+          "clipscore": 0.6959356367588043
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 3,
+          "render_prompt": "static, wide-angle lens with hard light to accentuate the texture of the hourglass and the sparkling sand grains. Wide shot of the hourglass, with the falling sand grains sparkling like tiny sparks.",
+          "seed": 1944094827,
+          "cosine": 0.35619646310806274,
+          "clipscore": 0.8904911577701569
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 4,
+          "render_prompt": "use a macro lens for an extreme close-up of the sand grain, with hard light to capture its texture and sparkle as it falls. Extreme close-up of a single sand grain falling, catching the light and sparkling.",
+          "seed": 1944094827,
+          "cosine": 0.30194878578186035,
+          "clipscore": 0.7548719644546509
+        }
+      ],
+      "spacy": {
+        "original_score": 68,
+        "baseline_enhanced_score": 67,
+        "multiagent_enhanced_score": 59,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 57,
+          "temporal_coherence": 75
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 78,
+          "environment_detail": 30,
+          "visual_richness": 100,
+          "temporal_coherence": 25
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 75,
+          "action_specificity": 82,
+          "environment_detail": 30,
+          "visual_richness": 57,
+          "temporal_coherence": 50
+        }
+      },
+      "attempt_count": 1,
+      "similarity_score": 0.7856234312057495
+    },
+    {
+      "id": "action-1",
+      "genre": "action-thriller",
+      "complexity": "single-beat",
+      "original_prompt": "A stuntman-double leaps between two rooftops mid-motion, city skyline sprawling beneath him and his jacket snapping in the wind.",
+      "frames": [
+        {
+          "condition": "baseline",
+          "shot_id": 1,
+          "render_prompt": "aerial, following the stuntman in a smooth, dynamic motion, capturing the breathtaking view of the city below, with a slight Dutch angle to emphasize the sense of danger and thrill. A fearless stuntman-double, dressed in a sleek black leather jacket with metallic silver accents, leaps between two towering skyscrapers, his body arched in a perfect parabola as he soars through the air, the city skyline unfolding beneath him like a canvas of steel and glass, with the sun casting a warm orange glow over the concrete jungle, the sound of the wind rushing past him, his jacket snapping wildly in the gusts, his face set in a determined expression, the rooftops a blur as he lands with precision on the edge of the second building, his knees bending to absorb the impact, the city lights twinkling like diamonds against the darkening blue sky.",
+          "seed": 1712022245,
+          "cosine": 0.34910380840301514,
+          "clipscore": 0.8727595210075378
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 1,
+          "render_prompt": "Start with an extreme wide shot of the city skyline, then slowly crane down to reveal the stuntman-double standing on the edge of a rooftop, using a high vantage point to deliver a sense of grand scale and geography. Establishing shot of the city skyline with the stuntman-double standing on the edge of a rooftop.",
+          "seed": 1712022245,
+          "cosine": 0.36631467938423157,
+          "clipscore": 0.9157866984605789
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 2,
+          "render_prompt": "crane shot, high-angle, slow motion, with a wide lens to capture the stuntman-double leaping between rooftops. The stuntman-double leaps between the rooftops, jacket snapping in the wind.",
+          "seed": 1712022245,
+          "cosine": 0.3695122301578522,
+          "clipscore": 0.9237805753946304
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 3,
+          "render_prompt": "Extreme close-up of the stuntman-double's face using a slow dolly-in movement to magnify tension and significance, set against the city rooftops backdrop. Close-up of the stuntman-double's face, focused and determined, as he soars through the air.",
+          "seed": 1712022245,
+          "cosine": 0.2646939158439636,
+          "clipscore": 0.6617347896099091
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 4,
+          "render_prompt": "use an extreme wide shot, with a static camera positioned high above to capture the stuntman-double on the rooftop, emphasizing the cityscape and establishing the setting. The stuntman-double lands safely on the adjacent rooftop, looking out over the city.",
+          "seed": 1712022245,
+          "cosine": 0.3870079815387726,
+          "clipscore": 0.9675199538469315
+        }
+      ],
+      "spacy": {
+        "original_score": 43,
+        "baseline_enhanced_score": 72,
+        "multiagent_enhanced_score": 44,
+        "original_dimensions": {
+          "subject_clarity": 0,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 31,
+          "temporal_coherence": 75
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 80,
+          "environment_detail": 30,
+          "visual_richness": 73,
+          "temporal_coherence": 75
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 25,
+          "action_specificity": 67,
+          "environment_detail": 30,
+          "visual_richness": 75,
+          "temporal_coherence": 25
+        }
+      },
+      "attempt_count": 1,
+      "similarity_score": 0.8045538663864136
+    },
+    {
+      "id": "action-2",
+      "genre": "action-thriller",
+      "complexity": "multi-beat",
+      "original_prompt": "A courier weaves a motorcycle through gridlocked traffic while chasers close in behind, ducks beneath a lowering parking-garage gate just as it slams shut, and skids to a stop in the sudden silence.",
+      "frames": [
+        {
+          "condition": "baseline",
+          "shot_id": 1,
+          "render_prompt": "a low-angle, fast-paced, point-of-view shot, with a mix of close-ups and wide shots, using a combination of handheld and mounted cameras to capture the intense action and suspense, with a slight fish-eye lens effect to enhance the sense of speed and urgency. A determined courier, dressed in a sleek black leather jacket and helmet, expertly maneuvers a shiny red motorcycle through a sea of gridlocked traffic on a sun-drenched, urban highway, weaving past frustrated drivers and pedestrians, as a pair of relentless chasers in a black SUV close in behind, their tires screeching in pursuit. The courier spots a narrow opening beneath a lowering parking-garage gate, its metal arm descending rapidly, and ducks beneath it just as it slams shut, the sound of crunching metal and shattering glass echoing through the air as the SUV crashes into the gate. The courier skids to a stop on the cool, dimly lit garage floor, surrounded by rows of empty parking spaces, the sudden silence a stark contrast to the chaos left behind, as the courier catches their breath and looks back, the gate's mangled remains blocking the entrance, buying them a brief moment of respite.",
+          "seed": 1661689388,
+          "cosine": 0.2474628984928131,
+          "clipscore": 0.6186572462320328
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 1,
+          "render_prompt": "dolly shot, moving alongside the motorcycle with a wide lens, capturing the congested traffic and chasers in the distance. The courier navigates through congested traffic on a motorcycle, with chasers visible in the distance.",
+          "seed": 1661689388,
+          "cosine": 0.274686723947525,
+          "clipscore": 0.6867168098688126
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 2,
+          "render_prompt": "dolly/tracking shot with a medium frame, following the courier as they speed towards the parking garage, utilizing leading lines of the road to draw the viewer's eye towards the gate. The courier sees the parking garage ahead and speeds towards it as the gate starts to lower.",
+          "seed": 1661689388,
+          "cosine": 0.2533116936683655,
+          "clipscore": 0.6332792341709137
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 3,
+          "render_prompt": "low-angle, slow motion, extreme close-up on the gate as it slams shut, with tight framing and off-balance angles to enhance suspense. The courier ducks beneath the lowering gate just as it slams shut, blocking the chasers.",
+          "seed": 1661689388,
+          "cosine": 0.25660839676856995,
+          "clipscore": 0.6415209919214249
+        },
+        {
+          "condition": "multiagent",
+          "shot_id": 4,
+          "render_prompt": "Extreme close-up, static shot of the courier's face, particularly the eyes, as they look back at the closed gate, with a slight emphasis on the background to create unsettling tension. The courier skids to a stop in the sudden silence of the parking garage, looking back at the closed gate.",
+          "seed": 1661689388,
+          "cosine": 0.2160135954618454,
+          "clipscore": 0.5400339886546135
+        }
+      ],
+      "spacy": {
+        "original_score": 68,
+        "baseline_enhanced_score": 60,
+        "multiagent_enhanced_score": 65,
+        "original_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 88,
+          "environment_detail": 30,
+          "visual_richness": 21,
+          "temporal_coherence": 100
+        },
+        "baseline_dimensions": {
+          "subject_clarity": 100,
+          "action_specificity": 81,
+          "environment_detail": 30,
+          "visual_richness": 65,
+          "temporal_coherence": 25
+        },
+        "multiagent_dimensions": {
+          "subject_clarity": 90,
+          "action_specificity": 74,
+          "environment_detail": 30,
+          "visual_richness": 56,
+          "temporal_coherence": 75
+        }
+      },
+      "attempt_count": 1,
+      "similarity_score": 0.8402218818664551
+    }
+  ]
+}

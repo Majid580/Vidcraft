@@ -155,6 +155,20 @@ def _fetch_pollinations(prompt: str, *, seed: int, size: int, timeout: float) ->
     return body
 
 
+def is_cached(prompt: str, *, seed: int, size: int, cache_dir: Path | None) -> bool:
+    """Whether this exact frame is already on disk.
+
+    Lets a caller decide whether a whole PROMPT is renderable from cache
+    before scoring any of it — which matters because a mean-of-shots
+    computed over an arbitrary subset of a storyboard's shots would be a
+    different statistic wearing the same name.
+    """
+    if cache_dir is None:
+        return False
+    path = Path(cache_dir) / f"{cache_key(prompt, seed=seed, size=size)}.jpg"
+    return path.exists() and path.stat().st_size >= MIN_IMAGE_BYTES
+
+
 def generate_still(
     prompt: str,
     *,
@@ -163,6 +177,7 @@ def generate_still(
     cache_dir: Path | None = None,
     timeout: float = DEFAULT_TIMEOUT_SECONDS,
     max_attempts: int = MAX_ATTEMPTS,
+    cached_only: bool = False,
     fetch=None,
 ) -> bytes:
     """Return image bytes for ``prompt``, from cache when already generated.
@@ -183,6 +198,9 @@ def generate_still(
         path = cache_dir / f"{cache_key(prompt, seed=seed, size=size)}.jpg"
         if path.exists() and path.stat().st_size >= MIN_IMAGE_BYTES:
             return path.read_bytes()
+
+    if cached_only:
+        raise MediaGenerationError("frame is not cached and cached_only was requested")
 
     last_error: Exception | None = None
     for attempt in range(1, max_attempts + 1):

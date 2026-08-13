@@ -47,7 +47,12 @@ import statistics
 from pathlib import Path
 
 from evaluation.alignment import get_model, score_frames
-from evaluation.media import MediaGenerationError, compose_render_prompt, generate_still
+from evaluation.media import (
+    MediaGenerationError,
+    compose_render_prompt,
+    generate_still,
+    is_cached,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +136,25 @@ def build_frame_plan(baseline: dict, multiagent: dict) -> list[dict]:
     return plan
 
 
-def render_and_score(plan: list[dict], *, size: int, skip_generation: bool = False) -> list[dict]:
+def complete_in_cache(entry: dict, *, size: int) -> bool:
+    """Whether EVERY frame this prompt plans is already on disk.
+
+    The all-or-nothing test is deliberate. A prompt whose baseline frame and
+    only some of its shots are cached could still be scored, but its
+    mean-of-shots would then be an average over whichever shots happened to
+    finish before the run stopped — a different statistic sharing a name with
+    the real one, and exactly the sort of silent wrongness that is worse than
+    a smaller n. Partial prompts are excluded and counted instead.
+    """
+    return all(
+        is_cached(f["render_prompt"], seed=f["seed"], size=size, cache_dir=FRAME_CACHE_DIR)
+        for f in entry["frames"]
+    )
+
+
+def render_and_score(
+    plan: list[dict], *, size: int, skip_generation: bool = False, cached_only: bool = False
+) -> list[dict]:
     """Generate every planned frame (cached) and score it against the original prompt."""
     model = None if skip_generation else get_model()
     scored = []
@@ -146,6 +169,7 @@ def render_and_score(plan: list[dict], *, size: int, skip_generation: bool = Fal
                         seed=frame["seed"],
                         size=size,
                         cache_dir=FRAME_CACHE_DIR,
+                        cached_only=cached_only,
                     )
                 )
                 kept.append(frame)
@@ -292,6 +316,20 @@ def render_table(agg: dict, stats_mean: dict, stats_best: dict, spacy: dict, met
         f"shared across conditions). Metric: CLIPScore = 2.5·max(cos,0) on `clip-ViT-B-32`, "
         "every frame scored against the **original** prompt.",
         "",
+    ]
+    if meta.get("excluded_partial") or len(rows) < meta.get("paired_available", len(rows)):
+        lines += [
+            f"> ⚠️ **PARTIAL RUN — n = {len(rows)}, not the {meta['paired_available']} paired "
+            "prompts available.** Frame generation was stopped early: the provider's queue was "
+            "delivering roughly one frame per minute, making the full set several hours of "
+            "wall-clock. **These numbers are a pilot, not the study.** With an n this small the "
+            "confidence intervals are wide enough that the direction of any difference should be "
+            "treated as unestablished, and the per-genre table below is near-meaningless. "
+            "Every frame is cached on disk, so completing the set re-spends nothing already "
+            "generated — run `python -m evaluation.run_scoring` again and it resumes.",
+            "",
+        ]
+    lines += [
         "## 1. Headline — CLIPScore alignment to the original prompt",
         "",
         "| Comparison | n | Condition A (baseline) | Condition B (multi-agent) | Δ (B−A) | paired t | p | Cohen's d_z | B wins |",
@@ -372,7 +410,11 @@ def render_table(agg: dict, stats_mean: dict, stats_best: dict, spacy: dict, met
         "",
         "## 5. Coverage and exclusions",
         "",
-        f"- Paired prompts scored: **{len(rows)}** of the 50-prompt EVAL-001 set.",
+        f"- Paired prompts scored: **{len(rows)}** of the 50-prompt EVAL-001 set "
+        f"(**{meta.get('paired_available', len(rows))}** were available to score).",
+        f"- Excluded — frame generation stopped before the prompt was complete: "
+        f"**{meta.get('excluded_partial', 0)}**. A prompt is admitted only when *every* one of its "
+        "frames is cached, so no mean-of-shots is ever computed over a partial storyboard.",
         f"- Excluded — no successful Condition B run (Groq daily token quota, "
         f"not a code defect): **{meta['unpaired']}**.",
         f"- Excluded — a frame failed to generate after every retry: "
@@ -392,6 +434,10 @@ def main() -> None:
         "--skip-generation", action="store_true",
         help="plan and report without generating or scoring (dry run)",
     )
+    parser.add_argument(
+        "--cached-only", action="store_true",
+        help="score only prompts whose frames are ALL already on disk; never touch the network",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -399,8 +445,19 @@ def main() -> None:
     baseline, multiagent = _load(BASELINE_PATH), _load(MULTIAGENT_PATH)
     plan = build_frame_plan(baseline, multiagent)
     unpaired = len(set(baseline) | set(multiagent)) - len(plan)
+    paired_total = len(plan)
     if args.limit:
         plan = plan[: args.limit]
+
+    incomplete = 0
+    if args.cached_only:
+        complete = [e for e in plan if complete_in_cache(e, size=args.size)]
+        incomplete = len(plan) - len(complete)
+        plan = complete
+        logger.info(
+            "--cached-only: %d of %d paired prompts are fully cached (%d excluded as partial).",
+            len(plan), paired_total, incomplete,
+        )
 
     frame_total = sum(len(e["frames"]) for e in plan)
     logger.info(
@@ -410,7 +467,7 @@ def main() -> None:
         logger.info("--skip-generation: stopping before any network or model work.")
         return
 
-    scored = render_and_score(plan, size=args.size)
+    scored = render_and_score(plan, size=args.size, cached_only=args.cached_only)
     agg = aggregate(scored)
     rows = agg["rows"]
     if not rows:
@@ -427,6 +484,9 @@ def main() -> None:
         "frame_count": scored_frames,
         "failed_frames": failed_frames,
         "unpaired": unpaired,
+        "paired_available": paired_total,
+        "excluded_partial": incomplete,
+        "cached_only": args.cached_only,
     }
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)

@@ -14,10 +14,10 @@
 | **Overall completion percentage** | **88.9%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = **32 / 36**. Up from 30/36 this session: DEMO-001 moved **NOT_STARTED → VERIFIED** (three real live end-to-end runs — see `DEMO_RUNBOOK.md`), and INTEG-002 moved **IN_PROGRESS → VERIFIED** — its remaining half (FFmpeg thumbnails + subtitles, ADR-028) is now implemented and live-verified, meeting the task's stated completion criterion. Cloud media hosting stays deferred (provider `TBD`, local disk only), but it was never part of that criterion. *(Bookkeeping fixed 2026-08-12: `PROJECT_STATE.yaml`'s `phases` list had drifted to 35 task entries — it omitted BACKEND-006 and FRONTEND-004 (both VERIFIED since 2026-08-11, see Section 2) while still carrying AI-005 as VERIFIED rather than retired, so the YAML could not be counted directly and had silently disagreed with this percentage for two sessions. Both tasks have now been added with their real verification records, and AI-005 carries `status: RETIRED`. The YAML now holds 37 entries = 36 live + 1 retired, of which 32 are VERIFIED — reconciling exactly with the Section 20 roadmap's 37 rows and with the 32/36 above.)* |
 | **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006, minus retired AI-005) all complete; Phase 6 (RAG-001/002/003 + AI-007 + AI-008) fully complete; Phase 7's PROVIDER-001 decided, BACKEND-005 **deliberately held** (video tier — no available video-generation API access), BACKEND-006/FRONTEND-004/CRITIC-001 complete; Phase 8 **fully complete** (INTEG-001 and INTEG-002 both VERIFIED — FR-9 concatenation in Remotion per ADR-027, then thumbnails/subtitles per ADR-028; cloud media hosting stays deferred and was never part of INTEG-002's completion criterion); Phase 9's EVAL-001/EVAL-002 VERIFIED, EVAL-003 **deliberately held** (27/50 real, remainder blocked on Groq's real daily token quota), EVAL-004 **deliberately held** (depends on EVAL-003); Phase 10's DEMO-001 VERIFIED (three real live end-to-end runs, `DEMO_RUNBOOK.md`), DOCS-001 blocked on EVAL-004. *(This row read "INTEG-002 IN_PROGRESS" until 2026-08-13 — a direct contradiction of the completion row above it, which had counted INTEG-002 as VERIFIED since 2026-08-12, and it never mentioned DEMO-001 at all.)* |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | **This session (2026-08-13):** asked to commit, push, merge and update all tracking documents. No code was written. The working tree was already clean and `rag-002-corpus` was 7 commits ahead of both its own remote and `main`, so the actual work was reconciling the documentation drift those commits left behind — and drift older than them. Five real contradictions were found and fixed (see "Last updated by" below and Section 8's `2026-08-13` entry); the branch was then pushed and fast-forward merged into `main`. **No task changed status — completion stays 32/36.** |
+| **Current objective** | **This session (2026-08-13, part 2):** asked what could be done *without a paid video-generation API*, and to do it. The answer is the whole remaining evaluation study, because CLIPScore reads **frames** — BACKEND-005's video tier is the only thing that genuinely needs the paid key. So: (a) EVAL-003 resumed from **27/50 → 46/50** on the day's fresh Groq quota, and (b) EVAL-004's scoring arm was built and verified end-to-end (ADR-030), producing the Section 4.7 comparison table. Frame generation was then stopped early by team decision — the provider's queue was delivering ~1 frame/minute — so the **published table is a pilot at n = 5, not the study**. *(Part 1, earlier the same day: commit/push/merge plus a documentation-drift reconciliation — see Section 8.)* **No task changed status — completion stays 32/36.** |
 | **Overall status** | 🟢 **INTEG-002 complete (ADR-028); the pipeline now produces a full deliverable.** A finished run yields a continuous MP4, a poster frame, browser-toggleable captions, and a hardsubbed download. Three decisions kept it honest rather than merely working: the assembled master is **never modified** (the hardsub is a separate file, so the clean render survives for download and for the frame-level metrics EVAL-004 will need); caption cues are built from the **same** shot filter the renderer uses, exported specifically so a second copy cannot drift; and captions are **refused outright** when their frame total disagrees with what Remotion actually rendered, because captions that drift look correct until someone watches to the end. The verification run happened to prove the point — a shot died on a real Pollinations 500, and the captions correctly described the shortened 180-frame timeline rather than the authored 300-frame one. 🟢 **The demonstration has actually been run** (DEMO-001): three real end-to-end runs through the browser UI against the full real stack, across both pathways, all producing poster + captions + hardsubbed copy. 🟢 **The interface now shows the work** (ADR-029): the ~2-minute generation is a visible five-stage pipeline rather than a percentage, so the contribution is on screen during the exact window an examiner is watching. 🟢 **ENV-001 (WSL2 Redis unreachable from Windows) is RESOLVED** — the team applied the `/etc/redis/redis.conf` bind change and all three DEMO-001 runs generated through it. *(This row reported ENV-001 as "found and NOT fixed" until 2026-08-13, contradicting Section 9, which had recorded it resolved since 2026-08-12.)* 🟡 **What actually remains** is not engineering: EVAL-003/EVAL-004 wait on Groq daily quota and a team decision on scope, BACKEND-005's video tier waits on a paid key, and DOCS-001 waits on EVAL-004. See Section 10. |
 | **Last updated** | 2026-08-13 |
-| **Last updated by** | Claude (Opus 5) — **Documentation sync + branch merge. No code changed.** Asked to commit, push, merge and update all tracking documents. The tree was already clean, so the work was the drift: **(1)** every one of `PROJECT_STATE.yaml`'s ten phase rollups read `status: not_started` while the task entries nested inside them recorded 32 VERIFIED — the rollups had never been maintained since the file was written, so a reader trusting them would conclude nothing had been built; they are now set from their own tasks. **(2)** The same file's `current_phase` read `phase_0_1_research_env_setup` and `version` read `0.0.0-pre-development` at 88.9% completion. **(3)** Section 1's "Current phase" row here called INTEG-002 `IN_PROGRESS` while the row directly above it counted INTEG-002 as VERIFIED, and it omitted DEMO-001 entirely. **(4)** Section 1's "Overall status" row still reported ENV-001 as found-and-not-fixed while Section 9 had recorded it RESOLVED the same day. **(5)** Section 8's change log stopped four sessions back — INTEG-002, DEMO-001, ADR-029 and the depth pass had updated Section 1 but never appended their entries; all four are now written up. Also corrected `PROJECT_ARCHITECTURE.md`'s header, which still declared the repository to contain one file and `NOT_IMPLEMENTED` to apply to 100% of the system, and `DEMO_RUNBOOK.md` step 5, which still told the presenter to narrate a "progress bar" that ADR-029's depth pass had deleted. Neither frontend commit had updated the depth pass into this row, so it is folded in below. Completion unchanged at 32/36. Prior update, retained: **Frontend visual identity re-grounded in the subject (ADR-029),** plus a same-day **depth pass** — a material system (top-edge highlight over two-layer shadows, three-channel hover, top-lit buttons), and the data colours run through the dataviz validator rather than eyeballed, which caught two genuine defects (`--success` green at ΔE 8.9 from `--accent` cyan, and any useful orange warning colliding with `--destructive` red at ΔE 4.1 for deuteranopes) — both resolved by *removing* colours, with a glyph added to every shot tick so status is never colour alone. Two real bugs found while verifying it: `AnalysisPanel`'s score ring was still painting the retired violet→cyan gradient with a hardcoded white track that broke in light theme, and the score count-up sat at 0 in a background tab because browsers do not fire `requestAnimationFrame` when `document.hidden`. The team asked for deeper visual work; the existing system already had the effects machinery, so the real gap was that the identity was the standard AI-SaaS template (aurora orbs, glass, violet→cyan gradient, gradient headline) and the subject was invisible — a cinematography tool with no cinematographic vocabulary in its interface. Replaced with a grading-suite palette (amber/cyan grade axis on charcoal; a cool light-table white, not cream), three type roles (Barlow Condensed / Geist / IBM Plex Mono for all data) where there was one, flat plates instead of glass, and film grain + vignette instead of aurora. The one bold element is `PipelineRail.tsx`: the ~2-minute generation is now a visible five-stage process — four agents, render with per-shot critic verdicts, assembly — where it previously showed only a percentage while the project's contribution ran unseen. It reports only what the API returns and does not fake per-agent progress the orchestrator doesn't stream. Verified live on a real 4-shot run; both themes pass WCAG AA; no horizontal scroll at 375px; `tsc -b` + `oxlint` clean. No roadmap task changed status — this is polish on already-VERIFIED frontend tasks, so completion stays 32/36. Prior update, retained: **INTEG-002: the FFmpeg half of FR-9 post-processing (ADR-028).** Built `backend/src/services/ffmpegService.js` (`postProcess()` → `thumbnail.jpg`, `storyboard.vtt`, `storyboard-subtitled.mp4`), called from `queues/generationQueue.js` after a successful assembly; added `thumbnail_url`/`subtitles_url`/`subtitled_video_url`/`postprocess_error` to the Storyboard model and to `GET /api/jobs/:id`; extracted `remotionService.assembledShots()` so caption timings and the render share one filter; and consumed all of it in `StoryboardView.tsx` (`<video poster>`, a native `<track kind="captions">`, and a second "With captions" download). WebVTT is the only subtitle format written — it is the one format `<track>` can display *and* libass can burn, so there is never a second file to disagree. Verified live end-to-end with no stubs, including a real dropped-shot case, real burned-in frames at four timestamps, and a real Chromium parsing the served track; 13/13 offline edge checks; `tsc -b` + `oxlint` clean. Temporary harnesses deleted after use and test documents removed from MongoDB, per project convention. Also added a `backend` entry to `.claude/launch.json` so the API server can be started through the managed runner. Found but did not fix a WSL2 Redis binding defect (needs `sudo`) — see Section 9. Prior update, retained below in Section 8. |
+| **Last updated by** | Claude (Opus 5) — **EVAL-003 resumed to 46/50; EVAL-004's scoring arm built (ADR-030); pilot comparison table produced.** Asked what was possible without a paid video-generation API. Finding: everything left except BACKEND-005's video tier, because the study's metric scores frames, and frames come from free image providers. **EVAL-003** — Groq's daily quota had reset, so `--resume` was run by hand: it reuses the 27 already-`ok` records untouched and spent the fresh budget on the 23 failures, 19 of which passed (**27/50 → 46/50**). It hit the same wall on the last four, and the 429 body names it exactly — `TPD: Limit 100000, Used 99691` — confirming as fact the ~100k/day figure that was previously only an empirical estimate. This is not a reversal of the earlier "stop pursuing them" instruction: what was cancelled was *automating a wait* for the reset; running `--resume` manually on a later day is the path ADR-025's resolution note explicitly left open. **EVAL-004** — three new modules (`evaluation/media.py`, `alignment.py`, `run_scoring.py`). The load-bearing decision is not the model but the reference: every frame is scored against the **original** prompt, never against the text its own condition produced, because the latter would measure how faithfully Pollinations followed its instructions — a property of the image model, not of the pipeline under test. Seed is fixed per prompt and shared across conditions; the set is paired. Condition B is reported under **two** aggregations because it decomposes a prompt into shots that each depict *part* of a scene, so against the whole prompt its frames score lower by construction — a lone mean-of-shots figure would misrepresent storyboarding-working-as-designed as a defect. **45/45 offline checks pass**; writing them found two real defects (the minimum-size guard sat inside the Pollinations fetch, so another fetch could cache a non-image — indistinguishable from a real frame on the next run; and `spacy_summary` indexed record keys directly). **The published table is n = 5 of 46 available and says so in a banner on its own front page** — generation was stopped early by team decision at ~1 frame/minute. Nothing in it is significant (mean-of-shots −0.017, p = 0.685; best-shot +0.078, p = 0.136) and **it must not be quoted as a finding**; it is a verified method plus a pilot. Finishing costs nothing already spent — frames are cached by content hash and the runner resumes. Also corrected stale architecture status tags found in passing: the Prompt Analyzer, Clarification Agent, Frontend and Backend API Gateway were all still tagged `NOT_IMPLEMENTED` while VERIFIED and in daily use — the analyzer is what this very study scores both conditions with. Prior update, retained: **Documentation sync + branch merge. No code changed.** Asked to commit, push, merge and update all tracking documents. The tree was already clean, so the work was the drift: **(1)** every one of `PROJECT_STATE.yaml`'s ten phase rollups read `status: not_started` while the task entries nested inside them recorded 32 VERIFIED — the rollups had never been maintained since the file was written, so a reader trusting them would conclude nothing had been built; they are now set from their own tasks. **(2)** The same file's `current_phase` read `phase_0_1_research_env_setup` and `version` read `0.0.0-pre-development` at 88.9% completion. **(3)** Section 1's "Current phase" row here called INTEG-002 `IN_PROGRESS` while the row directly above it counted INTEG-002 as VERIFIED, and it omitted DEMO-001 entirely. **(4)** Section 1's "Overall status" row still reported ENV-001 as found-and-not-fixed while Section 9 had recorded it RESOLVED the same day. **(5)** Section 8's change log stopped four sessions back — INTEG-002, DEMO-001, ADR-029 and the depth pass had updated Section 1 but never appended their entries; all four are now written up. Also corrected `PROJECT_ARCHITECTURE.md`'s header, which still declared the repository to contain one file and `NOT_IMPLEMENTED` to apply to 100% of the system, and `DEMO_RUNBOOK.md` step 5, which still told the presenter to narrate a "progress bar" that ADR-029's depth pass had deleted. Neither frontend commit had updated the depth pass into this row, so it is folded in below. Completion unchanged at 32/36. Prior update, retained: **Frontend visual identity re-grounded in the subject (ADR-029),** plus a same-day **depth pass** — a material system (top-edge highlight over two-layer shadows, three-channel hover, top-lit buttons), and the data colours run through the dataviz validator rather than eyeballed, which caught two genuine defects (`--success` green at ΔE 8.9 from `--accent` cyan, and any useful orange warning colliding with `--destructive` red at ΔE 4.1 for deuteranopes) — both resolved by *removing* colours, with a glyph added to every shot tick so status is never colour alone. Two real bugs found while verifying it: `AnalysisPanel`'s score ring was still painting the retired violet→cyan gradient with a hardcoded white track that broke in light theme, and the score count-up sat at 0 in a background tab because browsers do not fire `requestAnimationFrame` when `document.hidden`. The team asked for deeper visual work; the existing system already had the effects machinery, so the real gap was that the identity was the standard AI-SaaS template (aurora orbs, glass, violet→cyan gradient, gradient headline) and the subject was invisible — a cinematography tool with no cinematographic vocabulary in its interface. Replaced with a grading-suite palette (amber/cyan grade axis on charcoal; a cool light-table white, not cream), three type roles (Barlow Condensed / Geist / IBM Plex Mono for all data) where there was one, flat plates instead of glass, and film grain + vignette instead of aurora. The one bold element is `PipelineRail.tsx`: the ~2-minute generation is now a visible five-stage process — four agents, render with per-shot critic verdicts, assembly — where it previously showed only a percentage while the project's contribution ran unseen. It reports only what the API returns and does not fake per-agent progress the orchestrator doesn't stream. Verified live on a real 4-shot run; both themes pass WCAG AA; no horizontal scroll at 375px; `tsc -b` + `oxlint` clean. No roadmap task changed status — this is polish on already-VERIFIED frontend tasks, so completion stays 32/36. Prior update, retained: **INTEG-002: the FFmpeg half of FR-9 post-processing (ADR-028).** Built `backend/src/services/ffmpegService.js` (`postProcess()` → `thumbnail.jpg`, `storyboard.vtt`, `storyboard-subtitled.mp4`), called from `queues/generationQueue.js` after a successful assembly; added `thumbnail_url`/`subtitles_url`/`subtitled_video_url`/`postprocess_error` to the Storyboard model and to `GET /api/jobs/:id`; extracted `remotionService.assembledShots()` so caption timings and the render share one filter; and consumed all of it in `StoryboardView.tsx` (`<video poster>`, a native `<track kind="captions">`, and a second "With captions" download). WebVTT is the only subtitle format written — it is the one format `<track>` can display *and* libass can burn, so there is never a second file to disagree. Verified live end-to-end with no stubs, including a real dropped-shot case, real burned-in frames at four timestamps, and a real Chromium parsing the served track; 13/13 offline edge checks; `tsc -b` + `oxlint` clean. Temporary harnesses deleted after use and test documents removed from MongoDB, per project convention. Also added a `backend` entry to `.claude/launch.json` so the API server can be started through the managed runner. Found but did not fix a WSL2 Redis binding defect (needs `sudo`) — see Section 9. Prior update, retained below in Section 8. |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -130,6 +130,41 @@ Next action: none queued. EVAL-004 does NOT wait on these 4: it compares the two
   PAIRED subset, which is 46 prompts, and reports the 4 exclusions in its own coverage table.
 ```
 
+```text
+Task ID: EVAL-004
+Description: Score both conditions -- CLIPScore-style metric + spaCy scores; produce the comparison
+  table (PROJECT_ARCHITECTURE.md Section 20 / Section 4.7 / ADR-030)
+Current state: the scoring arm is BUILT AND VERIFIED END TO END; the STUDY is a pilot. Three new
+  modules: evaluation/media.py (frame generation via Pollinations, disk-cached by content hash,
+  rate-paced), evaluation/alignment.py (CLIPScore = 2.5*max(cos,0) on clip-ViT-B-32 through
+  sentence-transformers), evaluation/run_scoring.py (pairs the conditions, aggregates, renders the
+  Markdown table). Ran for real: 24 real Pollinations frames, real CLIP scoring, ZERO retries and
+  ZERO failed frames. 45/45 offline edge checks pass.
+Why this task was possible at all without a paid video API: the metric is FRAME-level -- CLIP embeds
+  an image, not a clip -- so stills are what it consumes either way, and the Remotion pathway
+  animates those same stills rather than synthesising new pixels. BACKEND-005's video tier is the
+  only remaining item that genuinely needs the paid key.
+Files: ai-service/evaluation/{media,alignment,run_scoring}.py,
+  ai-service/evaluation/results/eval004_comparison.md (the Section 4.7 deliverable),
+  ai-service/evaluation/results/eval004_scores.json, ai-service/evaluation/results/frames/ (the
+  generated frames, COMMITTED -- unlike the gitignored FAISS index, a hosted diffusion provider
+  guarantees no reproducibility, so these are the study's only durable evidence)
+Dependencies: EVAL-002 (done), EVAL-003 (46/50)
+What remains: THE SAMPLE SIZE, nothing else. The published table is n=5 of the 46 paired prompts
+  available. Frame generation was stopped early by team decision: the provider's queue settled at
+  ~1 frame/minute, putting the full 222-frame set at ~3 hours of wall-clock. At n=5 NOTHING is
+  established -- mean-of-shots -0.017 (p=0.685), best-shot +0.078 (p=0.136), per-genre cells of 2-3
+  prompts. These numbers must NOT be quoted as findings; the table carries that warning in a banner
+  on its own front page.
+Current blocker: none. Finishing re-spends nothing already generated -- every frame is cached by
+  content hash, so `python -m evaluation.run_scoring` resumes rather than restarts. Budget ~3 hours
+  of mostly-idle wall-clock for the remaining 41 prompts.
+Next action: re-run `python -m evaluation.run_scoring` (no flags) whenever ~3 hours of wall-clock is
+  acceptable, ideally after `--resume`-ing EVAL-003's last 4 prompts on a fresh Groq day so the
+  paired set is the full 50. Only then is this task's "comparison table produced" criterion met in
+  substance rather than in form.
+```
+
 *(INTEG-001 moved to Section 2 — VERIFIED, 2026-08-12: the real full-stack end-to-end confirmation run passed. See Section 2's table row for detail.)*
 
 (Template for future entries:)
@@ -169,7 +204,8 @@ Every task from `PROJECT_ARCHITECTURE.md` Section 20, i.e. **all 35 tasks**, pri
 | Task ID | Name | Depends on |
 |---|---|---|
 | CRITIC-001 | Critic loop implementation | BACKEND-005 or REMOTION-002 |
-| EVAL-004 | Score both conditions | EVAL-002, EVAL-003 |
+
+*(EVAL-004 moved to Section 3 — In Progress, 2026-08-13: the scoring arm is built and verified end-to-end, but the published table is a pilot at n=5, so the task is not claimed complete.)*
 
 ### LOW (stretch / polish / final)
 
@@ -1644,6 +1680,83 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
   updated by"; it is folded in now.
 - NO task changed status. Completion stays 32/36 (88.9%). Branch pushed and
   fast-forward merged into main.
+
+2026-08-13 (part 2 -- EVAL-003 resume + EVAL-004 scoring arm, ADR-030)
+- Asked what could be done WITHOUT a paid video-generation API, and to do it.
+  The finding that unlocked the session: everything remaining except
+  BACKEND-005's video tier. FR-12's metric is CLIPScore, CLIP embeds an
+  IMAGE, and images come from free providers -- so the evaluation study never
+  needed video at all. ADR-024/025 had deferred that question rather than
+  answer it, which is why it had looked blocked.
+- EVAL-003: 27/50 -> 46/50. Groq's daily quota had reset, so --resume was run
+  by hand; it reuses the 27 already-'ok' records untouched and spent the
+  fresh day's budget only on the 23 failures. 19 passed. The last four hit
+  the same wall, and the 429 body names the limit outright rather than
+  leaving it to inference: "on tokens per day (TPD): Limit 100000, Used
+  99691, Requested 481" -- an exact live confirmation of the ~100k/day figure
+  that had been recorded only as an empirical estimate. nature-2 and
+  romance-1..3 remain, one command away on any later day.
+  NOT a reversal of the earlier instruction: what was cancelled was
+  AUTOMATING a wait for the reset. Running --resume manually, on a day when
+  the quota had already reset and the work was asked for, is the path
+  ADR-025's resolution note explicitly left open.
+- EVAL-004 scoring arm built: evaluation/media.py (frame generation,
+  disk-cached by content hash, rate-paced), evaluation/alignment.py
+  (CLIPScore = 2.5*max(cos,0) on clip-ViT-B-32), evaluation/run_scoring.py
+  (pairs the conditions, aggregates, emits results/eval004_comparison.md --
+  the Section 4.7 deliverable).
+- THE LOAD-BEARING DESIGN DECISION is not the model, it is the reference
+  text: every frame is scored against the ORIGINAL prompt, never against the
+  text its own condition produced. The latter would measure how faithfully
+  Pollinations followed whatever it was handed -- a property of the image
+  model, not of the pipeline under test -- and would reward verbosity in the
+  enhancement step. Seed is fixed per prompt and shared across conditions so
+  seed luck cannot favour an arm; the set is paired so neither arm is scored
+  on an easier subset.
+- CONDITION B IS REPORTED UNDER TWO AGGREGATIONS, never one. It decomposes a
+  prompt into shots that each depict PART of a scene, so scored against the
+  whole prompt its individual frames come out lower BY CONSTRUCTION. That is
+  storyboarding working as designed, and a lone mean-of-shots figure would
+  publish it as a defect. The table also states what the metric cannot see:
+  CLIPScore reads one frame at a time and has no notion of a sequence, so it
+  is structurally blind to narrative decomposition and cross-shot continuity
+  -- the very things Condition B exists for.
+- 45/45 offline edge checks pass (temporary harness, deleted after use).
+  TWO REAL DEFECTS found by writing them: the minimum-size guard sat inside
+  the Pollinations fetch, so any other fetch implementation could cache a
+  non-image -- and a cached error page is indistinguishable from a real frame
+  on the next run, which would silently corrupt the scored set; and
+  spacy_summary indexed record keys directly instead of tolerating absent
+  ones.
+- PROVIDER PACING WAS MEASURED, NOT GUESSED: unpaced ~100s/frame (nearly all
+  of it retry backoff), 5s spacing ~50s/frame and still 429ing, 15s spacing
+  0 rate-limits across 6 consecutive requests. The residual 1.9-31.8s per
+  request is the provider's own queue, which neither pacing nor concurrency
+  removes. Cloudflare FLUX would have been the better provider (DEMO-001:
+  4/4 vs Pollinations' 2/4) but its free 10,000 neurons/day were already
+  exhausted.
+- RESULT IS A PILOT, NOT THE STUDY. The queue settled at ~1 frame/minute,
+  putting the full 222-frame set at ~3 hours, and the team elected to stop
+  generation and take the table from what was cached. Published table is
+  n=5 of 46 available, and says so in a banner on its own front page.
+  Mean-of-shots -0.017 (p=0.685), best-shot +0.078 (p=0.136) -- nothing
+  established, per-genre cells of 2-3. Do not quote as findings.
+  A guard exists specifically for this stopping mode: a prompt is admitted
+  only when EVERY one of its frames is cached, because a mean-of-shots
+  averaged over whichever shots happened to finish first is a different
+  statistic wearing the same name. 41 partial prompts were excluded on that
+  rule rather than quietly averaged.
+- Generated frames ARE committed, unlike the gitignored FAISS index: the
+  index rebuilds deterministically from a committed corpus, a hosted
+  diffusion provider guarantees nothing, so the frames are the study's only
+  durable evidence.
+- Corrected stale architecture status tags found in passing: Prompt Analyzer,
+  Clarification Agent, Frontend and Backend API Gateway were all still tagged
+  NOT_IMPLEMENTED while VERIFIED and in daily use -- the analyzer is what
+  this very study scores both conditions with. The header's claim that those
+  tags are maintained was corrected too; it was wrong when written.
+- No task changed status. EVAL-003 (46/50) and EVAL-004 (n=5 pilot) both stay
+  IN_PROGRESS rather than being claimed complete. Completion stays 32/36.
 ```
 
 ---
@@ -1673,6 +1786,37 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
 Ordered by priority, derived from `PROJECT_ARCHITECTURE.md` Section 21 (Dependency Graph) — these are the earliest unblocked tasks on the critical path.
 
 ```text
+DONE (was NEXT 1): the EVAL-004 scope decision, and most of the work behind it.
+2026-08-13. The question "what can we do without a paid video-generation API"
+answered the blocker rather than working around it: FR-12's metric scores
+FRAMES, so the study never needed the video tier. EVAL-003 resumed 27/50 ->
+46/50 on the day's fresh Groq quota, and EVAL-004's scoring arm was built,
+verified (45/45 offline checks, 24 real frames, 0 failures) and run.
+
+NEXT 1: finish EVAL-004's sample. The method is fixed and reviewable; only n
+  is short. Two commands, in this order, and neither needs new code:
+   (a) on a fresh Groq day: `python -m evaluation.run_multiagent --resume`
+       -> picks up nature-2 and romance-1..3, taking the paired set to 50.
+   (b) whenever ~3 hours of mostly-idle wall-clock is acceptable:
+       `python -m evaluation.run_scoring`
+       -> resumes from the frame cache; re-spends nothing already generated.
+  Only after (b) is "comparison table produced" met in substance. The current
+  table is a PILOT at n=5 and carries that warning on its own front page --
+  its numbers must not reach the final report as findings.
+
+NEXT 2: DOCS-001 (final report) — needs NEXT 1's real numbers, but no longer
+  needs to wait on any design decision: ADR-030 fixes the study's method, and
+  the honest limitations to write up are already stated there (CLIPScore is
+  blind to sequence, so it cannot see what the multi-agent pipeline is for;
+  and the render prompt excludes Condition B's world_state, which biases
+  conservative against B).
+
+STILL HELD (genuinely needs money, unlike everything above): BACKEND-005's
+  video tier (paid HUGGINGFACE_API_TOKEN). Cloud media hosting remains an
+  undecided provider rather than a payment problem, and may be legitimate to
+  scope out for the FYP.
+
+
 DONE (was NEXT 1): DEMO-001 — live demonstration rehearsal.
 VERIFIED 2026-08-12. Three successful live end-to-end runs through the real
 browser UI against the full real stack, covering both pathways: Remotion
