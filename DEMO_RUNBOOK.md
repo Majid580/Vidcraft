@@ -78,7 +78,7 @@ keeps the demo moving):
 | 2 | The score + dimension bars | — | "74 is strong, so it skips straight to art direction. A weaker prompt opens a clarification chat instead — I'll show that after." |
 | 3 | Style stage: pick Cinematic + **Remotion** | — | "The user picks the rendering pathway explicitly — that's ADR-020. No agent guesses it." |
 | 4 | Click **Generate storyboard** | ~25s | "LangGraph now runs four agents: Screenwriter decomposes into shots, Cinematographer grounds each shot's camera in a 75-passage RAG index, then a sentence-similarity check verifies the storyboard still matches the prompt, with bounded retries." |
-| 5 | Shot list appears, progress bar climbs | ~60s | "Each shot renders through a Bull job. Per-shot status is live." |
+| 5 | Shot list appears; **the pipeline rail** advances through its five stages | ~60s | "This is the whole contribution on one screen — the four agents, then per-shot rendering, then assembly. Each shot renders through its own Bull job, and each square carries the critic's verdict: a shot that generated but failed critique looks different from one that failed outright, and it gets regenerated automatically." |
 | 6 | Final video appears | ~30s | "Remotion assembles the shots into one continuous 1080p MP4 with per-shot camera moves, then FFmpeg adds the poster frame and captions." |
 | 7 | **Press CC**, show captions; show both downloads | — | "Captions are generated from the shot descriptions and timed to the assembled cut. The clean master and a burned-in copy are both available." |
 

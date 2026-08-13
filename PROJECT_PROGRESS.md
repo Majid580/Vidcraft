@@ -12,12 +12,12 @@
 | Field | Value |
 |---|---|
 | **Overall completion percentage** | **88.9%** — computed as (verified tasks) / (total tasks in the Section 20 roadmap of `PROJECT_ARCHITECTURE.md`) = **32 / 36**. Up from 30/36 this session: DEMO-001 moved **NOT_STARTED → VERIFIED** (three real live end-to-end runs — see `DEMO_RUNBOOK.md`), and INTEG-002 moved **IN_PROGRESS → VERIFIED** — its remaining half (FFmpeg thumbnails + subtitles, ADR-028) is now implemented and live-verified, meeting the task's stated completion criterion. Cloud media hosting stays deferred (provider `TBD`, local disk only), but it was never part of that criterion. *(Bookkeeping fixed 2026-08-12: `PROJECT_STATE.yaml`'s `phases` list had drifted to 35 task entries — it omitted BACKEND-006 and FRONTEND-004 (both VERIFIED since 2026-08-11, see Section 2) while still carrying AI-005 as VERIFIED rather than retired, so the YAML could not be counted directly and had silently disagreed with this percentage for two sessions. Both tasks have now been added with their real verification records, and AI-005 carries `status: RETIRED`. The YAML now holds 37 entries = 36 live + 1 retired, of which 32 are VERIFIED — reconciling exactly with the Section 20 roadmap's 37 rows and with the 32/36 above.)* |
-| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006, minus retired AI-005) all complete; Phase 6 (RAG-001/002/003 + AI-007 + AI-008) fully complete; Phase 7's PROVIDER-001 decided, BACKEND-005 **deliberately held** (video tier — no available video-generation API access), BACKEND-006/FRONTEND-004/CRITIC-001 complete; Phase 8's INTEG-001 VERIFIED and **INTEG-002 IN_PROGRESS** (FR-9 concatenation done in Remotion per ADR-027; thumbnails/subtitles/cloud hosting remain); Phase 9's EVAL-001/EVAL-002 VERIFIED, EVAL-003 **deliberately held** (27/50 real, remainder blocked on Groq's real daily token quota), EVAL-004 **deliberately held** (depends on EVAL-003) |
+| **Current phase** | Phase 0/1 complete; Phase 4 (Remotion Integration) done; Phase 5 HIGH tasks (AI-002..006, minus retired AI-005) all complete; Phase 6 (RAG-001/002/003 + AI-007 + AI-008) fully complete; Phase 7's PROVIDER-001 decided, BACKEND-005 **deliberately held** (video tier — no available video-generation API access), BACKEND-006/FRONTEND-004/CRITIC-001 complete; Phase 8 **fully complete** (INTEG-001 and INTEG-002 both VERIFIED — FR-9 concatenation in Remotion per ADR-027, then thumbnails/subtitles per ADR-028; cloud media hosting stays deferred and was never part of INTEG-002's completion criterion); Phase 9's EVAL-001/EVAL-002 VERIFIED, EVAL-003 **deliberately held** (27/50 real, remainder blocked on Groq's real daily token quota), EVAL-004 **deliberately held** (depends on EVAL-003); Phase 10's DEMO-001 VERIFIED (three real live end-to-end runs, `DEMO_RUNBOOK.md`), DOCS-001 blocked on EVAL-004. *(This row read "INTEG-002 IN_PROGRESS" until 2026-08-13 — a direct contradiction of the completion row above it, which had counted INTEG-002 as VERIFIED since 2026-08-12, and it never mentioned DEMO-001 at all.)* |
 | **Current milestone** | M1 "Development environment and technology feasibility confirmed" — reached 2026-08-10 |
-| **Current objective** | **This session (2026-08-12, continuation):** asked to analyse the repository and implement whatever was next available and unblocked. INTEG-002 was the only roadmap task that was both unstarted and genuinely unblocked — BACKEND-005's video tier waits on a paid Hugging Face key, and EVAL-003/EVAL-004 wait on Groq daily quota, all three being deliberate holds rather than technical blockers. So: completed FR-9's post-processing pipeline by building its FFmpeg half (`backend/src/services/ffmpegService.js`) — poster frame, WebVTT caption track, and a hardsubbed copy — wired through the generation queue, the jobs API, and the storyboard UI. |
-| **Overall status** | 🟢 **INTEG-002 complete (ADR-028); the pipeline now produces a full deliverable.** A finished run yields a continuous MP4, a poster frame, browser-toggleable captions, and a hardsubbed download. Three decisions kept it honest rather than merely working: the assembled master is **never modified** (the hardsub is a separate file, so the clean render survives for download and for the frame-level metrics EVAL-004 will need); caption cues are built from the **same** shot filter the renderer uses, exported specifically so a second copy cannot drift; and captions are **refused outright** when their frame total disagrees with what Remotion actually rendered, because captions that drift look correct until someone watches to the end. The verification run happened to prove the point — a shot died on a real Pollinations 500, and the captions correctly described the shortened 180-frame timeline rather than the authored 300-frame one. 🟡 **One environment defect found and NOT fixed** (needs `sudo`, so left to the team): the WSL2 Redis service binds `127.0.0.1` inside WSL and is unreachable from Windows, so the committed `REDIS_URL=redis://localhost:6379` makes every `POST /:id/generate` return 500. Worked around during verification with a second Redis on port 6380; `backend/.env` was restored to its committed value afterwards. See Section 9. |
-| **Last updated** | 2026-08-12 |
-| **Last updated by** | Claude (Opus 5) — **Frontend visual identity re-grounded in the subject (ADR-029).** The team asked for deeper visual work; the existing system already had the effects machinery, so the real gap was that the identity was the standard AI-SaaS template (aurora orbs, glass, violet→cyan gradient, gradient headline) and the subject was invisible — a cinematography tool with no cinematographic vocabulary in its interface. Replaced with a grading-suite palette (amber/cyan grade axis on charcoal; a cool light-table white, not cream), three type roles (Barlow Condensed / Geist / IBM Plex Mono for all data) where there was one, flat plates instead of glass, and film grain + vignette instead of aurora. The one bold element is `PipelineRail.tsx`: the ~2-minute generation is now a visible five-stage process — four agents, render with per-shot critic verdicts, assembly — where it previously showed only a percentage while the project's contribution ran unseen. It reports only what the API returns and does not fake per-agent progress the orchestrator doesn't stream. Verified live on a real 4-shot run; both themes pass WCAG AA; no horizontal scroll at 375px; `tsc -b` + `oxlint` clean. No roadmap task changed status — this is polish on already-VERIFIED frontend tasks, so completion stays 32/36. Prior update, retained: **INTEG-002: the FFmpeg half of FR-9 post-processing (ADR-028).** Built `backend/src/services/ffmpegService.js` (`postProcess()` → `thumbnail.jpg`, `storyboard.vtt`, `storyboard-subtitled.mp4`), called from `queues/generationQueue.js` after a successful assembly; added `thumbnail_url`/`subtitles_url`/`subtitled_video_url`/`postprocess_error` to the Storyboard model and to `GET /api/jobs/:id`; extracted `remotionService.assembledShots()` so caption timings and the render share one filter; and consumed all of it in `StoryboardView.tsx` (`<video poster>`, a native `<track kind="captions">`, and a second "With captions" download). WebVTT is the only subtitle format written — it is the one format `<track>` can display *and* libass can burn, so there is never a second file to disagree. Verified live end-to-end with no stubs, including a real dropped-shot case, real burned-in frames at four timestamps, and a real Chromium parsing the served track; 13/13 offline edge checks; `tsc -b` + `oxlint` clean. Temporary harnesses deleted after use and test documents removed from MongoDB, per project convention. Also added a `backend` entry to `.claude/launch.json` so the API server can be started through the managed runner. Found but did not fix a WSL2 Redis binding defect (needs `sudo`) — see Section 9. Prior update, retained below in Section 8. |
+| **Current objective** | **This session (2026-08-13):** asked to commit, push, merge and update all tracking documents. No code was written. The working tree was already clean and `rag-002-corpus` was 7 commits ahead of both its own remote and `main`, so the actual work was reconciling the documentation drift those commits left behind — and drift older than them. Five real contradictions were found and fixed (see "Last updated by" below and Section 8's `2026-08-13` entry); the branch was then pushed and fast-forward merged into `main`. **No task changed status — completion stays 32/36.** |
+| **Overall status** | 🟢 **INTEG-002 complete (ADR-028); the pipeline now produces a full deliverable.** A finished run yields a continuous MP4, a poster frame, browser-toggleable captions, and a hardsubbed download. Three decisions kept it honest rather than merely working: the assembled master is **never modified** (the hardsub is a separate file, so the clean render survives for download and for the frame-level metrics EVAL-004 will need); caption cues are built from the **same** shot filter the renderer uses, exported specifically so a second copy cannot drift; and captions are **refused outright** when their frame total disagrees with what Remotion actually rendered, because captions that drift look correct until someone watches to the end. The verification run happened to prove the point — a shot died on a real Pollinations 500, and the captions correctly described the shortened 180-frame timeline rather than the authored 300-frame one. 🟢 **The demonstration has actually been run** (DEMO-001): three real end-to-end runs through the browser UI against the full real stack, across both pathways, all producing poster + captions + hardsubbed copy. 🟢 **The interface now shows the work** (ADR-029): the ~2-minute generation is a visible five-stage pipeline rather than a percentage, so the contribution is on screen during the exact window an examiner is watching. 🟢 **ENV-001 (WSL2 Redis unreachable from Windows) is RESOLVED** — the team applied the `/etc/redis/redis.conf` bind change and all three DEMO-001 runs generated through it. *(This row reported ENV-001 as "found and NOT fixed" until 2026-08-13, contradicting Section 9, which had recorded it resolved since 2026-08-12.)* 🟡 **What actually remains** is not engineering: EVAL-003/EVAL-004 wait on Groq daily quota and a team decision on scope, BACKEND-005's video tier waits on a paid key, and DOCS-001 waits on EVAL-004. See Section 10. |
+| **Last updated** | 2026-08-13 |
+| **Last updated by** | Claude (Opus 5) — **Documentation sync + branch merge. No code changed.** Asked to commit, push, merge and update all tracking documents. The tree was already clean, so the work was the drift: **(1)** every one of `PROJECT_STATE.yaml`'s ten phase rollups read `status: not_started` while the task entries nested inside them recorded 32 VERIFIED — the rollups had never been maintained since the file was written, so a reader trusting them would conclude nothing had been built; they are now set from their own tasks. **(2)** The same file's `current_phase` read `phase_0_1_research_env_setup` and `version` read `0.0.0-pre-development` at 88.9% completion. **(3)** Section 1's "Current phase" row here called INTEG-002 `IN_PROGRESS` while the row directly above it counted INTEG-002 as VERIFIED, and it omitted DEMO-001 entirely. **(4)** Section 1's "Overall status" row still reported ENV-001 as found-and-not-fixed while Section 9 had recorded it RESOLVED the same day. **(5)** Section 8's change log stopped four sessions back — INTEG-002, DEMO-001, ADR-029 and the depth pass had updated Section 1 but never appended their entries; all four are now written up. Also corrected `PROJECT_ARCHITECTURE.md`'s header, which still declared the repository to contain one file and `NOT_IMPLEMENTED` to apply to 100% of the system, and `DEMO_RUNBOOK.md` step 5, which still told the presenter to narrate a "progress bar" that ADR-029's depth pass had deleted. Neither frontend commit had updated the depth pass into this row, so it is folded in below. Completion unchanged at 32/36. Prior update, retained: **Frontend visual identity re-grounded in the subject (ADR-029),** plus a same-day **depth pass** — a material system (top-edge highlight over two-layer shadows, three-channel hover, top-lit buttons), and the data colours run through the dataviz validator rather than eyeballed, which caught two genuine defects (`--success` green at ΔE 8.9 from `--accent` cyan, and any useful orange warning colliding with `--destructive` red at ΔE 4.1 for deuteranopes) — both resolved by *removing* colours, with a glyph added to every shot tick so status is never colour alone. Two real bugs found while verifying it: `AnalysisPanel`'s score ring was still painting the retired violet→cyan gradient with a hardcoded white track that broke in light theme, and the score count-up sat at 0 in a background tab because browsers do not fire `requestAnimationFrame` when `document.hidden`. The team asked for deeper visual work; the existing system already had the effects machinery, so the real gap was that the identity was the standard AI-SaaS template (aurora orbs, glass, violet→cyan gradient, gradient headline) and the subject was invisible — a cinematography tool with no cinematographic vocabulary in its interface. Replaced with a grading-suite palette (amber/cyan grade axis on charcoal; a cool light-table white, not cream), three type roles (Barlow Condensed / Geist / IBM Plex Mono for all data) where there was one, flat plates instead of glass, and film grain + vignette instead of aurora. The one bold element is `PipelineRail.tsx`: the ~2-minute generation is now a visible five-stage process — four agents, render with per-shot critic verdicts, assembly — where it previously showed only a percentage while the project's contribution ran unseen. It reports only what the API returns and does not fake per-agent progress the orchestrator doesn't stream. Verified live on a real 4-shot run; both themes pass WCAG AA; no horizontal scroll at 375px; `tsc -b` + `oxlint` clean. No roadmap task changed status — this is polish on already-VERIFIED frontend tasks, so completion stays 32/36. Prior update, retained: **INTEG-002: the FFmpeg half of FR-9 post-processing (ADR-028).** Built `backend/src/services/ffmpegService.js` (`postProcess()` → `thumbnail.jpg`, `storyboard.vtt`, `storyboard-subtitled.mp4`), called from `queues/generationQueue.js` after a successful assembly; added `thumbnail_url`/`subtitles_url`/`subtitled_video_url`/`postprocess_error` to the Storyboard model and to `GET /api/jobs/:id`; extracted `remotionService.assembledShots()` so caption timings and the render share one filter; and consumed all of it in `StoryboardView.tsx` (`<video poster>`, a native `<track kind="captions">`, and a second "With captions" download). WebVTT is the only subtitle format written — it is the one format `<track>` can display *and* libass can burn, so there is never a second file to disagree. Verified live end-to-end with no stubs, including a real dropped-shot case, real burned-in frames at four timestamps, and a real Chromium parsing the served track; 13/13 offline edge checks; `tsc -b` + `oxlint` clean. Temporary harnesses deleted after use and test documents removed from MongoDB, per project convention. Also added a `backend` entry to `.claude/launch.json` so the API server can be started through the managed runner. Found but did not fix a WSL2 Redis binding defect (needs `sudo`) — see Section 9. Prior update, retained below in Section 8. |
 
 **Why 0% and not some nonzero "planning is progress" number:** the percentage in this file is defined as *verified implementation* progress against the roadmap, not planning/documentation progress. The proposal and this documentation system are real, substantial work — but they are inputs to development, not development itself. Do not inflate this number to make the project look further along than it is.
 
@@ -1453,6 +1453,190 @@ Four scaffolds exist (backend, ai-service, frontend, remotion) — see Section 5
   VERIFIED, and "External API Integration Layer" still said generation was
   synchronous), and this file. Task counts unchanged: INTEG-002 moved
   NOT_STARTED -> IN_PROGRESS, not to VERIFIED, so completion stays 30/36.
+
+2026-08-12 (INTEG-002: the FFmpeg half of FR-9 post-processing, ADR-028)
+- Picked up as the only roadmap task both unstarted and genuinely unblocked.
+  Built backend/src/services/ffmpegService.js -- the file INTEG-002's roadmap
+  row has always named. postProcess() emits three artifacts: a poster frame,
+  a WebVTT caption track, and a hardsubbed copy. Called from
+  queues/generationQueue.js after a successful assembly; persisted as
+  Storyboard.thumbnail_url / subtitles_url / subtitled_video_url /
+  postprocess_error; surfaced on GET /api/jobs/:id; consumed in
+  StoryboardView.tsx as <video poster>, a native <track kind="captions">,
+  and a second "With captions" download.
+- FOUR DECISIONS, each avoiding a specific silent wrongness:
+  - ONE subtitle format (WebVTT). It is the only format <track> can display
+    AND libass can burn, so there is never a second file to disagree.
+  - The hardsub is a SEPARATE file. Burned-in text cannot be turned off, and
+    the clean master is what a frame-level metric would score for EVAL-004,
+    so storyboard.mp4 is never modified.
+  - Captions describe the ASSEMBLED timeline, not the authored one, and are
+    refused outright on a frame-count mismatch. Failed shots are dropped from
+    the video and occupy no time, so cues come from a newly-extracted
+    remotionService.assembledShots() -- the SAME filter renderStoryboard()
+    uses, exported precisely so a second copy cannot drift.
+  - The poster is the first assembled shot's midpoint, which clears the
+    opening frames of the camera move while still showing what the storyboard
+    opens on.
+- The verification run proved point three by accident: a shot died on a real
+  Pollinations 500, and the captions correctly started at 00:00:00.000 with
+  shot 2's text over a 180-frame video, where the naive version would have
+  written three cues over 300 frames.
+- Live-verified end-to-end with no stubs (real Express, real Bull on real
+  Redis, real MongoDB, real Pollinations, real Remotion, real FFmpeg).
+  ffprobe confirmed the master at exactly the 180 frames the caption builder
+  computed; burn-in confirmed by extracting real frames at four timestamps
+  across two storyboards; a real Chromium against the real /media mount
+  confirmed the browser parses the track (readyState 2 = LOADED, mode
+  showing, cues at exactly 0-3s and 3-6s, correct activeCue at t=4.0, poster
+  640x360). 13/13 offline edge checks via a temporary harness, deleted after
+  use. tsc -b + oxlint clean.
+- REQUIRES an FFmpeg build with --enable-libass for the burn-in. Artifacts
+  fail independently, so a build without it degrades to "captions in the
+  browser, no hardsubbed download" rather than to nothing.
+- Found but did NOT fix ENV-001 (needs sudo): the WSL2 Redis service binds
+  127.0.0.1 inside WSL and was unreachable from Windows, making every
+  POST /:id/generate fail with an ioredis max-retries error. Worked around
+  with a second Redis on 6380; backend/.env restored to its committed value.
+- INTEG-002 IN_PROGRESS -> VERIFIED. Completion 30/36 -> 31/36.
+
+2026-08-12 (DEMO-001: live demonstration rehearsal)
+- No new application code -- this task IS the rehearsal. Deliverable is
+  DEMO_RUNBOOK.md (new, repo root): a per-terminal pre-flight checklist
+  (WSL vs Windows), a timed ~6-minute demo script with what to say during
+  each wait, the rehearsal log, known issues with prepared answers, and a
+  mid-demo failure table.
+- THREE successful live end-to-end runs, all driven through the real browser
+  UI against the full real stack -- no stubs, no demo mode -- meeting the
+  roadmap criterion "one successful live end-to-end run demonstrated (x3)"
+  and Section 14's "repeated for both pathways":
+      Remotion      3/3 shots, 360 frames = 12s, 122s wall-clock
+      Pollinations  2 of 4 shots survived real provider 500s, 300f/10s, 200s
+      Cloudflare    4/4 shots, 480 frames = 16s, 115s
+  All three produced poster + WebVTT + hardsubbed copy, postprocess_error
+  unset, frame count exactly equal to the ASSEMBLED shot durations x 30fps.
+- Run 2 became the strongest evidence yet for ADR-028's desync guard. Run 3
+  independently demonstrated FR-8's critic loop on real output: shots 1 and 4
+  passed first time; shots 2 and 3 failed and were automatically regenerated
+  (2 and 1 retries) before finalizing, with verdicts recorded.
+- TWO FINDINGS THAT CHANGE HOW THE DEMO MUST BE RUN:
+  (a) The FIRST storyboard request after ai-service starts takes ~2 minutes
+      (torch + all-MiniLM-L6-v2 loading) and the Vite proxy gives up with a
+      502. Warm up with a throwaway prompt BEFORE presenting. The same
+      request took 3.4s once warm.
+  (b) Provider reliability differs sharply. Demo Remotion live (no external
+      dependency, cannot fail on someone else's server); show a pre-generated
+      Cloudflare result for photoreal output. Pollinations is too flaky.
+- ENV-001 RESOLVED the same day: the team applied the /etc/redis/redis.conf
+  bind change, confirmed by a live port check, and all three runs generated
+  through it. Kept visible in Section 9 rather than struck, because the same
+  WSL-loopback trap applies to ANY service started inside WSL -- ai-service
+  must likewise be launched with uvicorn --host 0.0.0.0, now a documented
+  pre-flight step.
+- DEMO-001 NOT_STARTED -> VERIFIED. Completion 31/36 -> 32/36 (88.9%).
+
+2026-08-12 (frontend: visual identity re-grounded in the subject, ADR-029)
+- The ask was for deeper visual work -- colour, animation, 3D, scroll and
+  hover detail. The existing system already had that machinery: reveal-3d,
+  tilt-3d, hover-lift, shimmer, staggered entrances, a reduced-motion guard.
+  The gap was not a shortage of effects. It was that the identity (aurora
+  orbs, glassmorphism, a violet->cyan gradient, an animated gradient
+  headline, round numbered pills) is the most templated look in AI products
+  right now, so adding effects to it reads as MORE generic, not less -- and
+  that the subject was invisible: a cinematography tool, RAG-grounded on 75
+  real film-technique passages, with no cinematographic vocabulary anywhere
+  in its interface.
+- So the palette, type and surfaces now come from the subject. Colour is the
+  warm/cool axis of grading itself, amber #E8A33D against cyan #3FB8C4; dark
+  is the grading suite (charcoal #14181D, warm film-base off-white type
+  rather than pure white), light is a light table in a cool lab white
+  #E9EBEE -- deliberately not a warm cream, which is its own AI cliche.
+  Three type roles where there was one: Barlow Condensed for display, Geist
+  for body, IBM Plex Mono for every number. Flat bordered "plates" with a
+  hairline of the grade axis replace glass; film grain and a lens vignette
+  replace the aurora orbs (grain is the emulsion, the vignette is the lens --
+  properties of the medium, not decoration).
+- THE ONE BOLD ELEMENT is PipelineRail.tsx, and it earns its place on UX
+  grounds: generation takes ~2 minutes that used to show a single percentage
+  while four agents, RAG grounding, an intent check, a vision critic with
+  bounded regeneration, and assembly all ran invisibly. For a viva that is
+  the worst possible trade -- the examiner watches a progress bar while the
+  contribution runs unseen. The rail reports ONLY what the API returns:
+  because the orchestrator does not stream per-agent progress, stages 1-3
+  resolve together as a group rather than faking a sequential fill. Per-shot
+  squares carry the critic's verdict, so a shot that generated but failed
+  critique is visibly distinct from one that failed outright.
+- StoryboardView's standalone GenerationBar was removed as redundant -- the
+  rail owns generation progress in full.
+- FOLLOW-UP the same day (depth pass): the team kept the palette and asked
+  for more colour and a more premium feel.
+  - Material: a 1px top-edge highlight over two-layer downward shadows on
+    every plate, three-channel hover (lift + border warmth + brand-tinted
+    shadow), top-lit primary buttons with a warm cast shadow. Depth and light
+    direction are what read as premium; more effects do not.
+  - THE DATA COLOURS WERE COMPUTED, NOT EYEBALLED, using the dataviz
+    validator against the real plate surfaces -- and it caught two genuine
+    defects: --success green sat at deltaE 8.9 from --accent cyan (below the
+    15 normal-vision floor), and any orange warning distinct enough to be
+    useful collided with --destructive red at deltaE 4.1 for deuteranopes.
+    Resolved by REMOVING colours: success aliased to the cool pole, status
+    reduced to three validated hues (CVD deltaE 14.2 dark / 14.5 light;
+    normal-vision 22.9 / 21.9), and a glyph added to every shot tick so
+    status is never colour alone. Dedicated --mark-* tokens were added
+    because a colour legible as 12px text and one that reads as a filled
+    mark are different colours. Dimension meters use a single-hue sequential
+    ramp, not a traffic-light rainbow.
+  - TWO REAL BUGS found while verifying: AnalysisPanel's score ring was still
+    painting the RETIRED violet->cyan gradient with a hardcoded white track
+    that broke in light theme (a leftover the first pass missed); and the
+    score count-up sat at 0 because browsers do not fire
+    requestAnimationFrame in a background tab, so a panel mounting while
+    document.hidden showed a confidently wrong score -- it now lands on the
+    true value immediately when hidden or when motion is reduced.
+- Verified live on a real 4-shot run through all five stages. Both themes
+  pass WCAG AA (dark body 14.07:1, muted 6.74:1, amber 8.27:1; light body
+  14.92:1, muted 5.18:1); no horizontal scroll at 375px; tsc -b + oxlint
+  clean; prefers-reduced-motion still disables everything including grain.
+- Supersedes the violet->cyan system. StyleConfigurator's "violet & cyan"
+  entry is deliberately untouched -- that is a palette the USER picks for
+  their video, i.e. product content, not interface chrome.
+- No roadmap task changed status; this is polish on already-VERIFIED
+  frontend tasks. Completion stays 32/36.
+
+2026-08-13 (documentation sync + branch merge -- no code changed)
+- Asked to commit, push, merge and update all tracking documents. The working
+  tree was already clean and rag-002-corpus was 7 commits ahead of both its
+  own remote and main, so the real work was the drift those commits left
+  behind -- and drift considerably older than them.
+- FIVE CONTRADICTIONS FOUND AND FIXED. The first is the serious one:
+  - PROJECT_STATE.yaml: all TEN phase rollups read status "not_started"
+    while the task entries nested directly inside them recorded 32 VERIFIED.
+    The rollups had never been maintained since the file was created, so any
+    reader (or script) trusting them would conclude nothing had been built.
+    Each is now set from its own tasks: phases 0/1-6 and 8 complete, 7 and 9
+    and 10 in_progress with a comment naming what is outstanding.
+  - PROJECT_STATE.yaml: current_phase read "phase_0_1_research_env_setup"
+    and version read "0.0.0-pre-development" at 88.9% completion.
+  - PROJECT_PROGRESS.md Section 1: the "Current phase" row called INTEG-002
+    IN_PROGRESS while the completion row DIRECTLY ABOVE IT counted INTEG-002
+    as VERIFIED; the row also omitted DEMO-001 entirely.
+  - PROJECT_PROGRESS.md Section 1: the "Overall status" row reported ENV-001
+    as found-and-NOT-fixed, while Section 9 of the same file had recorded it
+    RESOLVED on 2026-08-12.
+  - PROJECT_PROGRESS.md Section 8: this log had stopped four sessions back.
+    INTEG-002, DEMO-001, ADR-029 and the depth pass all updated Section 1 but
+    never appended their entries here. All four are written up above.
+- Also corrected: PROJECT_ARCHITECTURE.md's header, which still declared the
+  repository to contain one file and NOT_IMPLEMENTED to apply to "100% of
+  the system" (it is 235KB of blueprint with ADRs through 029, describing a
+  system that demonstrably runs end-to-end); and DEMO_RUNBOOK.md step 5,
+  which still told the presenter to narrate a "progress bar" that ADR-029's
+  depth pass deleted -- it is PipelineRail now, and that 60-second wait is
+  the single best moment in the demo to show it.
+- Neither frontend commit had folded the depth pass into Section 1's "Last
+  updated by"; it is folded in now.
+- NO task changed status. Completion stays 32/36 (88.9%). Branch pushed and
+  fast-forward merged into main.
 ```
 
 ---
