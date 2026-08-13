@@ -1978,9 +1978,64 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "A chef plates a delicate dessert under warm kitchen lights, drizzling dark chocolate in careful spirals across white porcelain.",
-    "timestamp": "2026-08-12T06:23:31.732792+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99732, Requested 703. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:47:47.766180+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The chef's hands carefully place the final dessert on a white porcelain plate",
+        "camera": "medium static shot, with a slight pan to follow the chef's hands as they place the dessert, using a macro lens to emphasize the details of the food and a soft, natural lighting to create a warm atmosphere",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the dark chocolate being drizzled in spirals across the dessert",
+        "camera": "close-up, slow dolly-in with rim lighting to accentuate the texture of the dark chocolate",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The finished dessert is revealed under warm kitchen lights, with the chef's hands withdrawing from the frame",
+        "camera": "static, wide shot with warm, high-key lighting to emphasize the finished dessert and the chef's hands withdrawing from the frame",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "chef"
+      ],
+      "setting": "kitchen",
+      "style_tokens": [
+        "static",
+        "medium",
+        "macro",
+        "soft-lighting",
+        "close-up",
+        "dolly-in",
+        "rim-lighting",
+        "high-key",
+        "wide"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7626762390136719,
+    "enhanced_description": "The chef's hands carefully place the final dessert on a white porcelain plate. Close-up of the dark chocolate being drizzled in spirals across the dessert. The finished dessert is revealed under warm kitchen lights, with the chef's hands withdrawing from the frame",
+    "original_score": 77,
+    "enhanced_score": 61,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 96,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "food-2",
@@ -1988,9 +2043,73 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A home baker kneads dough on a flour-dusted counter, shapes it into loaves, and finally pulls a tray of golden, steaming bread from the oven as morning light fills the kitchen.",
-    "timestamp": "2026-08-12T06:23:38.407548+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99727, Requested 682. Please try again in 5m53.376s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:26.222895+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The home baker kneads dough on a flour-dusted counter",
+        "camera": "medium, static, with a slight pan to follow the baker's hands as they knead the dough",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The baker shapes the dough into loaves",
+        "camera": "close-up, slow dolly-in on the baker's hands shaping the dough into loaves",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The baker pulls a tray of golden, steaming bread from the oven",
+        "camera": "medium shot, slight pan to follow the baker's hands as they pull the tray out of the oven, warm golden lighting to emphasize the freshly baked bread",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "Morning light fills the kitchen, illuminating the freshly baked bread",
+        "camera": "wide, slow pan with high-key lighting to capture the cheerful and clean atmosphere of the kitchen",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "home baker"
+      ],
+      "setting": "kitchen",
+      "style_tokens": [
+        "medium",
+        "static",
+        "pan",
+        "close-up",
+        "dolly-in",
+        "smooth-motion",
+        "immersive",
+        "warm",
+        "golden",
+        "high-key",
+        "wide",
+        "slow-pan"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.905658483505249,
+    "enhanced_description": "The home baker kneads dough on a flour-dusted counter. The baker shapes the dough into loaves. The baker pulls a tray of golden, steaming bread from the oven. Morning light fills the kitchen, illuminating the freshly baked bread",
+    "original_score": 75,
+    "enhanced_score": 54,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 83,
+      "environment_detail": 50,
+      "visual_richness": 40,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 50,
+      "visual_richness": 15,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "food-3",
@@ -1998,9 +2117,74 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "Steam rises from a bubbling pot of noodles on a street-food cart as the vendor tosses in fresh vegetables, then ladles a steaming bowl straight into a waiting customer's hands.",
-    "timestamp": "2026-08-12T06:23:42.073697+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99724, Requested 541. Please try again in 3m48.96s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:29.869967+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Steam rises from a bubbling pot of noodles",
+        "camera": "medium shot, slight dutch angle, static with a shallow depth of field to emphasize steam",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "Vendor tosses in fresh vegetables",
+        "camera": "close-up, handheld, with a macro lens to capture the vibrant textures of the fresh vegetables as the vendor's hands interact with them",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "Vendor ladles a steaming bowl into customer's hands",
+        "camera": "medium shot, slow dolly-in with a slight low-angle to emphasize the vendor's action and the customer's reception of the steaming bowl, using a standard lens with soft, natural lighting to capture the warmth of the scene",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "Customer receives the bowl, smiles, and takes a bite",
+        "camera": "medium close-up, slight push-in, with a shallow depth of field and warm lighting to emphasize the customer's emotional reaction",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "vendor",
+        "customer"
+      ],
+      "setting": "street-food cart",
+      "style_tokens": [
+        "dutch",
+        "shallow-focus",
+        "medium",
+        "close-up",
+        "handheld",
+        "macro",
+        "dolly-in",
+        "low-angle",
+        "natural-light",
+        "medium-closeup",
+        "push-in",
+        "warm-lighting"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.9317609071731567,
+    "enhanced_description": "Steam rises from a bubbling pot of noodles. Vendor tosses in fresh vegetables. Vendor ladles a steaming bowl into customer's hands. Customer receives the bowl, smiles, and takes a bite",
+    "original_score": 67,
+    "enhanced_score": 61,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 21,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 19,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "music-1",
@@ -2008,9 +2192,64 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "A violinist stands alone on an empty concert stage, spotlight narrowing as she draws the bow across the strings in the hush before the audience arrives.",
-    "timestamp": "2026-08-12T06:23:44.663618+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99720, Requested 677. Please try again in 5m43.008s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:34.106033+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The violinist stands alone on the stage, looking out at the empty seats",
+        "camera": "static, wide-angle lens with deep focus, emphasizing negative space around the violinist",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the violinist's hands as she draws the bow across the strings",
+        "camera": "close-up, slow dolly-in on the violinist's hands, with a slight emphasis on the bow's movement across the strings",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The spotlight narrows on the violinist, emphasizing her solitary figure on the stage",
+        "camera": "slow push-in to an extreme close-up of the violinist, keeping the empty stage in deep focus background",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "violinist"
+      ],
+      "setting": "empty concert stage",
+      "style_tokens": [
+        "static",
+        "wide",
+        "deep-focus",
+        "negative-space",
+        "close-up",
+        "dolly-in",
+        "intimate",
+        "slow",
+        "dramatic"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8739175200462341,
+    "enhanced_description": "The violinist stands alone on the stage, looking out at the empty seats. Close-up of the violinist's hands as she draws the bow across the strings. The spotlight narrows on the violinist, emphasizing her solitary figure on the stage",
+    "original_score": 77,
+    "enhanced_score": 72,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 68,
+      "environment_detail": 30,
+      "visual_richness": 89,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "music-2",
@@ -2018,9 +2257,78 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A garage band rehearses in a cramped basement, struggles through a rough first take, then locks into the song perfectly on their third try as everyone grins at each other.",
-    "timestamp": "2026-08-12T06:23:48.266496+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99716, Requested 704. Please try again in 6m2.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:37.452608+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The band sets up and begins to play, struggling to find their rhythm",
+        "camera": "static, wide shot with high-saturation color palette and emphasis on negative space around the band to convey their struggle and isolation in the cramped basement",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "A close-up montage of each band member's frustrated expressions as they make mistakes",
+        "camera": "close-up shots with rapid cuts, emphasizing frustrated expressions and utilizing tight framing to create intimacy and intensity",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The band launches into their third take, this time playing in perfect sync",
+        "camera": "medium shot, slow push-in across the band with deep focus to keep the cramped basement setting in sharp focus",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "The band members exchange thrilled glances, grinning at each other as they finish the song",
+        "camera": "slow push-in on the lead singer's face, using a close-up framing to capture the thrilled glances and grinning expression, with a shallow depth of field to blur the cramped basement environment and emphasize the band members' emotions",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "lead singer",
+        "lead guitarist",
+        "bassist",
+        "drummer"
+      ],
+      "setting": "cramped basement",
+      "style_tokens": [
+        "wide",
+        "high-saturation",
+        "negative-space",
+        "static",
+        "close-up",
+        "rapid",
+        "intense",
+        "low-key",
+        "deep-focus",
+        "slow",
+        "medium",
+        "push-in",
+        "intimate",
+        "shallow-focus"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.5314497947692871,
+    "enhanced_description": "The band sets up and begins to play, struggling to find their rhythm. A close-up montage of each band member's frustrated expressions as they make mistakes. The band launches into their third take, this time playing in perfect sync. The band members exchange thrilled glances, grinning at each other as they finish the song",
+    "original_score": 84,
+    "enhanced_score": 71,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 90,
+      "action_specificity": 73,
+      "environment_detail": 30,
+      "visual_richness": 86,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "music-3",
@@ -2028,9 +2336,72 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "A DJ's hands hover over a mixing deck in a packed nightclub, colored lights strobing across the crowd in time with the bass.",
-    "timestamp": "2026-08-12T06:23:51.534372+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99713, Requested 499. Please try again in 3m3.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:41.698306+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The DJ's hands poised over the mixing deck, ready to drop the next track",
+        "camera": "close-up, static shot of the DJ's hands with deep focus to keep the mixing deck and background in sharp focus",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "A wide shot of the nightclub, capturing the energetic crowd and strobing lights",
+        "camera": "use a wide shot with a slow pan to capture the energetic crowd and strobing lights, keeping the full subject in frame from head to toe with a clear sense of the surrounding space",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The DJ's hands moving deftly over the deck, scratching and mixing the music",
+        "camera": "handheld, medium shot with deep focus, slowly pushing in on the DJ's hands as they move over the deck",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "A shot of the crowd, lost in the music, with the DJ visible in the background",
+        "camera": "static, wide, deep focus",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "DJ"
+      ],
+      "setting": "packed nightclub",
+      "style_tokens": [
+        "deep-focus",
+        "static",
+        "close-up",
+        "high-contrast",
+        "wide",
+        "slow-pan",
+        "establishing",
+        "energetic",
+        "handheld",
+        "push-in",
+        "medium"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8265349268913269,
+    "enhanced_description": "The DJ's hands poised over the mixing deck, ready to drop the next track. A wide shot of the nightclub, capturing the energetic crowd and strobing lights. The DJ's hands moving deftly over the deck, scratching and mixing the music. A shot of the crowd, lost in the music, with the DJ visible in the background",
+    "original_score": 63,
+    "enhanced_score": 68,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 75,
+      "action_specificity": 70,
+      "environment_detail": 30,
+      "visual_richness": 65,
+      "temporal_coherence": 100
+    }
   },
   {
     "id": "comedy-1",
@@ -2038,9 +2409,72 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "A raccoon in a tiny chef's hat balances precariously on a kitchen counter, eyeing a pie cooling on the windowsill.",
-    "timestamp": "2026-08-12T06:23:54.217772+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99709, Requested 698. Please try again in 5m51.647999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:45.583624+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the kitchen, with the raccoon on the counter and the pie on the windowsill",
+        "camera": "wide, static, overhead shot looking down at the kitchen counter and windowsill",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the raccoon's face, showing its eyes fixed on the pie",
+        "camera": "extreme close-up of the raccoon's eyes, slow zoom-in with a macro lens to emphasize intensity",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "Medium shot of the raccoon, showing its precarious balance on the counter as it reaches for the pie",
+        "camera": "medium shot, slightly overhead angle to emphasize precarious balance, with a wide enough framing to include the counter and surrounding kitchen setting, and a handheld movement to add a sense of instability",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "Over-the-shoulder shot of the raccoon, looking at the pie with longing",
+        "camera": "over-the-shoulder shot with a slight tilt to emphasize the raccoon's longing gaze at the pie, using a medium lens and soft lighting to create a warm atmosphere in the kitchen",
+        "duration_s": 3
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "raccoon"
+      ],
+      "setting": "kitchen",
+      "style_tokens": [
+        "wide",
+        "static",
+        "overhead",
+        "close-up",
+        "intense",
+        "detailed",
+        "macro",
+        "medium",
+        "handheld",
+        "over-the-shoulder",
+        "warm-lighting"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.6345113515853882,
+    "enhanced_description": "Establishing shot of the kitchen, with the raccoon on the counter and the pie on the windowsill. Close-up of the raccoon's face, showing its eyes fixed on the pie. Medium shot of the raccoon, showing its precarious balance on the counter as it reaches for the pie. Over-the-shoulder shot of the raccoon, looking at the pie with longing",
+    "original_score": 66,
+    "enhanced_score": 33,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 33,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 0,
+      "action_specificity": 67,
+      "environment_detail": 30,
+      "visual_richness": 41,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "comedy-2",
@@ -2048,9 +2482,73 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A man in a business suit tiptoes past a sleeping dog toward the front door, freezes mid-step when a floorboard creaks, then bolts for the exit as the dog springs awake barking.",
-    "timestamp": "2026-08-12T06:23:57.807201+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99704, Requested 670. Please try again in 5m23.135999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:49:51.802675+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The man in a business suit is shown tiptoeing past the sleeping dog, trying not to make any noise.",
+        "camera": "medium close-up, static, with generous lead room in front of the man to convey his cautious movement and the direction of his attention",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The man freezes mid-step as a floorboard creaks beneath his foot, looking down at the floor and then back at the dog with a worried expression.",
+        "camera": "extreme close-up of the man's worried face, with minimal headroom and lead room to create tension, slowly zooming in on his eyes as he looks down and back at the dog",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "The dog springs awake, barking loudly, and the man bolts for the front door.",
+        "camera": "use a wide, handheld shot with high-key lighting to capture the man's frantic movement towards the front door, maintaining headroom and lead room to convey a sense of urgency and balance",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The man reaches the door, grabs the handle, and quickly exits the house as the dog continues barking in the background.",
+        "camera": "medium-wide shot, static, with headroom and lead room to capture the man's movement towards the door, and a slight emphasis on the barking dog in the background to create tension",
+        "duration_s": 3
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "man in a business suit",
+        "sleeping dog"
+      ],
+      "setting": "a home's entrance hallway",
+      "style_tokens": [
+        "medium",
+        "static",
+        "generous lead room",
+        "extreme close-up",
+        "low-key",
+        "tension",
+        "wide",
+        "handheld",
+        "high-key",
+        "medium-wide",
+        "headroom"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.9173551797866821,
+    "enhanced_description": "The man in a business suit is shown tiptoeing past the sleeping dog, trying not to make any noise.. The man freezes mid-step as a floorboard creaks beneath his foot, looking down at the floor and then back at the dog with a worried expression.. The dog springs awake, barking loudly, and the man bolts for the front door.. The man reaches the door, grabs the handle, and quickly exits the house as the dog continues barking in the background.",
+    "original_score": 70,
+    "enhanced_score": 58,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 42,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 71,
+      "environment_detail": 30,
+      "visual_richness": 37,
+      "temporal_coherence": 50
+    }
   },
   {
     "id": "comedy-3",
@@ -2058,9 +2556,83 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A toddler in oversized rain boots stomps gleefully through a puddle, sending an arc of water directly onto an unamused cat, which bolts away in an undignified sprint.",
-    "timestamp": "2026-08-12T06:24:01.605971+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99701, Requested 541. Please try again in 3m29.088s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:50:06.382174+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The toddler, wearing oversized rain boots, approaches a large puddle with a big smile, ready to stomp in it.",
+        "camera": "use an extreme wide shot with a static camera to capture the toddler as a small figure within the large puddle and surrounding environment, emphasizing the scale and geography of the setting",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The toddler stomps in the puddle, sending water flying in all directions, with the cat in the background looking unimpressed.",
+        "camera": "medium shot, slow-motion, steadicam movement to follow the toddler's stomping in the puddle, with a slightly low angle to emphasize the water splashing and the cat's reaction in the background",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "An arc of water hits the cat, which looks up startled before turning to run away as fast as it can.",
+        "camera": "start with an extreme close-up of the cat's face, then use a fast steadicam shot to dolly-out and follow the cat as it runs away, keeping a low angle to emphasize the cat's frantic movement and the rainy outdoor setting",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "The cat sprints away in an undignified manner, with the toddler laughing and trying to chase after, still in the puddle.",
+        "camera": "handheld, slightly above eye level, with a medium-wide lens to capture the dynamic movement of the cat and toddler in the puddle, incorporating natural lighting from the rainy day",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 5,
+        "description": "The cat disappears into the distance, with the toddler stopping at the edge of the puddle, still laughing and looking after the fleeing cat.",
+        "camera": "medium shot, static, with a low-angle and a wide lens to capture the toddler and the puddle, using underlighting to create an eerie mood, and a shallow depth of field to separate the toddler from the background",
+        "duration_s": 3
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "toddler",
+        "cat"
+      ],
+      "setting": "outdoor puddle on a rainy day",
+      "style_tokens": [
+        "wide",
+        "static",
+        "epic",
+        "low-key",
+        "slow-motion",
+        "medium",
+        "low-angle",
+        "smooth-movement",
+        "fast",
+        "extreme-closeup",
+        "handheld",
+        "medium-wide",
+        "natural-light",
+        "dynamic",
+        "shallow-focus"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8548341989517212,
+    "enhanced_description": "The toddler, wearing oversized rain boots, approaches a large puddle with a big smile, ready to stomp in it.. The toddler stomps in the puddle, sending water flying in all directions, with the cat in the background looking unimpressed.. An arc of water hits the cat, which looks up startled before turning to run away as fast as it can.. The cat sprints away in an undignified manner, with the toddler laughing and trying to chase after, still in the puddle.. The cat disappears into the distance, with the toddler stopping at the edge of the puddle, still laughing and looking after the fleeing cat.",
+    "original_score": 75,
+    "enhanced_score": 67,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 100,
+      "environment_detail": 30,
+      "visual_richness": 71,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 80,
+      "action_specificity": 72,
+      "environment_detail": 30,
+      "visual_richness": 52,
+      "temporal_coherence": 100
+    }
   },
   {
     "id": "abstract-1",
@@ -2068,9 +2640,63 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "Ink drops bloom and swirl through water in slow motion, ribbons of deep blue and gold twisting into intricate, ever-shifting patterns.",
-    "timestamp": "2026-08-12T06:24:04.184953+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99697, Requested 719. Please try again in 5m59.424s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:50:24.294098+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Ink drops are released into the water, starting to bloom and swirl",
+        "camera": "macro lens, slow-motion, soft diffusion, and gentle floating movement to capture the ink drops blooming and swirling in the water",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the ink as it creates intricate patterns, with deep blue and gold colors twisting together",
+        "camera": "extreme close-up, static, with a macro lens and high-saturation lighting to emphasize the deep blue and gold colors of the ink",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera zooms out to show the full, ever-shifting pattern of ink in the water",
+        "camera": "slow dolly-out with a wide-angle lens to capture the full, ever-shifting pattern of ink in the water",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [],
+      "setting": "a water-filled container or aquarium",
+      "style_tokens": [
+        "macro",
+        "dreamlike",
+        "slow-motion",
+        "soft-focus",
+        "high-saturation",
+        "static",
+        "vibrant",
+        "wide",
+        "dolly-out",
+        "slow"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8521033525466919,
+    "enhanced_description": "Ink drops are released into the water, starting to bloom and swirl. Close-up of the ink as it creates intricate patterns, with deep blue and gold colors twisting together. The camera zooms out to show the full, ever-shifting pattern of ink in the water",
+    "original_score": 79,
+    "enhanced_score": 59,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 87,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "abstract-2",
@@ -2078,9 +2704,70 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A single white line is drawn across a blank black canvas, splits into branching fractal patterns that spread outward, and finally resolves into the shape of a blooming flower.",
-    "timestamp": "2026-08-12T06:24:07.910500+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99694, Requested 537. Please try again in 3m19.584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:51:30.517001+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "A single white line is drawn across the canvas",
+        "camera": "static, wide shot with a shallow focus on the white line, using leading lines composition technique to draw the eye across the canvas, with high contrast lighting to create a silhouette of the line against the black background",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 2,
+        "description": "The line splits into branching fractal patterns that spread outward",
+        "camera": "start with an extreme close-up using a macro lens, then slowly zoom out to reveal the branching fractal patterns, placing key elements along the lines or at their intersections to create a sense of depth and direction",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The fractal patterns continue to spread and evolve",
+        "camera": "medium shot, slow pan with macro lens and high-saturation neon lighting to emphasize the evolving fractal patterns",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 4,
+        "description": "The patterns resolve into the shape of a blooming flower",
+        "camera": "static, wide shot with shallow depth of field and high-saturation color palette, using silhouette lighting to emphasize the blooming flower's shape against a bright, black canvas background",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [],
+      "setting": "a blank black canvas",
+      "style_tokens": [
+        "high-contrast",
+        "wide",
+        "leading-lines",
+        "silhouette",
+        "macro",
+        "slow-zoom-out",
+        "depth",
+        "neon",
+        "high-saturation",
+        "slow-pan",
+        "shallow-focus"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.9437885284423828,
+    "enhanced_description": "A single white line is drawn across the canvas. The line splits into branching fractal patterns that spread outward. The fractal patterns continue to spread and evolve. The patterns resolve into the shape of a blooming flower",
+    "original_score": 81,
+    "enhanced_score": 55,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 87,
+      "environment_detail": 30,
+      "visual_richness": 89,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 36,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "abstract-3",
@@ -2088,9 +2775,69 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "Sand grains cascade in a slow-motion hourglass, backlit so each falling particle catches the light like a tiny spark.",
-    "timestamp": "2026-08-12T06:24:10.622217+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99690, Requested 723. Please try again in 5m56.832s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:51:35.322026+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Extreme close-up of sand grains at the top of the hourglass, just before they start falling",
+        "camera": "macro lens, static, hard light from a direct source above to accentuate texture and edge of sand grains",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 2,
+        "description": "Sand grains start to fall, backlit to catch the light, in slow motion",
+        "camera": "close-up, macro lens, backlit with rim lighting, slow motion",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "Wide shot of the hourglass, with the falling sand grains sparkling like tiny sparks",
+        "camera": "static, wide-angle lens with hard light to accentuate the texture of the hourglass and the sparkling sand grains",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 4,
+        "description": "Extreme close-up of a single sand grain falling, catching the light and sparkling",
+        "camera": "use a macro lens for an extreme close-up of the sand grain, with hard light to capture its texture and sparkle as it falls",
+        "duration_s": 2
+      }
+    ],
+    "world_state": {
+      "characters": [],
+      "setting": "an hourglass",
+      "style_tokens": [
+        "macro",
+        "high-contrast",
+        "textured",
+        "static",
+        "backlight",
+        "slow-motion",
+        "wide",
+        "hard-light",
+        "immersive",
+        "extreme-closeup"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7856234312057495,
+    "enhanced_description": "Extreme close-up of sand grains at the top of the hourglass, just before they start falling. Sand grains start to fall, backlit to catch the light, in slow motion. Wide shot of the hourglass, with the falling sand grains sparkling like tiny sparks. Extreme close-up of a single sand grain falling, catching the light and sparkling",
+    "original_score": 68,
+    "enhanced_score": 59,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 75,
+      "action_specificity": 82,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 50
+    }
   },
   {
     "id": "nature-1",
@@ -2098,9 +2845,65 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "A snow leopard perches motionless on a rocky Himalayan ledge, golden late-afternoon light catching its pale, spotted fur.",
-    "timestamp": "2026-08-12T06:24:14.388725+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99686, Requested 691. Please try again in 5m25.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:51:41.434281+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the snow leopard on the ledge, with the Himalayan mountains in the background",
+        "camera": "static, wide-angle shot with a slight tilt up to convey the grandeur of the Himalayan mountains in the background",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the snow leopard's face, highlighting its pale, spotted fur and piercing eyes",
+        "camera": "close-up, slow dolly-in with Rembrandt lighting and a slight low angle to emphasize the snow leopard's piercing eyes",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The snow leopard's gaze is directed at something in the distance, with the golden light of late afternoon casting a warm glow",
+        "camera": "medium shot, slight pan from left to right, 50mm lens, warm golden hour lighting with soft shadows",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "snow leopard"
+      ],
+      "setting": "rocky Himalayan ledge",
+      "style_tokens": [
+        "wide",
+        "static",
+        "establishing",
+        "close-up",
+        "low-key",
+        "dolly-in",
+        "warm",
+        "soft",
+        "golden-hour",
+        "medium"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7071794867515564,
+    "enhanced_description": "Establishing shot of the snow leopard on the ledge, with the Himalayan mountains in the background. Close-up of the snow leopard's face, highlighting its pale, spotted fur and piercing eyes. The snow leopard's gaze is directed at something in the distance, with the golden light of late afternoon casting a warm glow",
+    "original_score": 81,
+    "enhanced_score": 58,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 67,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "nature-2",
@@ -2108,9 +2911,9 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A pod of dolphins swims lazily beside a fishing boat at dawn, suddenly bursts into a synchronized leap over the wake, then vanishes back beneath the glassy water.",
-    "timestamp": "2026-08-12T06:24:17.962342+00:00",
+    "timestamp": "2026-08-13T04:51:46.842875+00:00",
     "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99683, Requested 506. Please try again in 2m43.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "error": "LLM returned a malformed world_state"
   },
   {
     "id": "nature-3",
@@ -2118,9 +2921,64 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "Morning mist clings to a redwood forest floor, shafts of sunlight cutting through the canopy in slow, drifting beams.",
-    "timestamp": "2026-08-12T06:24:20.135764+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99679, Requested 756. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:51:49.682283+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The camera pans over the forest floor, capturing the morning mist clinging to the underbrush",
+        "camera": "low-angle, slow pan with a wide lens to capture the misty forest floor, utilizing natural light to enhance the atmosphere",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "A shaft of sunlight breaks through the canopy above, illuminating a small clearing",
+        "camera": "medium shot, slight Dutch angle, with volumetric lighting emphasizing the shaft of sunlight and a shallow depth of field to separate the clearing from the dense forest",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "The camera follows a sunbeam as it drifts lazily across the forest floor, highlighting the mist and foliage",
+        "camera": "slow dolly shot with a close-up framing, following the sunbeam as it moves across the forest floor, utilizing a steady and smooth movement to capture the mist and foliage",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [],
+      "setting": "redwood forest",
+      "style_tokens": [
+        "wide",
+        "low-key",
+        "slow-pan",
+        "volumetric",
+        "high-contrast",
+        "dappled",
+        "atmospheric",
+        "slow",
+        "close-up",
+        "dolly",
+        "smooth"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.6864012479782104,
+    "enhanced_description": "The camera pans over the forest floor, capturing the morning mist clinging to the underbrush. A shaft of sunlight breaks through the canopy above, illuminating a small clearing. The camera follows a sunbeam as it drifts lazily across the forest floor, highlighting the mist and foliage",
+    "original_score": 47,
+    "enhanced_score": 58,
+    "original_dimensions": {
+      "subject_clarity": 0,
+      "action_specificity": 80,
+      "environment_detail": 50,
+      "visual_richness": 31,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 67,
+      "action_specificity": 83,
+      "environment_detail": 50,
+      "visual_richness": 15,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "nature-4",
@@ -2128,9 +2986,73 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A hummingbird hovers uncertainly near a garden feeder, darts away when a bee gets too close, then returns moments later to drink undisturbed as the bee wanders off.",
-    "timestamp": "2026-08-12T06:24:23.717375+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99674, Requested 732. Please try again in 5m50.784s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:51:56.987127+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Hummingbird hovering near the feeder, looking around cautiously",
+        "camera": "extreme close-up, static, with a shallow depth of field and soft natural lighting to emphasize the hummingbird's cautious expressions",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "Bee approaching, hummingbird darting away quickly",
+        "camera": "overhead aerial shot, zooming in on the feeder as the hummingbird darts away",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 3,
+        "description": "Hummingbird returning to the feeder, landing and drinking",
+        "camera": "close-up, slow dolly-in with a slight overhead angle to emphasize the hummingbird's interaction with the feeder, utilizing a medium to long lens to maintain a consistent size while the background subtly shifts",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "Bee wandering off into the garden, hummingbird continuing to drink undisturbed",
+        "camera": "static, wide, overhead shot with a medium to long lens to capture the garden and the feeder, with natural lighting to emphasize the serene atmosphere",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "hummingbird",
+        "bee"
+      ],
+      "setting": "garden with feeder",
+      "style_tokens": [
+        "extreme-closeup",
+        "shallow-focus",
+        "soft-lighting",
+        "aerial",
+        "wide",
+        "overhead",
+        "close-up",
+        "dolly-in",
+        "medium-lens",
+        "smooth-motion",
+        "static"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8874650001525879,
+    "enhanced_description": "Hummingbird hovering near the feeder, looking around cautiously. Bee approaching, hummingbird darting away quickly. Hummingbird returning to the feeder, landing and drinking. Bee wandering off into the garden, hummingbird continuing to drink undisturbed",
+    "original_score": 72,
+    "enhanced_score": 57,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 65,
+      "environment_detail": 30,
+      "visual_richness": 67,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 75,
+      "action_specificity": 72,
+      "environment_detail": 30,
+      "visual_richness": 33,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "family-1",
@@ -2138,9 +3060,76 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "A father teaches his daughter to ride a bicycle in a quiet suburban driveway, one hand steadying the seat as she wobbles forward.",
-    "timestamp": "2026-08-12T06:24:27.462104+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99671, Requested 500. Please try again in 2m27.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:52:03.718430+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The father and daughter stand beside the bicycle, he explaining and she listening intently",
+        "camera": "frame the father and daughter in a medium two-shot, with the camera positioned directly in front of them, using a centered composition to emphasize their relationship and intimacy",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "The daughter mounts the bicycle, the father's hand on the seat as she starts to pedal",
+        "camera": "slow dolly-out with a slight pan to follow the daughter as she pedals away, keeping her in frame while capturing the father's hand releasing the seat",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "A close-up of the father's hand on the seat, then releasing as the daughter gains confidence",
+        "camera": "start with a tight close-up of the father's hand, then slowly zoom out to a medium close-up as the daughter gains confidence, keeping the father's hand in the foreground while introducing the daughter's face and the quiet suburban driveway background",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The daughter rides a short distance, wobbling but upright, as the father watches with a proud smile",
+        "camera": "static, wide shot with a slight low-angle to emphasize the daughter's achievement, using natural lighting to capture the warmth of the moment",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "father",
+        "daughter"
+      ],
+      "setting": "quiet suburban driveway",
+      "style_tokens": [
+        "medium",
+        "static",
+        "intimate",
+        "centered",
+        "slow",
+        "dolly-out",
+        "immersive",
+        "lateral",
+        "close-up",
+        "slow zoom-out",
+        "medium-closeup",
+        "wide",
+        "low-angle",
+        "natural-lighting"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.7246348857879639,
+    "enhanced_description": "The father and daughter stand beside the bicycle, he explaining and she listening intently. The daughter mounts the bicycle, the father's hand on the seat as she starts to pedal. A close-up of the father's hand on the seat, then releasing as the daughter gains confidence. The daughter rides a short distance, wobbling but upright, as the father watches with a proud smile",
+    "original_score": 70,
+    "enhanced_score": 70,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 85,
+      "environment_detail": 30,
+      "visual_richness": 62,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 36,
+      "temporal_coherence": 100
+    }
   },
   {
     "id": "family-2",
@@ -2148,9 +3137,75 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A family gathers around a dinner table as an old story is told, laughter rising as the punchline lands, and then quiets into warm smiles as they clink glasses together.",
-    "timestamp": "2026-08-12T06:24:30.057610+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99667, Requested 696. Please try again in 5m13.632s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:52:14.156587+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "The family gathers around the dinner table, looking at each other with anticipation",
+        "camera": "use a two-shot framing with a shallow depth of field and soft diffused light, with the camera positioned to capture the intimate close framing of the family members around the dinner table, and a gentle pan to connect the reactions of the family members",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 2,
+        "description": "A close-up of the father's face as he tells the story, building up to the punchline",
+        "camera": "close-up, slow dolly-in, with a shallow depth of field to emphasize the father's emotional expressions",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 3,
+        "description": "The family bursts into laughter as the punchline lands, with reactions from each family member",
+        "camera": "handheld, two-shot with high-key lighting to capture the family's reactions and laughter in the cozy dining room",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 4,
+        "description": "The family quiets down, smiling warmly at each other as they clink glasses together",
+        "camera": "medium two-shot with slow zoom-out, warm soft lighting, and shallow depth of field",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "father",
+        "mother",
+        "children"
+      ],
+      "setting": "a cozy dining room with a dinner table",
+      "style_tokens": [
+        "intimate",
+        "shallow-focus",
+        "soft-light",
+        "warm-tones",
+        "close-up",
+        "dolly-in",
+        "medium",
+        "handheld",
+        "high-key",
+        "two-shot",
+        "warm",
+        "soft-focus"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8882306814193726,
+    "enhanced_description": "The family gathers around the dinner table, looking at each other with anticipation. A close-up of the father's face as he tells the story, building up to the punchline. The family bursts into laughter as the punchline lands, with reactions from each family member. The family quiets down, smiling warmly at each other as they clink glasses together",
+    "original_score": 73,
+    "enhanced_score": 65,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 88,
+      "environment_detail": 0,
+      "visual_richness": 75,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 75,
+      "environment_detail": 30,
+      "visual_richness": 44,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "family-3",
@@ -2158,9 +3213,70 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "Grandparents nap side by side in porch rocking chairs on a lazy summer afternoon, a half-finished crossword resting on the small table between them.",
-    "timestamp": "2026-08-12T06:24:33.819323+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99663, Requested 706. Please try again in 5m18.816s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:52:22.469609+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Establishing shot of the grandparents sleeping peacefully in their rocking chairs",
+        "camera": "Wide static shot of the grandparents, framed within the porch's natural frame, with a neutral color palette to capture the peaceful atmosphere, using available daylight and a subtle blue tint to evoke a sense of summer evening.",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Close-up of the half-finished crossword puzzle on the small table between them",
+        "camera": "Extreme close-up, slow zoom-in, from the top of the crossword puzzle, with a slight tilt to emphasize the puzzle pieces",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "Medium shot of the grandparents' gentle rocking motion, with a soft focus on their faces",
+        "camera": "Medium shot, slow push-in, handheld, with a shallow focus on the grandparents' faces, framing the full rocking motion in the porch setting",
+        "duration_s": 5
+      },
+      {
+        "shot_id": 4,
+        "description": "Wide shot of the porch, showing the serene summer surroundings and the grandparents' peaceful nap",
+        "camera": "Extreme wide shot, static, with a Day-for-night grading to simulate a serene summer evening atmosphere, capturing the grandparents' peaceful nap amidst the serene surroundings.",
+        "duration_s": 4
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "Grandfather",
+        "Grandmother"
+      ],
+      "setting": "Porch with rocking chairs on a summer afternoon",
+      "style_tokens": [
+        "static",
+        "wide",
+        "day-for-night",
+        "shallow-focus",
+        "low-key",
+        "dolly-in",
+        "push-in",
+        "handheld"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.6299113631248474,
+    "enhanced_description": "Establishing shot of the grandparents sleeping peacefully in their rocking chairs. Close-up of the half-finished crossword puzzle on the small table between them. Medium shot of the grandparents' gentle rocking motion, with a soft focus on their faces. Wide shot of the porch, showing the serene summer surroundings and the grandparents' peaceful nap",
+    "original_score": 83,
+    "enhanced_score": 58,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 50,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 0,
+      "action_specificity": 83,
+      "environment_detail": 30,
+      "visual_richness": 100,
+      "temporal_coherence": 75
+    }
   },
   {
     "id": "family-4",
@@ -2168,9 +3284,72 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "Two siblings build an elaborate blanket fort in the living room, argue briefly over the last pillow, then squeeze in together to read a book by flashlight.",
-    "timestamp": "2026-08-12T06:24:37.523629+00:00",
-    "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99660, Requested 533. Please try again in 2m46.752s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "timestamp": "2026-08-13T04:53:35.910361+00:00",
+    "status": "ok",
+    "shots": [
+      {
+        "shot_id": 1,
+        "description": "Siblings gather materials for the blanket fort",
+        "camera": "Medium shot, static, with a softbox or diffused light source to capture the siblings' faces and the living room with gentle, gradual shadows and low contrast.",
+        "duration_s": 4
+      },
+      {
+        "shot_id": 2,
+        "description": "Siblings argue over the last pillow",
+        "camera": "Medium close-up, slow dolly-in with a slight dolly zoom effect to emphasize the siblings' emotional intensity, framed to capture the chest or shoulders up with a hint of the background.",
+        "duration_s": 3
+      },
+      {
+        "shot_id": 3,
+        "description": "Siblings compromise and squeeze in together",
+        "camera": "Medium close-up, static, with negative space framing the siblings' faces and upper bodies, emphasizing their relationship and isolation in the living room.",
+        "duration_s": 2
+      },
+      {
+        "shot_id": 4,
+        "description": "Siblings read a book by flashlight inside the fort",
+        "camera": "Medium shot, low-key underlit, dolly-in, shallow-focus",
+        "duration_s": 5
+      }
+    ],
+    "world_state": {
+      "characters": [
+        "sibling1",
+        "sibling2"
+      ],
+      "setting": "living room",
+      "style_tokens": [
+        "soft-light",
+        "wide",
+        "shallow-focus",
+        "medium-closeup",
+        "dolly-in",
+        "low-key",
+        "negative-space",
+        "medium-close-up",
+        "static",
+        "underlight"
+      ]
+    },
+    "attempt_count": 1,
+    "similarity_score": 0.8686754703521729,
+    "enhanced_description": "Siblings gather materials for the blanket fort. Siblings argue over the last pillow. Siblings compromise and squeeze in together. Siblings read a book by flashlight inside the fort",
+    "original_score": 75,
+    "enhanced_score": 53,
+    "original_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 90,
+      "environment_detail": 30,
+      "visual_richness": 57,
+      "temporal_coherence": 100
+    },
+    "enhanced_dimensions": {
+      "subject_clarity": 100,
+      "action_specificity": 84,
+      "environment_detail": 30,
+      "visual_richness": 24,
+      "temporal_coherence": 25
+    }
   },
   {
     "id": "romance-1",
@@ -2178,9 +3357,9 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "Two strangers share an umbrella at a rain-soaked bus stop, both smiling shyly as their hands brush reaching for the same handle.",
-    "timestamp": "2026-08-12T06:24:40.116750+00:00",
+    "timestamp": "2026-08-13T04:53:41.950794+00:00",
     "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99656, Requested 717. Please try again in 5m22.272s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99694, Requested 729. Please try again in 6m5.472s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
   },
   {
     "id": "romance-2",
@@ -2188,9 +3367,9 @@
     "complexity": "multi-beat",
     "condition": "multiagent",
     "original_prompt": "A couple strolls along a moonlit pier, pauses at the railing to watch fireworks bloom over the water, and turns to share a quiet kiss as the last burst fades.",
-    "timestamp": "2026-08-12T06:24:43.790415+00:00",
+    "timestamp": "2026-08-13T04:53:48.030239+00:00",
     "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99652, Requested 712. Please try again in 5m14.496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99690, Requested 705. Please try again in 5m41.28s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
   },
   {
     "id": "romance-3",
@@ -2198,8 +3377,8 @@
     "complexity": "single-beat",
     "condition": "multiagent",
     "original_prompt": "An elderly couple dances slowly in their kitchen to music from an old radio, foreheads touching, utterly unaware of anything else in the room.",
-    "timestamp": "2026-08-12T06:24:47.330749+00:00",
+    "timestamp": "2026-08-13T04:53:51.188206+00:00",
     "status": "error",
-    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99649, Requested 521. Please try again in 2m26.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
+    "error": "Both providers failed. Primary (Groq): Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kxataze7f6bv7r8v0ppx56bs` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99688, Requested 513. Please try again in 2m53.664s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Fallback: Fallback LLM request to https://api.groq.com/openai/v1 (model 'llama-3.1-8b-instant') failed: Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429."
   }
 ]

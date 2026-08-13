@@ -46,6 +46,7 @@ numpy==2.5.2
 orjson==3.11.9
 ormsgpack==1.12.2
 packaging==26.3
+pillow==12.3.0
 pluggy==1.6.0
 preshed==3.0.13
 pydantic==2.13.4

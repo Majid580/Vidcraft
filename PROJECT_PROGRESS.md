@@ -102,25 +102,32 @@ Description: Run multi-agent condition (FR-12 Condition B), PROJECT_ARCHITECTURE
 Current state: ai-service/evaluation/multiagent.py (generate_multiagent(prompt) -- calls the production
   orchestrator.graph.build_graph() directly, raw prompt as clarified_prompt per ADR-025, surfaces
   attempt_count/similarity_score) + run_multiagent.py (paced runner, --resume flag) both built and tested
-  (6 new offline tests, 91/91 suite pass, zero regressions). Live run: 27/50 prompts succeeded for real
-  (real Groq + real RAG-003 grounding, all first-attempt passes, similarity_score 0.475-0.926) before
-  hitting Groq's real per-model daily token cap -- see below.
+  (6 new offline tests, 91/91 suite pass, zero regressions).
+Live run 1 (2026-08-12): 27/50 prompts succeeded for real (real Groq + real RAG-003 grounding, all
+  first-attempt passes, similarity_score 0.475-0.926) before hitting Groq's real per-model daily
+  token cap.
+Live run 2 (2026-08-13, `--resume`): **27/50 -> 46/50.** The daily quota had reset, so the resume was
+  simply run -- reusing the 27 already-'ok' records untouched and spending the fresh day's budget only
+  on the 23 that had failed. 19 of those 23 succeeded; the run then hit the SAME cap again on the last
+  four, and the 429 body states it outright rather than leaving it to inference:
+  "on tokens per day (TPD): Limit 100000, Used 99691, Requested 481" -- an exact live confirmation of
+  the ~100k figure that memory/groq_free_tier_limits.md had recorded as an empirical estimate.
 Files: ai-service/evaluation/multiagent.py, ai-service/evaluation/run_multiagent.py,
-  ai-service/evaluation/results/multiagent_results.json (27 ok + 23 error records),
+  ai-service/evaluation/results/multiagent_results.json (46 ok + 4 error records),
   ai-service/tests/test_evaluation_{multiagent,run_multiagent}.py
 Dependencies: INTEG-001 (done), EVAL-001 (done)
-What remains: completing the other 23 prompts (`python -m evaluation.run_multiagent --resume` reuses
-  the 27 already-'ok' records and only reruns the missing ones -- no code changes needed). A Windows
-  Task Scheduler entry to auto-run this once Groq's daily quota reset was set up, then CANCELLED per
-  direct user instruction: the 23 failures have one understood, non-code cause (Groq's real daily token
-  cap for llama-3.3-70b-versatile, ~100,000/day in practice, not the 1,000,000/day previously assumed --
-  memory/groq_free_tier_limits.md corrected) and would very likely pass on retry, so the team chose not
-  to wait on/pursue completion right now rather than treat it as a priority.
-Current blocker: none, by design. Same pattern as BACKEND-005's video-tier hold (ADR-021) -- a real,
-  understood, non-code reason for incompleteness, and a deliberate stop per direct team instruction, not
-  an active blocker anyone is working around.
-Next action: none queued. `python -m evaluation.run_multiagent --resume` remains available to run
-  manually whenever the team wants the full 50 -- see ADR-025's resolution note.
+What remains: 4 prompts -- nature-2, romance-1, romance-2, romance-3. Same one non-code cause as
+  before (the daily TPD cap), same one-command fix on any later day:
+  `python -m evaluation.run_multiagent --resume`. No code change needed; --resume is idempotent and
+  re-spends nothing on the 46 that already succeeded.
+Current blocker: none, by design -- the same deliberate-hold pattern as BACKEND-005's video tier
+  (ADR-021). Note what changed on 2026-08-13 and why it is NOT a reversal of the earlier instruction:
+  the team's direct instruction was to stop AUTOMATING a wait for the quota reset (a scheduled task
+  was cancelled). Running --resume by hand on a later day, when the quota had already reset and the
+  work was asked for, is the manual path that instruction explicitly left open -- see ADR-025's
+  resolution note, which says exactly that.
+Next action: none queued. EVAL-004 does NOT wait on these 4: it compares the two conditions on the
+  PAIRED subset, which is 46 prompts, and reports the 4 exclusions in its own coverage table.
 ```
 
 *(INTEG-001 moved to Section 2 — VERIFIED, 2026-08-12: the real full-stack end-to-end confirmation run passed. See Section 2's table row for detail.)*
