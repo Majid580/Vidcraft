@@ -144,7 +144,7 @@ async function generateShotAsset(storyboardId, shot, worldState) {
     });
   } catch (err) {
     // Anchoring runs on a different model than the unanchored path
-    // (SD v1.5 img2img vs FLUX), so it has its own failure surface: model
+    // (SD v1.5 img2img vs Phoenix), so it has its own failure surface: model
     // unavailable, reference rejected, payload too large. Retry once without
     // the reference rather than failing the shot — this is a downgrade of
     // *technique* within the provider the user chose, not the silent

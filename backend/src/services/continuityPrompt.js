@@ -182,13 +182,21 @@ function seedForStoryboard(storyboardId) {
  * Still fully deterministic: the same (storyboard, shot) always regenerates
  * the same image, which the FR-12 evaluation depends on.
  *
+ * The `>>> 0` is load-bearing, not decoration. Math.imul returns a *signed*
+ * 32-bit result, so the mix could go negative and JS's `%` keeps the sign —
+ * this function was handing out negative seeds for roughly half of all shots.
+ * Providers that read the seed reject those (`'/seed' must be >= 0`, live
+ * 2026-08-14), and the previous default image model ignored the seed field
+ * entirely, so the bug produced no visible error until both were fixed.
+ *
  * @param {string} storyboardId
  * @param {number} shotId
- * @returns {number}
+ * @returns {number} non-negative, below 2^31
  */
 function seedForShot(storyboardId, shotId) {
   const base = seedForStoryboard(storyboardId);
-  return (base + Math.imul(Number(shotId) || 0, 2654435761)) % 2147483647;
+  const mixed = (base + Math.imul(Number(shotId) || 0, 2654435761)) >>> 0;
+  return mixed % 2147483647;
 }
 
 module.exports = {

@@ -50,12 +50,23 @@ Pick deliberately — they behave very differently under time pressure.
 | Pathway | Wall-clock (measured) | Reliability in rehearsal | Use it for |
 |---|---|---|---|
 | **Remotion** | **~2 min** | 3/3 shots succeeded | **The live run.** Free, no external API, no quota, cannot fail on someone else's server |
-| Cloudflare (FLUX) | ~2 min | 4/4 shots succeeded | A strong second — real photoreal imagery |
+| Cloudflare (Phoenix) | ~2 min | 4/4 shots in rehearsal — but see note | A strong second — real photoreal imagery |
 | Pollinations | ~3.5 min | **2 of 4 shots failed** (provider 500s) | Avoid live. Fine for a pre-recorded artifact |
 
 **Recommendation: demo Remotion live, and show a pre-generated Cloudflare result** for
 the photoreal output. Remotion is the guaranteed-consistency pathway (FR-5) and is the
 one thing in the stack that cannot be broken by an external provider having a bad day.
+
+> **Cloudflare, read before relying on it (2026-08-14, ADR-033).** The 4/4 rehearsal
+> figure above was measured on the old `flux-1-schnell` default, which turned out to be
+> rejecting the pipeline's own continuity parameters — sometimes with a 400, sometimes
+> by silently ignoring them. The default is now `@cf/leonardo/phoenix-1.0`, which accepts
+> them, is faster (~3s/shot), and reproduces a fixed seed exactly. **This has not yet been
+> re-rehearsed on a full 4-shot run:** the day's 10,000-neuron free allocation was spent
+> choosing the model. Re-run the rehearsal before demoing Cloudflare live, and remember
+> the allocation is *daily and shared with everything else on the account* — if it is
+> spent, every Cloudflare shot fails with a quota error regardless of this fix. Remotion
+> and Pollinations need no allocation.
 
 If you do demo an external provider live, say up front that partial failure is expected
 and handled — then it reads as designed robustness rather than a bug. Which it is: a
